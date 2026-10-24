@@ -1,0 +1,103 @@
+<div class="hanging-stage" id="hanging-avatar">
+  <div class="hanging-rail" aria-hidden="true"><i></i><i></i></div>
+  <svg class="hanging-chains" aria-hidden="true"><g data-chain="left"></g><g data-chain="right"></g></svg>
+  <div class="hanging-card" tabindex="0" role="group" aria-roledescription="可拖动卡片" aria-label="dominator 头像卡片，拖动或按左右方向键摆动，Home 键复位">
+    <span class="hanging-eyelet eyelet-left" aria-hidden="true"></span><span class="hanging-eyelet eyelet-right" aria-hidden="true"></span>
+    <span class="hanging-label">DOMINATOR / BLUE HOUR</span>
+    <div class="hanging-portrait"><img src="/images/dominator-avatar.png" width="1254" height="1254" alt="dominator 的银发蓝眼动漫头像" draggable="false" /></div>
+    <strong>dominator<span aria-hidden="true">_</span></strong>
+  </div>
+  <div class="hanging-help"><span>拖动摆动 · 双击复位</span><button type="button" class="hanging-reset" aria-label="复位悬挂卡片">复位</button></div>
+</div>
+<script>
+  const stage = document.querySelector<HTMLElement>('#hanging-avatar');
+  if (stage && !stage.dataset.ready) {
+    stage.dataset.ready = 'true';
+    const card = stage.querySelector<HTMLElement>('.hanging-card')!;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    const groups = [...stage.querySelectorAll<SVGGElement>('[data-chain]')];
+    const links = groups.map(group => Array.from({length: 14}, (_, i) => {
+      const link = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+      link.setAttribute('rx', i % 2 ? '1.7' : '3'); link.setAttribute('ry', '4.2');
+      link.setAttribute('fill', 'none'); link.setAttribute('stroke', i % 2 ? '#6988b0' : '#b9d7f7');
+      link.setAttribute('stroke-width', '1.3'); group.append(link); return link;
+    }));
+    let angle = 0, velocity = 0, frame = 0, lastFrame = 0;
+    let pointer: number | null = null;
+    let startX = 0, startAngle = 0, lastMove = 0;
+    const limit = (n: number, max: number) => Math.max(-max, Math.min(max, n));
+    function paint() {
+      const rad = angle * Math.PI / 180;
+      const dx = -Math.sin(rad) * 76;
+      const dy = (Math.cos(rad) - 1) * 76;
+      card.style.transform = `translate3d(${dx}px,${dy}px,0) rotate(${angle}deg)`;
+      const center = stage!.clientWidth / 2;
+      for (let side = 0; side < 2; side++) {
+        const offset = side ? 82 : -82;
+        const x1 = center + offset, y1 = 13;
+        const x2 = center + dx + offset * Math.cos(rad);
+        const y2 = 88 + dy + offset * Math.sin(rad);
+        const rotation = -Math.atan2(x2 - x1, y2 - y1) * 180 / Math.PI;
+        links[side].forEach((link, i) => {
+          const t = (i + 0.5) / links[side].length;
+          link.setAttribute('transform', `translate(${x1 + (x2-x1)*t} ${y1+(y2-y1)*t}) rotate(${rotation})`);
+        });
+      }
+    }
+    function tick(now: number) {
+      frame = 0;
+      const step = lastFrame ? Math.min(2, (now-lastFrame)/16.667) : 1;
+      lastFrame = now;
+      velocity = (velocity - angle * 0.016 * step) * Math.pow(0.93, step);
+      angle = limit(angle + velocity * step, 20);
+      if (Math.abs(angle) < 0.025 && Math.abs(velocity) < 0.025) { angle = 0; velocity = 0; paint(); return; }
+      paint(); frame = requestAnimationFrame(tick);
+    }
+    function settle() {
+      cancelAnimationFrame(frame); frame = 0; lastFrame = 0;
+      if (reduced.matches) { angle = 0; velocity = 0; paint(); }
+      else frame = requestAnimationFrame(tick);
+    }
+    function reset() {
+      const captured = pointer; pointer = null; delete card.dataset.dragging;
+      if (captured !== null && card.hasPointerCapture(captured)) card.releasePointerCapture(captured);
+      cancelAnimationFrame(frame); frame = 0; angle = 0; velocity = 0; paint();
+    }
+    card.addEventListener('pointerdown', event => {
+      if (event.button !== 0 || pointer !== null) return;
+      cancelAnimationFrame(frame); frame = 0;
+      pointer = event.pointerId; startX = event.clientX; startAngle = angle;
+      velocity = 0; lastMove = performance.now();
+      card.setPointerCapture(pointer); card.dataset.dragging = 'true';
+    });
+    card.addEventListener('pointermove', event => {
+      if (event.pointerId !== pointer) return;
+      const now = performance.now();
+      const next = limit(startAngle - (event.clientX-startX)*0.13, 18);
+      velocity = limit((next-angle) / Math.max(0.4,(now-lastMove)/16.667), 2);
+      angle = next; lastMove = now; paint();
+    });
+    function release(event: PointerEvent) {
+      if (pointer !== event.pointerId) return;
+      pointer = null; delete card.dataset.dragging;
+      if (performance.now()-lastMove > 100) velocity = 0;
+      settle();
+    }
+    card.addEventListener('pointerup', release);
+    card.addEventListener('pointercancel', release);
+    card.addEventListener('lostpointercapture', release);
+    card.addEventListener('dblclick', reset);
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Home' || event.key === 'Escape') { event.preventDefault(); reset(); }
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        event.preventDefault();
+        if (reduced.matches) { angle = limit(angle + (event.key === 'ArrowLeft' ? 3 : -3), 18); paint(); }
+        else { velocity += event.key === 'ArrowLeft' ? 1 : -1; settle(); }
+      }
+    });
+    stage.querySelector('button')!.addEventListener('click', reset);
+    reduced.addEventListener('change', reset);
+    new ResizeObserver(paint).observe(stage);
+    paint();
+  }
+</script>

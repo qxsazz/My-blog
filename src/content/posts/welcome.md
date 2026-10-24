@@ -4,6 +4,7 @@ published: 2026-10-24
 description: "dominator 的第一篇站点说明：写作方向、阅读方式，以及怎样把直觉变成可以验证的理解。"
 tags: ["站点说明", "AI"]
 category: "随笔"
+draft: true
 ---
 
 欢迎来到 **dominator**。这里将记录关于 AI 的个人理解、技术原理拆解与工程实验。
