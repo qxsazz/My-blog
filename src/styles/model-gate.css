@@ -1,0 +1,26 @@
+:root { --gate-x: 50vw; --gate-y: 30vh; }
+body { font-family: Roboto, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+#gate-wallpaper { position: fixed; inset: 0; pointer-events: none; z-index: 0; background: radial-gradient(ellipse at 12% 12%, #b8c9ff70, transparent 50%), radial-gradient(ellipse at 90% 65%, #bdeddf66, transparent 55%); }
+html[data-gate-wallpaper="1"] #gate-wallpaper { background: radial-gradient(ellipse at 85% 10%, #bea4e855, transparent 60%), radial-gradient(ellipse at 15% 85%, #76a2e955, transparent 55%), radial-gradient(circle, #9c9eb866 1px, transparent 1px); background-size: auto, auto, 38px 38px; }
+html[data-gate-wallpaper="2"] #gate-wallpaper { background: none; }
+#gate-glow { position: fixed; inset: 0; z-index: 31; pointer-events: none; background: radial-gradient(260px circle at var(--gate-x) var(--gate-y), #a594ed18, transparent 100%); }
+html[data-gate-effects="false"] #gate-glow { display: none; }
+#gate-controls { position: fixed; z-index: 60; right: 1rem; bottom: 1rem; display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; max-width: calc(100vw - 2rem); padding: .6rem; border: 1px solid #9c91c644; border-radius: 1.1rem; background: var(--card-bg); box-shadow: 0 8px 32px #21184912; color: var(--primary); font-size: .75rem; }
+#gate-controls button { padding: .45rem .65rem; border-radius: .65rem; }
+#gate-controls button:hover, #gate-controls button[aria-pressed="true"] { background: #9c91c622; }
+#gate-controls :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.gate-volume { display: flex; gap: .4rem; align-items: center; padding: 0 .3rem; }
+.gate-volume input { width: 65px; accent-color: var(--primary); }
+.gate-intro { padding: clamp(1.5rem, 5vw, 3rem); margin-bottom: 1rem; position: relative; background-image: radial-gradient(ellipse at 100% 0%, #9f8de925, transparent 65%); }
+.gate-eyebrow { font-size: .65rem; letter-spacing: .2em; color: var(--primary); font-weight: 700; }
+.gate-intro h1 { margin: 1.3rem 0; font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; line-height: 1.35; letter-spacing: -.04em; color: var(--primary); }
+.gate-intro h1 em { font-style: normal; color: var(--tw-prose-headings, var(--primary)); }
+.gate-intro p { color: var(--tw-prose-body, #777787); line-height: 1.9; max-width: 30rem; }
+.gate-topics { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.8rem; }
+.gate-topics span { border: 1px solid #9c91c633; border-radius: 99px; padding: .3rem .7rem; font-size: .75rem; color: var(--primary); }
+.gate-ripple { position: fixed; width: 12px; height: 12px; border: 1px solid #9f8de9; border-radius: 50%; z-index: 59; pointer-events: none; animation: gate-ripple .65s ease-out forwards; }
+@keyframes gate-ripple { from { transform: translate(-50%, -50%) scale(1); opacity: .8; } to { transform: translate(-50%, -50%) scale(7); opacity: 0; } }
+@media (pointer: coarse), (prefers-reduced-motion: reduce) { #gate-glow { display: none; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+@media (max-width: 640px) { #gate-controls { right: .5rem; bottom: .5rem; font-size: .7rem; gap: .1rem; padding: .35rem; } .gate-volume { display: none; } }
+.footer { padding-bottom: 4rem; }

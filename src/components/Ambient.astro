@@ -1,0 +1,86 @@
+<div id="gate-wallpaper" aria-hidden="true"></div>
+<div id="gate-glow" aria-hidden="true"></div>
+<aside id="gate-controls" aria-label="阅读氛围设置" data-swup-ignore-script>
+  <button id="gate-wallpaper-button" type="button" aria-label="切换壁纸">壁纸 · 极光</button>
+  <button id="gate-effects-button" type="button" aria-pressed="true">光效</button>
+  <button id="gate-audio-button" type="button" aria-pressed="false">♫ 环境音</button>
+  <label class="gate-volume">音量<input id="gate-volume" type="range" min="0" max="100" value="25" aria-label="环境音音量" /></label>
+  <span id="gate-audio-status" class="sr-only" role="status" aria-live="polite"></span>
+</aside>
+<script>
+  const root = document.documentElement;
+  // Swup may execute page scripts again; keep one audio engine and one set of listeners.
+  if (!root.dataset.gateInitialized) {
+  root.dataset.gateInitialized = "true";
+  const wallpaper = document.querySelector<HTMLButtonElement>('#gate-wallpaper-button')!;
+  const effects = document.querySelector<HTMLButtonElement>('#gate-effects-button')!;
+  const music = document.querySelector<HTMLButtonElement>('#gate-audio-button')!;
+  const volume = document.querySelector<HTMLInputElement>('#gate-volume')!;
+  const status = document.querySelector<HTMLElement>('#gate-audio-status')!;
+  const read = (key: string, fallback: string) => { try { return localStorage.getItem(key) ?? fallback; } catch { return fallback; } };
+  const save = (key: string, value: string) => { try { localStorage.setItem(key, value); } catch { /* Storage is optional. */ } };
+  const walls = ['极光', '星夜', '纯色'];
+  let wall = Math.max(0, walls.indexOf(read('gate-wallpaper', '极光')));
+  function setWall() { root.dataset.gateWallpaper = String(wall); wallpaper.textContent = `壁纸 · ${walls[wall]}`; }
+  setWall();
+  wallpaper.addEventListener('click', () => { wall = (wall + 1) % walls.length; setWall(); save('gate-wallpaper', walls[wall]); });
+  let enabled = read('gate-effects', 'true') === 'true';
+  function setEffects() { root.dataset.gateEffects = String(enabled); effects.setAttribute('aria-pressed', String(enabled)); }
+  setEffects();
+  effects.addEventListener('click', () => { enabled = !enabled; setEffects(); save('gate-effects', String(enabled)); });
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const finePointer = matchMedia('(pointer: fine)');
+  let pending = false;
+  let x = 0, y = 0;
+  document.addEventListener('pointermove', (event) => {
+    if (!enabled || reduced.matches || !finePointer.matches) return;
+    x = event.clientX; y = event.clientY;
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(() => {
+      root.style.setProperty('--gate-x', `${x}px`); root.style.setProperty('--gate-y', `${y}px`);
+      pending = false;
+    });
+  }, { passive: true });
+  document.addEventListener('click', (event) => {
+    if (!enabled || reduced.matches || !finePointer.matches || (event.target as Element).closest('button, a, input')) return;
+    const ripple = document.createElement('span');
+    ripple.className = 'gate-ripple'; ripple.style.left = `${event.clientX}px`; ripple.style.top = `${event.clientY}px`;
+    document.body.append(ripple); ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
+  });
+  // Original, locally synthesized ambient tones. No remote audio or tracking requests.
+  let audio: AudioContext | undefined;
+  let gain: GainNode | undefined;
+  let playing = false;
+  let busy = false;
+  const storedVolume = Number(read('gate-volume', '25'));
+  volume.value = String(Number.isFinite(storedVolume) ? Math.min(100, Math.max(0, storedVolume)) : 25);
+  function createAudio() {
+    audio = new AudioContext(); gain = audio.createGain(); gain.gain.value = 0; gain.connect(audio.destination);
+    [130.81, 196, 261.63, 329.63, 392].forEach((frequency, index) => {
+      const tone = audio!.createOscillator(); tone.type = 'sine'; tone.frequency.value = frequency;
+      const envelope = audio!.createGain(); envelope.gain.value = 0.035;
+      const drift = audio!.createOscillator(); drift.frequency.value = 0.035 + index * 0.013;
+      const depth = audio!.createGain(); depth.gain.value = 0.025;
+      drift.connect(depth); depth.connect(envelope.gain); tone.connect(envelope); envelope.connect(gain!);
+      tone.start(); drift.start();
+    });
+  }
+  music.addEventListener('click', async () => {
+    if (busy) return;
+    busy = true;
+    try {
+      if (!audio) createAudio();
+      if (playing) { await audio!.suspend(); playing = false; }
+      else { await audio!.resume(); gain!.gain.setTargetAtTime(Number(volume.value) / 100, audio!.currentTime, 0.3); playing = true; }
+      music.setAttribute('aria-pressed', String(playing)); music.textContent = playing ? 'Ⅱ 暂停环境音' : '♫ 环境音';
+      status.textContent = playing ? '环境音已开启' : '环境音已暂停';
+    } catch { status.textContent = '浏览器暂时无法播放环境音，请重试。'; }
+    finally { busy = false; }
+  });
+  volume.addEventListener('input', () => {
+    save('gate-volume', volume.value);
+    if (audio && gain) gain.gain.setTargetAtTime(Number(volume.value) / 100, audio.currentTime, 0.1);
+  });
+  }
+</script>

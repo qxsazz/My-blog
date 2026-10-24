@@ -1,0 +1,29 @@
+---
+import type { GetStaticPaths } from "astro";
+import Pagination from "../components/control/Pagination.astro";
+import PostPage from "../components/PostPage.astro";
+import { PAGE_SIZE } from "../constants/constants";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+import { getSortedPosts } from "../utils/content-utils";
+
+export const getStaticPaths = (async ({ paginate }) => {
+	const allBlogPosts = await getSortedPosts();
+	return paginate(allBlogPosts, { pageSize: PAGE_SIZE });
+}) satisfies GetStaticPaths;
+// https://github.com/withastro/astro/issues/6507#issuecomment-1489916992
+
+const { page } = Astro.props;
+
+const len = page.data.length;
+---
+
+<MainGridLayout>
+    {page.currentPage === 1 && <section class="gate-intro card-base">
+        <span class="gate-eyebrow">MODEL GATE / AI FIELD NOTES</span>
+        <h1>拆开 AI，<br /><em>理解它如何工作。</em></h1>
+        <p>从直觉出发，用公式、代码与实验，连接模型原理和真实世界。</p>
+        <div class="gate-topics"><span>模型原理</span><span>检索增强</span><span>Agent</span><span>工程实践</span></div>
+    </section>}
+    <PostPage page={page}></PostPage>
+    <Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: calc(var(--content-delay) + ${(len)*50}ms)`}></Pagination>
+</MainGridLayout>
