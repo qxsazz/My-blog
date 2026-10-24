@@ -108,7 +108,7 @@ html[data-gate-effects="false"] #gate-wallpaper::before,html[data-gate-effects="
 .gate-art-label.label-top { top: 0; right: 6px; }
 .gate-art-label.label-bottom { bottom: 8px; left: 14px; font-size: .41rem; color: #a7c7f0; }
 .gate-art-label.label-bottom span { display: inline-block; width: 4px; height: 4px; background: #95d8ff; border-radius: 50%; margin-right: .3rem; box-shadow: 0 0 8px #55baff; }
-.gate-intro { isolation: isolate; }
+.card-base.gate-intro { isolation: isolate; background-color: #0b1730; }
 .gate-intro::before { content: ""; position: absolute; inset: 0; z-index: -1; opacity: .26; background-image: linear-gradient(#80b4ff0d 1px,transparent 1px),linear-gradient(90deg,#80b4ff0d 1px,transparent 1px); background-size: 32px 32px; mask-image: linear-gradient(90deg,transparent,#000); }
 #gate-controls[data-playing="true"] { border-color: #6aafff66; box-shadow: 0 8px 40px #16479a24; }
 @media (max-width: 767px) { .gate-intro { grid-template-columns: minmax(0,1fr); }.gate-hero-art { display: none; }.gate-profile > a { width: 106px; height: 106px; }.gate-profile > a img { width: 94px; height: 94px; } }
