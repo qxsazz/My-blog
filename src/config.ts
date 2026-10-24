@@ -8,7 +8,7 @@ import type {
 import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
-	title: "Model Gate",
+	title: "dominator",
 	subtitle: "拆开 AI，理解它如何工作",
 	lang: "zh_CN", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
 	themeColor: {
@@ -53,8 +53,8 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "/images/model-gate.svg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
-	name: "Model Gate",
+	avatar: "/images/dominator.svg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	name: "dominator",
 	bio: "关于 AI 的理解、原理拆解与工程实验。保持好奇，也保持验证。",
 	links: [
 		{

@@ -1,4 +1,4 @@
-# Model Gate · 个人技术博客
+# dominator · 个人技术博客
 
 基于 Astro 与 Fuwari 的中文技术博客，使用 ChatGPT Sites 托管。
 目标自定义域名为 `blog.model-gate.fun`，域名是否生效以 Sites DNS 验证结果为准。
