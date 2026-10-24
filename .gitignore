@@ -1,5 +1,4 @@
 node_modules/
 dist/
 .build/
-design-system/showcase/src/blog/content.generated.json
 .env*

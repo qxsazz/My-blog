@@ -2,24 +2,18 @@
   "name": "dominator-yohaku",
   "private": true,
   "type": "module",
-  "description": "Personal blog forked from the public Yohaku React Showcase",
+  "description": "Unmodified public Yohaku React Showcase baseline",
   "packageManager": "pnpm@9.14.4",
   "scripts": {
-    "dev": "node scripts/generate-content.mjs && corepack pnpm --filter @yohaku/design-system showcase:dev",
-    "build": "node scripts/generate-content.mjs && node scripts/build.mjs",
-    "check": "node scripts/generate-content.mjs && corepack pnpm --filter @yohaku/design-system check && tsc -p design-system/showcase/tsconfig.json",
-    "test": "corepack pnpm --filter @yohaku/design-system test && node --test scripts/inline-styles.test.mjs && node --test scripts/content.test.mjs",
-    "preview": "vite preview --config design-system/showcase/vite.config.ts --outDir ../../dist"
+    "dev": "corepack pnpm --filter @yohaku/design-system showcase:dev",
+    "build": "corepack pnpm --filter @yohaku/design-system showcase:build --outDir ../../dist",
+    "check": "corepack pnpm --filter @yohaku/design-system check && tsc -p design-system/showcase/tsconfig.json",
+    "test": "corepack pnpm --filter @yohaku/design-system test",
+    "preview": "corepack pnpm --filter @yohaku/design-system showcase:preview --outDir ../../dist"
   },
   "devDependencies": {
     "vite": "^8.3.4",
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1",
     "typescript": "^6.0.0",
-    "gray-matter": "^4.0.3",
-    "markdown-it": "^14.1.0",
-    "katex": "^0.16.27",
-    "highlight.js": "^11.11.1",
     "@types/node": "^24.0.0"
   }
 }

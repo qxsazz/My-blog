@@ -1,34 +1,89 @@
-import {useEffect,useMemo,useRef,useState} from 'react'
-import {useTheme} from './theme'
-import DesignSystemApp from './DesignSystemApp'
-import HangingCard from './blog/HangingCard'
-import AudioPlayer from './blog/AudioPlayer'
-import content from './blog/content.generated.json'
-export type Post=typeof content[number]
-const posts=content
-const description='dominator 的个人技术博客。AI 原理、代码与工程实践。'
-const topics=[{title:'模型原理',en:'UNDERSTAND THE MODEL',text:'从直觉走向公式。先问模型要解决什么问题，再理解它的结构、假设与局限。',keywords:['注意力机制','表示学习','模型评估'],url:'https://arxiv.org/abs/1706.03762',reference:'Attention Is All You Need'},{title:'检索增强',en:'CONNECT KNOWLEDGE',text:'把检索与生成分开思考：资料是否相关，证据是否可靠，回答是否真正依赖检索结果。',keywords:['分块与索引','召回与排序','引用与评估'],url:'https://arxiv.org/abs/2005.11401',reference:'Retrieval-Augmented Generation'},{title:'Agent',en:'REASON AND ACT',text:'从工具调用出发，理解规划、执行与反馈如何形成闭环，以及系统应该在哪里停下来。',keywords:['工具调用','状态与记忆','终止与恢复'],url:'https://arxiv.org/abs/2210.03629',reference:'ReAct: Synergizing Reasoning and Acting'},{title:'工程实践',en:'MAKE IT REPRODUCIBLE',text:'让想法接受现实的检验。记录环境、输入、方法和适用条件，比只留下一个结果更有价值。',keywords:['可复现性','测试与观测','性能与边界'],url:'https://docs.python.org/3/tutorial/',reference:'Python 官方教程'}]
-const postUrl=(p:Post)=>`/posts/${p.slug}/`
-const findPost=(path:string)=>posts.find(p=>postUrl(p)===path)
-export function getPageMeta(path:string){const p=findPost(path);const names:Record<string,string>={'/archive/':'全部文稿','/topics/':'专题索引','/about/':'关于','/design/':'Yohaku 设计系统'};return {title:p?`${p.title} · dominator`:names[path]?`${names[path]} · dominator`:'dominator · 技术与思考的留白',description:p?.description||description}}
-function Tags({tags,links=true}:{tags:string[];links?:boolean}){return <div className="post-tags">{tags.map(t=>links?<a key={t} href={`/archive/?topic=${encodeURIComponent(t)}`}>{t}</a>:<span key={t}>{t}</span>)}</div>}
-function Home(){return <><section className="intro-letter"><p className="eyebrow">A PERSONAL JOURNAL · 技术 / 记录 / 思考</p><h1>你好，我是 <span>dominator</span><span className="intro-period">。</span></h1><p className="intro-lead">拆开复杂的技术，<br/>留下一点清楚的理解。</p><p className="intro-description">这里记录 AI 原理、代码与工程实践。<br/>从一个问题出发，在公式与实验之间，慢慢接近答案。</p><div className="intro-links"><a href="#journal">阅读文稿 <span>↓</span></a><a href="/about/">关于这个博客 ↗</a></div><div className="intro-colophon"><span>{String(posts.length).padStart(2,'0')} 篇文稿</span><span>AI · Engineering · Notes</span><a href="/rss.xml">RSS 订阅 ↗</a></div></section><section id="journal" className="journal-section"><header className="section-heading"><div><p className="eyebrow">RECENT WRITING</p><h2>最近的文字</h2></div><a href="/archive/">全部文稿 ↗</a></header><div className="writing-list">{posts.slice(0,8).map((p,i)=><article className="writing-row" key={p.slug}><span className="row-index">{String(i+1).padStart(2,'0')}</span><div><div className="post-kicker"><time dateTime={p.published}>{p.published.replaceAll('-',' / ')}</time><span>{p.category}</span></div><h3><a href={postUrl(p)}>{p.title}</a></h3><p>{p.description}</p><Tags tags={p.tags}/></div><a className="row-arrow" href={postUrl(p)} aria-label={`阅读：${p.title}`}>↗</a></article>)}</div>{!posts.length&&<p className="empty-state">暂无文章。</p>}</section><section className="topics-section"><header className="section-heading"><div><p className="eyebrow">THREADS OF THOUGHT</p><h2>沿着问题，继续探索</h2></div><a href="/topics/">专题索引 ↗</a></header><div className="topic-grid">{topics.map((t,i)=><a className="topic-entry" href={`/topics/#topic-${i+1}`} key={t.title}><span className="topic-number">0{i+1}</span><h3>{t.title} <span>↗</span></h3><p>{t.text}</p></a>)}</div></section></>}
-function Archive(){const [topic,setTopic]=useState('');useEffect(()=>{setTopic(new URLSearchParams(location.search).get('topic')||'')},[]);const tags=[...new Set(posts.flatMap(p=>[...p.tags,p.category]))];const shown=posts.filter(p=>!topic||p.tags.includes(topic)||p.category===topic);return <><header className="page-heading"><p className="eyebrow">THE ARCHIVE</p><h1>文稿</h1><p>记录问题，整理思路，也留下理解发生的过程。</p></header><div className="archive-toolbar"><span>共 {posts.length} 篇</span><label>筛选<select value={topic} onChange={e=>{setTopic(e.target.value);const url=new URL(location.href);if(e.target.value)url.searchParams.set('topic',e.target.value);else url.searchParams.delete('topic');history.replaceState(null,'',url)}}><option value="">全部主题</option>{tags.map(t=><option key={t}>{t}</option>)}</select></label></div><div className="archive-list">{shown.map(p=><article className="archive-row" key={p.slug}><time dateTime={p.published}>{p.published}</time><div><h2><a href={postUrl(p)}>{p.title}</a></h2><p>{p.description}</p><Tags tags={p.tags} links={false}/></div><a href={postUrl(p)} aria-label={`阅读：${p.title}`}>↗</a></article>)}</div>{!shown.length&&<p className="empty-state">这个主题还没有公开文章。</p>}</>}
-function Topics(){return <><header className="page-heading"><p className="eyebrow">THREADS OF THOUGHT</p><h1>专题索引</h1><p>四条线索，从原理走向实践。</p></header><div className="topic-essays">{topics.map((t,i)=><section id={`topic-${i+1}`} key={t.title}><span className="topic-number">0{i+1} / {t.en}</span><h2>{t.title}</h2><p>{t.text}</p><Tags tags={t.keywords} links={false}/><a className="reference-link" href={t.url} target="_blank" rel="noopener noreferrer">参考阅读：{t.reference} ↗</a></section>)}</div></>}
-function About(){return <><header className="page-heading"><p className="eyebrow">A NOTE ABOUT THIS SPACE</p><h1>关于这个博客</h1><p>你好，这里是 dominator。</p></header><div className="reading-body about-body"><p>这是一个记录 AI 技术理解、原理拆解与工程实验的个人博客。保持好奇，也保持验证。</p><h2 id="写作方向">我想记录什么</h2><p>从模型原理、检索增强、Agent 到工程实践，试着把抽象的问题讲清楚，把直觉变成可以验证的理解。事实、假设和实验结果尽量分开说明，并附上参考来源。</p><h2>文章怎么写</h2><p>先解释要解决的问题，再给出直觉、关键公式与代码。除了有效的部分，也记录适用条件和失效边界。写作本身，就是一次重新理解。</p><h2>保持联系</h2><p>可以通过 <a href="/rss.xml">RSS 订阅</a>接收文章，或访问 <a href="https://github.com/qxsazz/My-blog" target="_blank" rel="noopener noreferrer">GitHub 仓库 ↗</a>。</p><h2>项目底座</h2><p>本站从 <a href="https://github.com/Innei/Yohaku/tree/main/design-system" target="_blank" rel="noopener noreferrer">Yohaku 公开 React Showcase</a>二次开发，沿用 React、Vite、Tailwind 4 与上游主题系统。设计系统及公开 Showcase 遵循 MIT 许可，保留原作者 Innei 的版权声明。</p><p>原始组件和规范可在 <a href="/design/">设计系统页面</a>查看。</p></div></>}
-function Article({post}:{post:Post}){return <article className="reading-article"><header className="article-heading"><a className="back-link" href="/archive/">← 返回文稿</a><p className="eyebrow">{post.category}</p><h1>{post.title}</h1><p className="article-deck">{post.description}</p><div className="article-meta"><time dateTime={post.published}>{post.published}</time><span>{post.words} 字</span><span>约 {post.minutes} 分钟</span></div><Tags tags={post.tags}/></header><div className="reading-body" dangerouslySetInnerHTML={{__html:post.html}}/><footer className="article-end"><span>— END —</span><p>本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a> 许可。</p><a href="/archive/">继续阅读其他文稿 →</a></footer></article>}
-export default function App({initialPath='/'}:{initialPath?:string}){
- const [path,setPath]=useState(initialPath),[searchOpen,setSearchOpen]=useState(false),[query,setQuery]=useState('');const dialog=useRef<HTMLDialogElement>(null),searchInput=useRef<HTMLInputElement>(null);const {theme,toggle}=useTheme();const post=findPost(path)
- useEffect(()=>{
-  const pop=()=>setPath(location.pathname);
-  const click=(event:MouseEvent)=>{if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.altKey||event.shiftKey)return;const link=(event.target as Element).closest<HTMLAnchorElement>('a[href]');if(!link||link.target||link.hasAttribute('download'))return;const url=new URL(link.href);if(url.origin!==location.origin||/\.(xml|pdf|png|jpg|svg)$/.test(url.pathname))return;if(url.pathname===location.pathname&&url.hash)return;event.preventDefault();history.pushState(null,'',url);setPath(url.pathname);setSearchOpen(false);if(url.hash)requestAnimationFrame(()=>document.getElementById(decodeURIComponent(url.hash.slice(1)))?.scrollIntoView());else window.scrollTo({top:0,behavior:'instant'})}
-  const key=(e:KeyboardEvent)=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();setSearchOpen(true)}};
-  window.addEventListener('popstate',pop);document.addEventListener('click',click);document.addEventListener('keydown',key);return()=>{window.removeEventListener('popstate',pop);document.removeEventListener('click',click);document.removeEventListener('keydown',key)}
- },[])
- useEffect(()=>{const meta=getPageMeta(path);document.title=meta.title;document.querySelector('meta[name="description"]')?.setAttribute('content',meta.description);document.querySelector('link[rel="canonical"]')?.setAttribute('href',`https://blog.model-gate.fun${path}`)},[path])
- useEffect(()=>{if(searchOpen){if(!dialog.current?.open)dialog.current?.showModal();searchInput.current?.focus()}else dialog.current?.close()},[searchOpen])
- const found=useMemo(()=>{const terms=query.trim().toLowerCase().split(/\s+/).filter(Boolean);if(!terms.length)return [];return posts.filter(p=>terms.every(t=>`${p.title} ${p.description} ${p.text} ${p.tags.join(' ')}`.toLowerCase().includes(t))).sort((a,b)=>Number(b.title.toLowerCase().includes(terms[0]))-Number(a.title.toLowerCase().includes(terms[0])))},[query])
- if(path==='/design/')return <><a className="design-back" href="/">← 返回 dominator</a><DesignSystemApp/></>
- const nav=[['/','首页'],['/archive/','文稿'],['/topics/','专题'],['/about/','关于']]
- return <><a className="skip-link" href="#main-content">跳至正文</a><header className="site-header"><a className="wordmark" href="/" aria-label="dominator 首页"><img src="/images/dominator-avatar.png" width={32} height={32} alt=""/><span>dominator<span className="brand-dot">.</span></span></a><nav aria-label="主导航">{nav.map(([href,label])=><a key={href} href={href} aria-current={path===href?'page':undefined}>{label}</a>)}</nav><div className="header-tools"><button type="button" onClick={()=>setSearchOpen(true)} aria-label="搜索文章"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><kbd>⌘ K</kbd></button><button type="button" onClick={toggle} aria-label={theme==='dark'?'切换浅色主题':'切换深色主题'}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"/></svg></button></div></header><div className={`editorial-shell${post?' is-article':''}`}><main id="main-content" tabIndex={-1}>{path==='/'?<Home/>:path==='/archive/'?<Archive/>:path==='/topics/'?<Topics/>:path==='/about/'?<About/>:post?<Article post={post}/>:<section className="page-heading"><h1>页面不存在</h1><a href="/">返回首页 →</a></section>}</main><aside className="margin-column" aria-label="作者与阅读导航"><HangingCard/><div className="margin-note"><span className="eyebrow">THE AUTHOR</span><h2>dominator</h2><p>关于 AI 的理解、原理拆解与工程实验。保持好奇，也保持验证。</p><a href="/about/">关于我 ↗</a></div>{post&&post.headings.length>0&&<nav className="reading-toc" aria-label="本文目录"><span className="eyebrow">ON THIS PAGE</span>{post.headings.filter(h=>h.depth<=2).map(h=><a key={h.slug} href={`#${h.slug}`}>{h.text}</a>)}</nav>}<div className="margin-links"><a href="https://github.com/qxsazz/My-blog" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="/rss.xml">RSS ↗</a></div></aside></div><footer className="site-footer"><div className="footer-signature"><span className="wordmark-text">dominator.</span><p>文字留下，思考继续。</p></div><div><a href="/archive/">全部文稿</a><a href="/topics/">专题索引</a><a href="/rss.xml">订阅 RSS</a></div><div className="footer-credit"><span>© {new Date().getFullYear()} dominator</span><span>Built from <a href="/design/">Yohaku Showcase ↗</a></span></div></footer><AudioPlayer/><dialog ref={dialog} className="search-dialog" onClose={()=>setSearchOpen(false)} onClick={e=>{if(e.target===e.currentTarget){const r=e.currentTarget.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)setSearchOpen(false)}}}><form method="dialog" className="search-top"><label htmlFor="blog-search">搜索文稿</label><button>Esc</button></form><input ref={searchInput} id="blog-search" type="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="搜索标题、正文或关键词…"/><p role="status">{!query.trim()?'输入关键词，搜索所有文章。':found.length?`找到 ${found.length} 条结果`:'没有找到相关内容，换个关键词试试。'}</p><div id="search-results">{found.map(p=><a key={p.slug} href={postUrl(p)}><strong>{p.title}</strong><p>{p.description}</p></a>)}</div></dialog></>
+import { useLang } from './i18n'
+import { AntiPatterns } from './sections/AntiPatterns'
+import { Background } from './sections/Background'
+import { Color } from './sections/Color'
+import { Components } from './sections/Components'
+import { Decision } from './sections/Decision'
+import { Footer } from './sections/Footer'
+import { Hero } from './sections/Hero'
+import { Manifesto } from './sections/Manifesto'
+import { OutputSamples } from './sections/OutputSamples'
+import { Snippets } from './sections/Snippets'
+import { Spacing } from './sections/Spacing'
+import { Typography } from './sections/Typography'
+import { useTheme } from './theme'
+
+function GithubIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2.16c-3.2.69-3.87-1.36-3.87-1.36-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.76 2.69 1.25 3.34.95.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.15 1.18a10.93 10.93 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.58.23 2.75.11 3.04.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5Z" />
+    </svg>
+  )
+}
+
+function Toolbar() {
+  const { lang, setLang } = useLang()
+  const { theme, toggle } = useTheme()
+  return (
+    <div className="toolbar" role="toolbar" aria-label="Showcase controls">
+      <a
+        className="toolbar__icon"
+        href="https://github.com/Innei/Yohaku"
+        target="_blank"
+        rel="noreferrer noopener"
+        aria-label="View Yohaku on GitHub"
+        title="View Yohaku on GitHub"
+      >
+        <GithubIcon />
+      </a>
+      <span className="sep" aria-hidden="true" />
+      <button
+        onClick={() => setLang('zh')}
+        data-active={lang === 'zh'}
+        aria-pressed={lang === 'zh'}
+      >
+        中
+      </button>
+      <button
+        onClick={() => setLang('en')}
+        data-active={lang === 'en'}
+        aria-pressed={lang === 'en'}
+      >
+        EN
+      </button>
+      <span className="sep" aria-hidden="true" />
+      <button onClick={toggle} aria-label="Toggle theme">
+        {theme === 'dark' ? '☾' : '☀'}
+      </button>
+    </div>
+  )
+}
+
+export default function App() {
+  const { lang } = useLang()
+  return (
+    <>
+      <Toolbar />
+      <main className="page">
+        <Hero lang={lang} />
+        <OutputSamples lang={lang} />
+        <Manifesto lang={lang} />
+        <Color lang={lang} />
+        <Typography lang={lang} />
+        <Spacing lang={lang} />
+        <Components lang={lang} />
+        <Snippets lang={lang} />
+        <AntiPatterns lang={lang} />
+        <Decision lang={lang} />
+        <Background lang={lang} />
+        <Footer lang={lang} />
+      </main>
+    </>
+  )
 }
