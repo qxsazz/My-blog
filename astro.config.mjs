@@ -28,6 +28,7 @@ import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-cop
 export default defineConfig({
 	site: "https://blog.model-gate.fun/",
 	base: "/",
+	build: { assets: "assets" },
 	trailingSlash: "always",
 	integrations: [
 		tailwind({
