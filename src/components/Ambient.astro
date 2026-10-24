@@ -1,13 +1,21 @@
 <div id="gate-wallpaper" aria-hidden="true"></div>
 <div id="gate-glow" aria-hidden="true"></div>
-<aside id="gate-controls" aria-label="阅读氛围设置" data-swup-ignore-script>
-  <button id="gate-wallpaper-button" type="button" aria-label="切换壁纸">壁纸 · 极光</button>
-  <button id="gate-effects-button" type="button" aria-pressed="true">光效</button>
-  <button id="gate-audio-button" type="button" aria-pressed="false">♫ 环境音</button>
-  <label class="gate-volume">音量<input id="gate-volume" type="range" min="0" max="100" value="25" aria-label="环境音音量" /></label>
-  <span id="gate-audio-status" class="sr-only" role="status" aria-live="polite"></span>
+<aside id="gate-controls" aria-label="阅读氛围播放器" data-playing="false" data-swup-ignore-script>
+  <div class="gate-player-main">
+    <span class="gate-equalizer" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    <div class="gate-player-copy"><strong id="gate-track-title">月光钢琴</strong><p id="gate-audio-status" role="status" aria-live="polite">让思绪慢下来 · 点击播放</p></div>
+    <button id="gate-audio-button" type="button" aria-pressed="false" aria-label="播放轻音乐">▶</button>
+  </div>
+  <details><summary>声音与阅读氛围</summary>
+    <div class="gate-player-settings">
+      <label>音乐场景<select id="gate-scene"><option value="piano">月光钢琴</option><option value="cloud">云端漫游</option><option value="rain">雨夜书房</option></select></label>
+      <label class="gate-volume">音量 <span><input id="gate-volume" type="range" min="0" max="100" value="30" aria-label="轻音乐音量" /> <output id="gate-volume-value">30%</output></span></label>
+      <div class="gate-player-tools"><button id="gate-wallpaper-button" type="button" aria-label="切换壁纸">壁纸 · 极光</button><button id="gate-effects-button" type="button" aria-pressed="true">柔光</button></div>
+    </div>
+  </details>
 </aside>
 <script>
+  import { ReadingAudio, type SoundScene } from "../scripts/reading-audio";
   const root = document.documentElement;
   // Swup may execute page scripts again; keep one audio engine and one set of listeners.
   if (!root.dataset.gateInitialized) {
@@ -48,39 +56,50 @@
     ripple.className = 'gate-ripple'; ripple.style.left = `${event.clientX}px`; ripple.style.top = `${event.clientY}px`;
     document.body.append(ripple); ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
   });
-  // Original, locally synthesized ambient tones. No remote audio or tracking requests.
-  let audio: AudioContext | undefined;
-  let gain: GainNode | undefined;
+  const player = document.querySelector<HTMLElement>('#gate-controls')!;
+  const scene = document.querySelector<HTMLSelectElement>('#gate-scene')!;
+  const track = document.querySelector<HTMLElement>('#gate-track-title')!;
+  const output = document.querySelector<HTMLOutputElement>('#gate-volume-value')!;
+  const engine = new ReadingAudio();
   let playing = false;
   let busy = false;
-  const storedVolume = Number(read('gate-volume', '25'));
-  volume.value = String(Number.isFinite(storedVolume) ? Math.min(100, Math.max(0, storedVolume)) : 25);
-  function createAudio() {
-    audio = new AudioContext(); gain = audio.createGain(); gain.gain.value = 0; gain.connect(audio.destination);
-    [130.81, 196, 261.63, 329.63, 392].forEach((frequency, index) => {
-      const tone = audio!.createOscillator(); tone.type = 'sine'; tone.frequency.value = frequency;
-      const envelope = audio!.createGain(); envelope.gain.value = 0.035;
-      const drift = audio!.createOscillator(); drift.frequency.value = 0.035 + index * 0.013;
-      const depth = audio!.createGain(); depth.gain.value = 0.025;
-      drift.connect(depth); depth.connect(envelope.gain); tone.connect(envelope); envelope.connect(gain!);
-      tone.start(); drift.start();
-    });
+  const storedScene = read('gate-scene', 'piano');
+  scene.value = ['piano', 'cloud', 'rain'].includes(storedScene) ? storedScene : 'piano';
+  track.textContent = scene.selectedOptions[0].textContent;
+  const storedVolume = Number(read('gate-volume', '30'));
+  volume.value = String(Number.isFinite(storedVolume) ? Math.min(100, Math.max(0, storedVolume)) : 30);
+  output.value = `${volume.value}%`;
+  engine.setVolume(Number(volume.value) / 100);
+  function updatePlayer() {
+    player.dataset.playing = String(playing);
+    music.setAttribute('aria-pressed', String(playing));
+    music.setAttribute('aria-label', playing ? '暂停轻音乐' : '播放轻音乐');
+    music.textContent = playing ? 'Ⅱ' : '▶';
   }
-  music.addEventListener('click', async () => {
+  async function changePlayback(changeScene = false) {
     if (busy) return;
-    busy = true;
+    busy = true; music.disabled = true; scene.disabled = true;
     try {
-      if (!audio) createAudio();
-      if (playing) { await audio!.suspend(); playing = false; }
-      else { await audio!.resume(); gain!.gain.setTargetAtTime(Number(volume.value) / 100, audio!.currentTime, 0.3); playing = true; }
-      music.setAttribute('aria-pressed', String(playing)); music.textContent = playing ? 'Ⅱ 暂停环境音' : '♫ 环境音';
-      status.textContent = playing ? '环境音已开启' : '环境音已暂停';
-    } catch { status.textContent = '浏览器暂时无法播放环境音，请重试。'; }
-    finally { busy = false; }
+      const wasPlaying = playing;
+      if (wasPlaying) { await engine.pause(); playing = false; }
+      if (!wasPlaying || changeScene) { await engine.play(scene.value as SoundScene); playing = true; }
+      status.textContent = playing ? '正在播放 · 专注此刻' : '已暂停 · 让思绪慢下来';
+    } catch {
+      await engine.pause(); playing = false;
+      status.textContent = '暂时无法播放，请点击重试';
+    } finally {
+      updatePlayer(); busy = false; music.disabled = false; scene.disabled = false;
+    }
+  }
+  music.addEventListener('click', () => changePlayback());
+  scene.addEventListener('change', () => {
+    save('gate-scene', scene.value);
+    track.textContent = scene.selectedOptions[0].textContent;
+    if (playing) void changePlayback(true);
   });
   volume.addEventListener('input', () => {
-    save('gate-volume', volume.value);
-    if (audio && gain) gain.gain.setTargetAtTime(Number(volume.value) / 100, audio.currentTime, 0.1);
+    save('gate-volume', volume.value); output.value = `${volume.value}%`;
+    engine.setVolume(Number(volume.value) / 100);
   });
   }
 </script>

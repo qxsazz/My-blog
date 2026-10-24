@@ -19,11 +19,21 @@ const len = page.data.length;
 
 <MainGridLayout>
     {page.currentPage === 1 && <section class="gate-intro card-base">
-        <span class="gate-eyebrow">dominator / AI FIELD NOTES</span>
-        <h1>拆开 AI，<br /><em>理解它如何工作。</em></h1>
-        <p>从直觉出发，用公式、代码与实验，连接模型原理和真实世界。</p>
-        <div class="gate-topics"><span>模型原理</span><span>检索增强</span><span>Agent</span><span>工程实践</span></div>
+        <div class="gate-hero-copy">
+            <span class="gate-eyebrow"><i></i> dominator / ENGINEERING JOURNAL</span>
+            <h1>把好奇心，<br />写成<em>可运行的答案。</em></h1>
+            <p>拆开 AI，理解它如何工作。<br />在公式、代码与实验之间，记录每一次认知的迭代。</p>
+            <div class="gate-hero-actions"><a class="gate-cta" href="#journal">开始阅读 <span aria-hidden="true">↗</span></a><a class="gate-text-link" href="/about/">关于这个博客 →</a></div>
+        </div>
+        <div class="gate-hero-art" aria-hidden="true">
+            <div class="gate-orbit orbit-one"></div><div class="gate-orbit orbit-two"></div>
+            <div class="gate-core">d<span>_</span></div>
+            <div class="gate-art-label label-top">01 / THINK</div><div class="gate-art-label label-bottom">02 / BUILD → 03 / VERIFY</div>
+            <div class="gate-code-fragment">while curious:<br />&nbsp;&nbsp;build · learn · repeat</div>
+        </div>
+        <div class="gate-topics"><span>探索方向</span><a href="/about/#写作方向">模型原理</a><a href="/about/#写作方向">检索增强</a><a href="/about/#写作方向">Agent</a><a href="/about/#写作方向">工程实践</a></div>
     </section>}
+    {page.currentPage === 1 && <div id="journal" class="gate-section-heading"><div><span class="gate-eyebrow">THE JOURNAL</span><h2>最近的记录<span> / Notes & experiments</span></h2></div><a href="/archive/">全部文章 ↗</a></div>}
     <PostPage page={page}></PostPage>
     <Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: calc(var(--content-delay) + ${(len)*50}ms)`}></Pagination>
 </MainGridLayout>

@@ -20,6 +20,6 @@ corepack pnpm build
 将源码推送至该项目的 Sites 源仓库，使用同一次提交构建的静态文件创建版本并部署。
 子域名仅使用 Sites 返回的 CNAME 与验证记录，根域名无需修改。
 
-站点支持文章归档、分类、标签、Pagefind 搜索、RSS、数学公式、代码高亮、深浅主题与移动端布局。环境音由 Web Audio 本地合成，默认关闭。
+站点支持文章归档、分类、标签、Pagefind 搜索、RSS、数学公式、代码高亮、深浅主题与移动端布局。轻音乐由 Web Audio 本地合成，默认关闭；提供钢琴旋律、氛围和弦、雨声钢琴三种场景，以及混响、音量调节与渐入渐出。音频调度位于 `src/scripts/reading-audio.ts`，播放器位于 `src/components/Ambient.astro`。
 
 底座来自 [Fuwari](https://github.com/saicaca/fuwari)，保留 MIT LICENSE。
