@@ -23,3 +23,7 @@ corepack pnpm build
 站点支持文章归档、分类、标签、Pagefind 搜索、RSS、数学公式、代码高亮、深浅主题与移动端布局。轻音乐由 Web Audio 本地合成，默认关闭；提供钢琴旋律、氛围和弦、雨声钢琴三种场景，以及混响、音量调节与渐入渐出。音频调度位于 `src/scripts/reading-audio.ts`，播放器位于 `src/components/Ambient.astro`。
 
 底座来自 [Fuwari](https://github.com/saicaca/fuwari)，保留 MIT LICENSE。
+
+## 视觉风格
+
+用户提供的原图位于 `public/images/dominator-avatar.png`，用于个人头像、导航和首页人物展示。页面采用银白、冰蓝与深夜蓝配色，新访客默认深色模式；已有主题选择会保留。壁纸有苍蓝星域、霜月极光、纯净夜色三档，可关闭星光特效，系统减少动态效果设置同样生效。
