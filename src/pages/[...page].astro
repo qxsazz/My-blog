@@ -1,33 +1,18 @@
 ---
-import type { GetStaticPaths } from "astro";
-import Pagination from "../components/control/Pagination.astro";
-import PostPage from "../components/PostPage.astro";
-import { PAGE_SIZE } from "../constants/constants";
-import MainGridLayout from "../layouts/MainGridLayout.astro";
-import { getSortedPosts } from "../utils/content-utils";
-
-export const getStaticPaths = (async ({ paginate }) => {
-	const allBlogPosts = await getSortedPosts();
-	return paginate(allBlogPosts, { pageSize: PAGE_SIZE });
-}) satisfies GetStaticPaths;
-// https://github.com/withastro/astro/issues/6507#issuecomment-1489916992
-
-const { page } = Astro.props;
-
-const len = page.data.length;
+import type { GetStaticPaths } from 'astro';
+import EditorialLayout from '../layouts/EditorialLayout.astro';
+import { getSortedPosts } from '../utils/content-utils';
+import { getPostUrlBySlug } from '../utils/url-utils';
+export const getStaticPaths=(async({paginate})=>paginate(await getSortedPosts(),{pageSize:8})) satisfies GetStaticPaths;
+const {page}=Astro.props;
+const all=await getSortedPosts();
+const topics=[['模型原理','从直觉走向公式，理解模型为何有效。'],['检索增强','把数据、检索与生成连接起来。'],['Agent','拆解工具调用、规划与评估。'],['工程实践','用代码和可复现的实验验证想法。']];
 ---
-
-<MainGridLayout>
-    {page.currentPage === 1 && <section class="gate-intro card-base">
-        <div class="gate-hero-copy">
-            <span class="gate-eyebrow"><i></i> dominator / ENGINEERING JOURNAL</span>
-            <h1>把好奇心，<br />写成<em>可运行的答案。</em></h1>
-            <p>拆开 AI，理解它如何工作。<br />在公式、代码与实验之间，记录每一次认知的迭代。</p>
-            <div class="gate-hero-actions"><a class="gate-cta" href="#journal">开始阅读 <span aria-hidden="true">↗</span></a><a class="gate-text-link" href="/about/">关于这个博客 →</a></div>
-        </div>
-        <div class="gate-topics"><span>探索方向</span><a href="/about/#写作方向">模型原理</a><a href="/about/#写作方向">检索增强</a><a href="/about/#写作方向">Agent</a><a href="/about/#写作方向">工程实践</a></div>
-    </section>}
-    {page.currentPage === 1 && <div id="journal" class="gate-section-heading"><div><span class="gate-eyebrow">THE JOURNAL</span><h2>最近的记录<span> / Notes & experiments</span></h2></div><a href="/archive/">全部文章 ↗</a></div>}
-    <PostPage page={page}></PostPage>
-    <Pagination class="mx-auto onload-animation" page={page} style={`animation-delay: calc(var(--content-delay) + ${(len)*50}ms)`}></Pagination>
-</MainGridLayout>
+<EditorialLayout>
+ {page.currentPage===1 && <>
+  <section class="intro-letter"><p class="eyebrow">A PERSONAL JOURNAL · 技术 / 记录 / 思考</p><h1>你好，我是 <span>dominator</span><span class="intro-period">。</span></h1><p class="intro-lead">拆开复杂的技术，<br />留下一点清楚的理解。</p><p class="intro-description">这里记录 AI 原理、代码与工程实践。<br />从一个问题出发，在公式与实验之间，慢慢接近答案。</p><div class="intro-links"><a href="#journal">阅读文稿 <span>↓</span></a><a href="/about/">关于这个博客 ↗</a></div><div class="intro-colophon"><span>{String(all.length).padStart(2,'0')} 篇文稿</span><span>AI · Engineering · Notes</span><a href="/rss.xml">RSS 订阅 ↗</a></div></section>
+ </>}
+ <section id="journal" class="journal-section"><header class="section-heading"><div><p class="eyebrow">RECENT WRITING</p><h2>最近的文字</h2></div><a href="/archive/">全部文稿 ↗</a></header><div class="writing-list">{page.data.map((post,index)=><article class="writing-row"><span class="row-index">{String(index+1+page.start).padStart(2,'0')}</span><div><div class="post-kicker"><time datetime={post.data.published.toISOString()}>{post.data.published.toISOString().slice(0,10).replaceAll('-',' / ')}</time><span>{post.data.category||'文稿'}</span></div><h3><a href={getPostUrlBySlug(post.slug)}>{post.data.title}</a></h3><p>{post.data.description}</p><div class="post-tags">{post.data.tags.map(tag=><a href={`/archive/?topic=${encodeURIComponent(tag)}`}>{tag}</a>)}</div></div><a class="row-arrow" href={getPostUrlBySlug(post.slug)} aria-label={`阅读：${post.data.title}`}>↗</a></article>)}</div>{page.data.length===0&&<p class="empty-state">暂无文章。</p>}</section>
+ {page.lastPage>1&&<nav class="page-navigation" aria-label="分页">{page.url.prev&&<a href={page.url.prev}>← 上一页</a>}<span>{page.currentPage} / {page.lastPage}</span>{page.url.next&&<a href={page.url.next}>下一页 →</a>}</nav>}
+ {page.currentPage===1&&<section class="topics-section"><header class="section-heading"><div><p class="eyebrow">THREADS OF THOUGHT</p><h2>沿着问题，继续探索</h2></div><a href="/topics/">专题索引 ↗</a></header><div class="topic-grid">{topics.map(([name,description],i)=><a class="topic-entry" href={`/topics/#topic-${i+1}`}><span class="topic-number">0{i+1}</span><h3>{name} <span>↗</span></h3><p>{description}</p></a>)}</div></section>}
+</EditorialLayout>

@@ -1,0 +1,51 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import type { MarkdownHeading } from 'astro';
+import Ambient from '../components/Ambient.astro';
+import HangingCard from '../components/widget/HangingCard.astro';
+import '../styles/editorial.css';
+import 'katex/dist/katex.css';
+interface Props { title?: string; description?: string; headings?: MarkdownHeading[]; article?: boolean; }
+const {title,description='dominator 的个人技术博客。记录 AI 原理、代码与工程实践。',headings=[],article=false}=Astro.props;
+const current=Astro.url.pathname;
+const nav=[['/','首页'],['/archive/','文稿'],['/topics/','专题'],['/about/','关于']];
+const canonical=new URL(current,Astro.site);
+---
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title ? `${title} · dominator` : 'dominator · 技术与思考的留白'}</title>
+  <meta name="description" content={description} /><meta name="author" content="dominator" />
+  <meta property="og:title" content={title || 'dominator · 技术与思考的留白'} /><meta property="og:description" content={description} />
+  <meta property="og:type" content={article ? 'article' : 'website'} /><meta property="og:image" content={new URL('/images/dominator-avatar.png',Astro.site)} />
+  <link rel="canonical" href={canonical} /><link rel="icon" href="/images/dominator.svg" />
+  <link rel="alternate" type="application/rss+xml" title="dominator RSS" href="/rss.xml" />
+  <script is:inline>
+    try { const mode=localStorage.getItem('editorial-theme')||'light';document.documentElement.classList.toggle('dark',mode==='dark');document.documentElement.dataset.theme=mode; } catch {}
+  </script>
+  <ClientRouter />
+  <slot name="head" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳至正文</a>
+  <header class="site-header">
+    <a class="wordmark" href="/" aria-label="dominator 首页"><img src="/images/dominator-avatar.png" width="32" height="32" alt="" /><span>dominator<span class="brand-dot">.</span></span></a>
+    <nav aria-label="主导航">{nav.map(([href,label])=><a href={href} aria-current={current===href?'page':undefined}>{label}</a>)}</nav>
+    <div class="header-tools"><button type="button" data-open-search aria-label="搜索文章"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><kbd>⌘ K</kbd></button><button type="button" data-theme-toggle aria-label="切换深浅主题"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"/></svg></button></div>
+  </header>
+  <div class:list={['editorial-shell',{ 'is-article':article }]}>
+    <main id="main-content" tabindex="-1"><slot /></main>
+    <aside class="margin-column" aria-label="作者与阅读导航">
+      <div transition:persist="hanging-portrait"><HangingCard /></div>
+      <div class="margin-note"><span class="eyebrow">THE AUTHOR</span><h2>dominator</h2><p>关于 AI 的理解、原理拆解与工程实验。保持好奇，也保持验证。</p><a href="/about/">关于我 <span aria-hidden="true">↗</span></a></div>
+      {headings.length>0 && <nav class="reading-toc" aria-label="本文目录"><span class="eyebrow">ON THIS PAGE</span>{headings.filter(h=>h.depth<=2).map(h=><a href={`#${h.slug}`} class:list={{'toc-sub':h.depth===2}}>{h.text}</a>)}</nav>}
+      <div class="margin-links"><a href="https://github.com/qxsazz/My-blog" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="/rss.xml">RSS ↗</a></div>
+    </aside>
+  </div>
+  <footer class="site-footer"><div class="footer-signature"><span class="wordmark-text">dominator.</span><p>文字留下，思考继续。</p></div><div><a href="/archive/">全部文稿</a><a href="/topics/">专题索引</a><a href="/rss.xml">订阅 RSS</a></div><div class="footer-credit"><span>© {new Date().getFullYear()} dominator</span><span>Design based on <a href="https://github.com/Innei/Yohaku/tree/main/design-system" target="_blank" rel="noopener noreferrer">Yohaku ↗</a></span></div></footer>
+  <div transition:persist="reading-ambience"><Ambient /></div>
+  <dialog id="search-dialog" class="search-dialog" transition:persist="search"><form method="dialog" class="search-top"><label for="editorial-search">搜索文稿</label><button aria-label="关闭搜索">Esc</button></form><input id="editorial-search" type="search" placeholder="搜索标题、正文或关键词…" autocomplete="off" /><p id="search-status" role="status">输入关键词，搜索所有文章。</p><div id="search-results"></div></dialog>
+  <script src="../scripts/editorial.ts"></script>
+</body>
+</html>

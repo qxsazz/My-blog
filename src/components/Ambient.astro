@@ -10,7 +10,7 @@
     <div class="gate-player-settings">
       <label>音乐场景<select id="gate-scene"><option value="piano">月光钢琴</option><option value="cloud">云端漫游</option><option value="rain">雨夜书房</option></select></label>
       <label class="gate-volume">音量 <span><input id="gate-volume" type="range" min="0" max="100" value="30" aria-label="轻音乐音量" /> <output id="gate-volume-value">30%</output></span></label>
-      <div class="gate-player-tools"><button id="gate-wallpaper-button" type="button" aria-label="切换壁纸">壁纸 · 苍蓝星域</button><button id="gate-effects-button" type="button" aria-pressed="true">星光特效</button></div>
+      <div class="gate-player-tools"><button id="gate-wallpaper-button" type="button" aria-label="切换壁纸">壁纸 · 纸面纹理</button><button id="gate-effects-button" type="button" aria-pressed="true">纸纹</button></div>
     </div>
   </details>
 </aside>
@@ -27,35 +27,15 @@
   const status = document.querySelector<HTMLElement>('#gate-audio-status')!;
   const read = (key: string, fallback: string) => { try { return localStorage.getItem(key) ?? fallback; } catch { return fallback; } };
   const save = (key: string, value: string) => { try { localStorage.setItem(key, value); } catch { /* Storage is optional. */ } };
-  const walls = ['苍蓝星域', '霜月极光', '纯净夜色'];
-  let wall = Math.max(0, walls.indexOf(read('gate-wallpaper-blue', '苍蓝星域')));
+  const walls = ['纸面纹理', '细密纸纹', '纯色'];
+  let wall = Math.max(0, walls.indexOf(read('editorial-paper', '纸面纹理')));
   function setWall() { root.dataset.gateWallpaper = String(wall); wallpaper.textContent = `壁纸 · ${walls[wall]}`; }
   setWall();
-  wallpaper.addEventListener('click', () => { wall = (wall + 1) % walls.length; setWall(); save('gate-wallpaper-blue', walls[wall]); });
+  wallpaper.addEventListener('click', () => { wall = (wall + 1) % walls.length; setWall(); save('editorial-paper', walls[wall]); });
   let enabled = read('gate-effects', 'true') === 'true';
   function setEffects() { root.dataset.gateEffects = String(enabled); effects.setAttribute('aria-pressed', String(enabled)); }
   setEffects();
   effects.addEventListener('click', () => { enabled = !enabled; setEffects(); save('gate-effects', String(enabled)); });
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  const finePointer = matchMedia('(pointer: fine)');
-  let pending = false;
-  let x = 0, y = 0;
-  document.addEventListener('pointermove', (event) => {
-    if (!enabled || reduced.matches || !finePointer.matches) return;
-    x = event.clientX; y = event.clientY;
-    if (pending) return;
-    pending = true;
-    requestAnimationFrame(() => {
-      root.style.setProperty('--gate-x', `${x}px`); root.style.setProperty('--gate-y', `${y}px`);
-      pending = false;
-    });
-  }, { passive: true });
-  document.addEventListener('click', (event) => {
-    if (!enabled || reduced.matches || !finePointer.matches || (event.target as Element).closest('button, a, input')) return;
-    const ripple = document.createElement('span');
-    ripple.className = 'gate-ripple'; ripple.style.left = `${event.clientX}px`; ripple.style.top = `${event.clientY}px`;
-    document.body.append(ripple); ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
-  });
   const player = document.querySelector<HTMLElement>('#gate-controls')!;
   const scene = document.querySelector<HTMLSelectElement>('#gate-scene')!;
   const track = document.querySelector<HTMLElement>('#gate-track-title')!;
