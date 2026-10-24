@@ -1,8 +1,0 @@
----
-import EditorialLayout from '../layouts/EditorialLayout.astro';
-import { getSortedPosts } from '../utils/content-utils';
-import { getPostUrlBySlug } from '../utils/url-utils';
-const posts=await getSortedPosts();
-const tags=[...new Set(posts.flatMap(p=>[...p.data.tags,p.data.category].filter(Boolean)))];
----
-<EditorialLayout title="全部文稿"><header class="page-heading"><p class="eyebrow">THE ARCHIVE</p><h1>文稿</h1><p>记录问题，整理思路，也留下理解发生的过程。</p></header><div class="archive-toolbar"><span>共 {posts.length} 篇</span><label>筛选 <select id="topic-filter"><option value="">全部主题</option>{tags.map(tag=><option value={tag}>{tag}</option>)}</select></label></div><div class="archive-list">{posts.map(p=><article class="archive-row" data-post-topics={[...p.data.tags,p.data.category].join('|')}><time datetime={p.data.published.toISOString()}>{p.data.published.toISOString().slice(0,10)}</time><div><h2><a href={getPostUrlBySlug(p.slug)}>{p.data.title}</a></h2><p>{p.data.description}</p><div class="post-tags">{p.data.tags.map(tag=><span>{tag}</span>)}</div></div><a href={getPostUrlBySlug(p.slug)} aria-label={`阅读：${p.data.title}`}>↗</a></article>)}</div><p id="archive-empty" class="empty-state" hidden={posts.length>0}>这个主题还没有公开文章。</p></EditorialLayout>

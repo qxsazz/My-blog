@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /design/
+Sitemap: https://blog.model-gate.fun/sitemap.xml
