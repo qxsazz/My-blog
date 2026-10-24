@@ -141,3 +141,6 @@ html[data-gate-effects="false"] #gate-wallpaper::before,html[data-gate-effects="
 @media (prefers-reduced-motion: reduce) { .hanging-card { will-change: auto; } }
 
 #main-grid > .footer { grid-column: 1 / -1; }
+
+/* The portrait hangs in the right sidebar; give the restored introduction its full column. */
+#content-wrapper .gate-intro { grid-template-columns: minmax(0, 1fr); }
