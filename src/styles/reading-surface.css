@@ -1,46 +1,12 @@
-/* Reading pages use an opaque, neutral surface and stronger ink hierarchy. */
-body:has(.editorial-reading) {
-  --bg-page: #f8f9fb;
-  --surface-raised: #ffffff;
-  --text-primary: #17191d;
-  --text-body: #242830;
-  --text-secondary: #4c5563;
-  --text-muted: #586170;
-  --border-subtle: #202a3a24;
-  --surface-hover: #2463a309;
-  --header-surface: #f8f9fb;
-  --overlay-scrim: #12192270;
-  /* Rebind aliases here so inherited root aliases do not retain the blue palette. */
-  --paper: var(--bg-page);
-  --panel: var(--surface-raised);
-  --ink: var(--text-primary);
-  --secondary: var(--text-body);
-  --n6: var(--text-secondary);
-  --muted: var(--text-muted);
-  --line: var(--border-subtle);
-  --accent-soft: var(--surface-hover);
-  --glass: var(--surface-raised);
-}
-:root[data-theme='dark'] body:has(.editorial-reading) {
-  --bg-page: #080e18;
-  --surface-raised: #101925;
-  --text-primary: #f1f4f8;
-  --text-body: #d0d5de;
-  --text-secondary: #adb6c4;
-  --text-muted: #9da8b8;
-  --border-subtle: #b4c0d32e;
-  --surface-hover: #7bcfff08;
-  --header-surface: #080e18;
-  --overlay-scrim: #020814b8;
-}
-body:has(.editorial-reading) .editorial-reading { --editorial-rule: var(--line); }
-body:has(.editorial-reading) .editorial-deck { color: var(--text-secondary); }
-body:has(.editorial-reading) .site-header { background: var(--header-surface); backdrop-filter: none; box-shadow: none; }
-body:has(.editorial-reading) .stellar-nebula,
-body:has(.editorial-reading) .stellar-orbits { display: none; }
-body:has(.editorial-reading) .stellar-stars,
-body:has(.editorial-reading) .stellar-fragments { opacity: .24; mask-image: linear-gradient(90deg,#000,transparent 3%,transparent 97%,#000); }
-body:has(.editorial-reading) .fragment-tail { display: none; }
+/* Text contrast only. Backgrounds, surfaces and decorations use the original theme. */
+.editorial-reading { --reading-heading-ink: #17191d; --reading-body-ink: #242830; }
+:root[data-theme='dark'] .editorial-reading { --reading-heading-ink: #f1f4f8; --reading-body-ink: #d0d5de; }
+.editorial-reading .article-heading h1,
+.editorial-reading .article-prose :is(h2,h3,h4,strong) { color: var(--reading-heading-ink); }
+.editorial-reading .article-prose,
+.editorial-reading .article-prose :is(p,li,ul,ol,blockquote),
+.editorial-reading .article-prose > p:first-child,
+.editorial-reading .article-prose blockquote p { color: var(--reading-body-ink); }
 /* Keep the actual progress value immediate; ease only its visual indicators. */
 .reading-progress-meter > span { transition: width 480ms cubic-bezier(.22,1,.36,1); }
 .reading-progress-ring [data-reading-ring] { transition: stroke-dashoffset 480ms cubic-bezier(.22,1,.36,1); }
@@ -55,8 +21,7 @@ body:has(.editorial-reading) .fragment-tail { display: none; }
   .reading-progress-meter > span, .reading-progress-ring [data-reading-ring], .reading-top-progress > span, .reading-outline-expanded { transition: none !important; }
   .editorial-reading .reading-outline .reading-rail:not([hidden]) { animation: none; }
 }
+
 @media print {
-  body:has(.editorial-reading), :root[data-theme='dark'] body:has(.editorial-reading) {
-    --bg-page: #fff; --surface-raised: #fff; --text-primary: #111; --text-body: #222; --text-secondary: #444; --text-muted: #555;
-  }
+  :root .editorial-reading, :root[data-theme='dark'] .editorial-reading { --reading-heading-ink: #111; --reading-body-ink: #222; }
 }
