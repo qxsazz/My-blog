@@ -13,6 +13,7 @@ import '@/styles/article-editorial.css';
 import '@/styles/reading-surface.css';
 import '@/styles/note-paper.css';
 import '@/styles/music-player.css';
+import '@/styles/illustrations-only.css';
 import { site } from '@/config';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
@@ -45,7 +46,7 @@ const canonical = new URL(redirectTo || Astro.url.pathname, Astro.site);
       (() => { try { const t = localStorage.getItem('dominator-theme') || 'dark'; document.documentElement.dataset.theme = t === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : t; document.documentElement.dataset.effects = localStorage.getItem('dominator-effects') || 'on'; } catch { document.documentElement.dataset.theme = 'dark'; } })();
     </script>
   </head>
-  <body class:list={[{ 'is-home': home }]}>
+  <body class:list={['illustrated-site',{ 'is-home': home }]}>
     <a class="skip-link" href="#main">跳至正文</a>
     <Background />
     <Header />

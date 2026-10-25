@@ -1,0 +1,23 @@
+/* Only illustration layers and the homepage composition change from the live site. */
+.illustrated-site { --home-illustration: url('/images/anime/hero-light.webp'); --side-illustration: url('/images/anime/scenes-light.webp'); }
+:root[data-theme='dark'] .illustrated-site { --home-illustration: url('/images/anime/hero-dark.webp'); --side-illustration: url('/images/anime/scenes.webp'); }
+.side-illustration { display:none; }
+.illustrated-site:not(.is-home) .side-illustration { display:block;position:absolute;inset:0;background-image:var(--side-illustration);background-size:200% 200%;background-position:0 0;opacity:.13;mask-image:linear-gradient(90deg,#000,transparent 27%,transparent 73%,#000);pointer-events:none; }
+:root[data-theme='dark'] .illustrated-site:not(.is-home) .side-illustration { opacity:.23; }
+.illustrated-site.is-home #main { padding-top:0; }
+.illustrated-site.is-home .reference-hero { width:100%;height:100svh;min-height:760px;padding:90px 7% 60px 55%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;isolation:isolate; }
+.illustrated-site.is-home .reference-hero::before { content:'';position:absolute;inset:0;z-index:-2;background-image:var(--home-illustration);background-size:cover;background-position:center;pointer-events:none; }
+.illustrated-site.is-home .reference-hero::after { content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,transparent 32%,#f2f7fd22 48%,#f2f7fdad 72%),linear-gradient(0deg,var(--bg-page),transparent 25%);pointer-events:none; }
+:root[data-theme='dark'] .illustrated-site.is-home .reference-hero::after { background:linear-gradient(90deg,transparent 30%,#050b1822 48%,#050b18b3 72%),linear-gradient(0deg,var(--bg-page),transparent 25%); }
+.illustrated-site.is-home .reference-hero-intro { width:100%; }
+.illustrated-site.is-home .reference-hero-bottom { padding:0;width:100%; }
+.illustrated-site.is-home .site-header { background:linear-gradient(#f2f7fdd9,#f2f7fd40);backdrop-filter:blur(4px); }
+:root[data-theme='dark'] .illustrated-site.is-home .site-header { background:linear-gradient(#050b18c4,#050b1824); }
+@media(max-width:1023px) { .illustrated-site.is-home .reference-hero { padding-top:60px;padding-bottom:100px; } }
+@media(max-width:800px) {
+ .illustrated-site.is-home .reference-hero { min-height:950px;height:auto;padding:390px 24px 90px;gap:25px; }
+ .illustrated-site.is-home .reference-hero::before { background-position:10% top;background-size:auto 670px;background-repeat:no-repeat; }
+ .illustrated-site.is-home .reference-hero::after { background:linear-gradient(0deg,var(--bg-page) 30%,transparent 70%)!important; }
+ .illustrated-site:not(.is-home) .side-illustration { mask-image:linear-gradient(90deg,#000,transparent 18%,transparent 82%,#000); }
+}
+@media print { .illustrated-site .side-illustration,.illustrated-site.is-home .reference-hero::before,.illustrated-site.is-home .reference-hero::after { display:none; } }

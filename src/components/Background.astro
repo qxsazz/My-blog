@@ -3,6 +3,7 @@
 const random = (i: number, salt = 1) => { const x = Math.sin(i * 127.1 + salt * 311.7) * 43758.5453; return x - Math.floor(x); };
 ---
 <div transition:persist="stellar-background" class="site-background stellar-background" aria-hidden="true">
+  <div class="side-illustration" aria-hidden="true"></div>
   <div class="stellar-nebula nebula-one"></div><div class="stellar-nebula nebula-two"></div>
   <svg class="stellar-orbits" viewBox="0 0 1440 1050" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="orbit-blue"><stop stop-color="#7ecfff" stop-opacity="0"/><stop offset=".48" stop-color="#90cbff" stop-opacity=".4"/><stop offset="1" stop-color="#7ecfff" stop-opacity="0"/></linearGradient></defs><g fill="none" stroke="url(#orbit-blue)" stroke-width=".6"><ellipse cx="720" cy="320" rx="690" ry="300" transform="rotate(-28 720 320)"/><ellipse cx="720" cy="320" rx="620" ry="345" transform="rotate(-28 720 320)"/><path d="M-120 800C270 370 1080 1190 1580 240"/><path d="M-100 850C330 410 1060 1250 1520 330"/></g></svg>
   <div class="stellar-stars">{Array.from({length:48},(_,i)=><span class="stellar-star" style={`--x:${random(i,2)*100}%;--y:${random(i,3)*100}%;--size:${random(i,4)*1.5+.6}px;--alpha:${random(i,5)*.45+.15};--delay:${-random(i,6)*12}s;--speed:${random(i,7)*8+5}s`}></span>)}</div>
