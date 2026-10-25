@@ -1,0 +1,7 @@
+---
+import Base from '@/layouts/Base.astro';
+import { entries, entryUrl, shortDate } from '@/lib';
+const all = await entries();
+const years = [...new Set(all.map(p => p.data.date.getUTCFullYear()))];
+---
+<Base title="时光"><section class="listing-page container narrow"><div class="page-heading"><span class="eyebrow">A WALK THROUGH TIME</span><h1>时光，<em>有迹可循。</em></h1><p>一共 {all.length} 次落笔。那些认真生活过的瞬间，都在这里。</p></div><div class="archive-timeline">{years.map(year => <section><h2>{year}<span>{all.filter(p=>p.data.date.getUTCFullYear()===year).length} 篇</span></h2><div>{all.filter(p=>p.data.date.getUTCFullYear()===year).map(p=><a href={entryUrl(p)}><time datetime={p.data.date.toISOString()}>{shortDate(p.data.date)}</time><span>{p.data.title}</span><small>{p.collection === 'posts' ? '文稿' : '手记'}</small></a>)}</div></section>)}</div><p class="page-end">— 回头看，每一步都算数 —</p></section></Base>

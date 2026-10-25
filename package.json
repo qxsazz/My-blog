@@ -1,19 +1,23 @@
 {
-  "name": "dominator-yohaku",
+  "name": "dominator-blog",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Unmodified public Yohaku React Showcase baseline",
-  "packageManager": "pnpm@9.14.4",
   "scripts": {
-    "dev": "corepack pnpm --filter @yohaku/design-system showcase:dev",
-    "build": "corepack pnpm --filter @yohaku/design-system showcase:build --outDir ../../dist",
-    "check": "corepack pnpm --filter @yohaku/design-system check && tsc -p design-system/showcase/tsconfig.json",
-    "test": "corepack pnpm --filter @yohaku/design-system test",
-    "preview": "corepack pnpm --filter @yohaku/design-system showcase:preview --outDir ../../dist"
+    "dev": "astro dev --host 0.0.0.0",
+    "build": "astro check && astro build",
+    "preview": "astro preview --host 0.0.0.0",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^5.16.0",
+    "@astrojs/rss": "^4.0.0",
+    "@astrojs/sitemap": "^3.6.0",
+    "@fontsource-variable/dm-sans": "^5.2.0",
+    "@fontsource-variable/noto-serif-sc": "^5.2.0"
   },
   "devDependencies": {
-    "vite": "^8.3.4",
-    "typescript": "^6.0.0",
-    "@types/node": "^24.0.0"
+    "@astrojs/check": "^0.9.0",
+    "typescript": "^5.9.0"
   }
 }

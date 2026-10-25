@@ -1,0 +1,19 @@
+{
+  "name": "dominator-yohaku",
+  "private": true,
+  "type": "module",
+  "description": "Unmodified public Yohaku React Showcase baseline",
+  "packageManager": "pnpm@9.14.4",
+  "scripts": {
+    "dev": "corepack pnpm --filter @yohaku/design-system showcase:dev",
+    "build": "corepack pnpm --filter @yohaku/design-system showcase:build --outDir ../../dist",
+    "check": "corepack pnpm --filter @yohaku/design-system check && tsc -p design-system/showcase/tsconfig.json",
+    "test": "corepack pnpm --filter @yohaku/design-system test",
+    "preview": "corepack pnpm --filter @yohaku/design-system showcase:preview --outDir ../../dist"
+  },
+  "devDependencies": {
+    "vite": "^8.3.4",
+    "typescript": "^6.0.0",
+    "@types/node": "^24.0.0"
+  }
+}

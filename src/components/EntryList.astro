@@ -1,0 +1,12 @@
+---
+import { entryUrl, shortDate, type Entry } from '@/lib';
+import Icon from './Icon.astro';
+interface Props { items: Entry[]; featured?: boolean }
+const { items, featured = false } = Astro.props;
+---
+<div class:list={['entry-list', { 'with-featured': featured }]}>
+  {items.map((entry, i) => <a href={entryUrl(entry)} class:list={['entry-row', { 'entry-featured': featured && i === 0 }]}>
+    <span class="entry-number">{String(i + 1).padStart(2, '0')}</span>
+    <div class="entry-main"><div class="entry-meta"><span>{entry.collection === 'posts' ? '文章' : '手记'}<span class="meta-dot">·</span>{entry.data.category}</span><time datetime={entry.data.date.toISOString()}>{shortDate(entry.data.date)}</time></div><h3>{entry.data.title}</h3>{featured && i === 0 && <p>{entry.data.description}</p>}</div><Icon name="diagonal" class="entry-arrow" size={16} />
+  </a>)}
+</div>

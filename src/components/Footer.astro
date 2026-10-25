@@ -1,0 +1,17 @@
+---
+import { site } from '@/config';
+import Icon from './Icon.astro';
+---
+<footer class="site-footer container">
+  <div class="footer-paper">
+    <div class="footer-heading"><a href="/" class="footer-brand">{site.name}<span>Stay curious. Keep creating.</span></a><span class="footer-status"><i></i> 在自己的时区里，慢慢生长</span></div>
+    <div class="footer-columns">
+      <div><h3>01 <span>关于</span></h3><a href="/about/">关于我与本站</a><a href="/about/#colophon">设计与构建</a></div>
+      <div><h3>02 <span>漫游</span></h3><a href="/posts/">所有文稿</a><a href="/notes/">生活手记</a><a href="/archive/">时光归档</a></div>
+      <div><h3>03 <span>创建者</span></h3><a href="/about/">{site.author} <Icon name="diagonal" size={12} /></a><a href={site.project.href}>构建记录</a>{site.email && <a href={`mailto:${site.email}`}>发一封信 <Icon name="diagonal" size={12} /></a>}{site.github && <a href={site.github} target="_blank" rel="noreferrer">GitHub <Icon name="diagonal" size={12} /></a>}</div>
+      <div><h3>04 <span>关注</span></h3><a href="/rss.xml">RSS 订阅 <Icon name="rss" size={12} /></a><a href="/sitemap-index.xml">站点地图</a><button data-search-open>搜索本站</button></div>
+      <div class="footer-settings"><h3>05 <span>版式</span></h3><div class="theme-options"><span>主题</span><button data-set-theme="light">浅色</button><em>·</em><button data-set-theme="system">自动</button><em>·</em><button data-set-theme="dark">深色</button></div><div><span>背景效果</span><button data-effects-toggle aria-pressed="true">开</button></div><span class="footer-language">简体中文 <span>ZH / CN</span></span></div>
+    </div>
+  </div>
+  <div class="footer-bottom"><span>{site.name} / CREATED BY {site.author} <b>—</b> © {new Date().getFullYear()}</span><span>用文字记录，以热爱构建。<a href="https://astro.build" target="_blank" rel="noreferrer">Built with Astro <Icon name="diagonal" size={11} /></a></span></div>
+</footer>

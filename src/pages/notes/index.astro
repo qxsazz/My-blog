@@ -1,0 +1,7 @@
+---
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+import { entries, entryUrl, dateLabel } from '@/lib';
+const notes = (await entries()).filter(p => p.collection === 'notes');
+---
+<Base title="手记"><section class="listing-page container narrow"><div class="page-heading"><span class="eyebrow">NOTES FROM EVERYDAY</span><h1>把日常，<em>轻轻收藏。</em></h1><p>散步时的风，没读完的书，还有一些不成篇的小心事。</p></div><div class="notes-grid">{notes.map((note,i) => <a href={entryUrl(note)} class="note-card"><div class="note-top"><span>手记 NO. {String(notes.length-i).padStart(2,'0')}</span><Icon name="diagonal" size={17} /></div>{i === 0 && <img src="/images/autumn.svg" width="600" height="380" alt="秋日山野插画" />}<time datetime={note.data.date.toISOString()}>{dateLabel(note.data.date)}</time><h2>{note.data.title}</h2><p>{note.data.description}</p><span class="note-tag">{note.data.tags.map(t=>`#${t}`).join('　')}</span></a>)}</div><p class="page-end">— 平凡的日子，也有微光 —</p></section></Base>

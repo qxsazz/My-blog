@@ -1,0 +1,8 @@
+---
+import Base from '@/layouts/Base.astro';
+import EntryList from '@/components/EntryList.astro';
+import { entries } from '@/lib';
+const posts = (await entries()).filter(p => p.collection === 'posts');
+const categories = [...new Set(posts.map(p => p.data.category))];
+---
+<Base title="文稿"><section class="listing-page container narrow"><div class="page-heading"><span class="eyebrow">WORDS & IDEAS</span><h1>纸上，<em>有回声。</em></h1><p>关于创造、技术与设计。把零散的想法，写成完整的句子。</p></div><div class="listing-toolbar"><div class="filter-tabs" aria-label="按分类筛选"><button class="active" data-category="全部" aria-pressed="true">全部 <span>{posts.length}</span></button>{categories.map(c => <button data-category={c} aria-pressed="false">{c}</button>)}</div><span class="small-label">共 {posts.length} 篇文稿</span></div><div id="filtered-entries"><EntryList items={posts} /></div><p class="page-end">— 文字未完，来日方长 —</p></section></Base>
