@@ -27,6 +27,30 @@ function createRadio(host: HTMLElement) {
   let generation = 0;
   let lastSaved = 0;
   let failureText = '';
+  let blobUrl: string | undefined;
+  let assetLoad: AbortController | undefined;
+  let assetPromise: Promise<string> | undefined;
+  // The static host does not serve byte ranges. A user-initiated, cached Blob
+  // gives the native audio element a seekable source on every supported host.
+  function prepareAudio(): Promise<string> {
+    if (blobUrl) return Promise.resolve(blobUrl);
+    if (!assetPromise || assetLoad?.signal.aborted) {
+      const requestController = new AbortController();
+      assetLoad = requestController;
+      assetPromise = (async () => {
+        const response = await fetch(audio.dataset.src!,{ signal: requestController.signal, cache: 'force-cache' });
+        if (!response.ok) throw new Error('Audio unavailable');
+        const blob = await response.blob();
+        if (requestController.signal.aborted) throw new DOMException('Cancelled','AbortError');
+        blobUrl = URL.createObjectURL(blob);
+        return blobUrl;
+      })().catch(error => {
+        if (assetLoad === requestController) assetPromise = undefined;
+        throw error;
+      });
+    }
+    return assetPromise;
+  }
   let state: 'idle' | 'loading' | 'playing' | 'paused' | 'error' = 'idle';
   audio.volume = saved.volume;
   const writeText = (node: HTMLElement, text: string) => { if (node.textContent !== text) node.textContent = text; };
@@ -67,6 +91,7 @@ function createRadio(host: HTMLElement) {
   function pause() {
     wantsPlay = false;
     generation++;
+    assetLoad?.abort();
     audio.pause();
     state = restored ? 'paused' : 'idle';
     persist(); render();
@@ -76,10 +101,12 @@ function createRadio(host: HTMLElement) {
     wantsPlay = true;
     state = 'loading'; failureText = '';
     const request = ++generation;
-    if (!audio.getAttribute('src')) audio.src = audio.dataset.src!;
-    else if (audio.error) audio.load();
     render();
     try {
+      const source = await prepareAudio();
+      if (request !== generation || !wantsPlay) return;
+      if (audio.getAttribute('src') !== source) audio.src = source;
+      else if (audio.error) audio.load();
       await audio.play();
       if (request !== generation || !wantsPlay) return;
       state = 'playing'; render();
@@ -114,7 +141,7 @@ function createRadio(host: HTMLElement) {
   audio.addEventListener('error',() => { generation++; wantsPlay = false; state = 'error'; failureText = '音频暂时无法播放，点击播放重试。'; audio.pause(); setOpen(true); render(); },{ signal });
   audio.addEventListener('volumechange',() => { render(); persist(); },{ signal });
   render();
-  return { host, play, pause, setOpen, render, persist, isOpen: () => !panel.hidden, dispose: () => { audio.pause(); controller.abort(); } };
+  return { host, play, pause, setOpen, render, persist, isOpen: () => !panel.hidden, dispose: () => { assetLoad?.abort(); audio.pause(); controller.abort(); if (blobUrl) URL.revokeObjectURL(blobUrl); } };
 }
 let radio: ReturnType<typeof createRadio> | undefined;
 function initRadio() {
