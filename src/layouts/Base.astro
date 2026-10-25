@@ -29,6 +29,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <title>{title ? `${title} · ${site.name}` : site.title}</title>
     {Astro.url.pathname.startsWith('/preview/') && <meta name="robots" content="noindex, nofollow" />}
     <meta name="description" content={description} /><meta name="author" content={site.author} /><meta name="theme-color" content="#050b18" /><link rel="preload" href="/fonts/YohakuSans-VF.woff2" as="font" type="font/woff2" crossorigin />
+    {['ice', 'star', 'text'].flatMap(shape => ['light', 'dark'].map(theme => <link rel="preload" href={`/cursors/${shape}-${theme}.svg`} as="image" type="image/svg+xml" />))}
     <meta property="og:image" content={new URL(site.avatar, Astro.site)} /><link rel="apple-touch-icon" href={site.avatar} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" /><link rel="canonical" href={canonical} />
     <link rel="alternate" type="application/rss+xml" title={`${site.name} RSS`} href="/rss.xml" />

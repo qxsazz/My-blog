@@ -39,16 +39,18 @@ button:not(:disabled), a, summary { transition: color var(--duration) ease, back
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) { .stellar-pointer { display: block; } }
 [data-effects='off'] .stellar-pointer { display: none; }
 @media print { .stellar-pointer { display: none; } }
-/* Native SVG cursors retain a real hotspot and work without JavaScript. */
-:root { --cursor-ice: url('/cursors/ice-light.svg') 3 2, auto; --cursor-star: url('/cursors/star-light.svg') 12 12, pointer; }
-:root[data-theme='dark'] { --cursor-ice: url('/cursors/ice-dark.svg') 3 2, auto; --cursor-star: url('/cursors/star-dark.svg') 12 12, pointer; }
+/* Native SVG cursors: explicit functional states outrank legacy component rules. */
+:root { --cursor-ice: url('/cursors/ice-light.svg') 3 2, auto; --cursor-star: url('/cursors/star-light.svg') 12 12, pointer; --cursor-text: url('/cursors/text-light.svg') 12 12, text; }
+:root[data-theme='dark'] { --cursor-ice: url('/cursors/ice-dark.svg') 3 2, auto; --cursor-star: url('/cursors/star-dark.svg') 12 12, pointer; --cursor-text: url('/cursors/text-dark.svg') 12 12, text; }
 @media (hover: hover) and (pointer: fine) {
   html, body { cursor: var(--cursor-ice); }
-  p, blockquote, h1, h2, h3, h4, h5, h6, pre, code, input, textarea, [contenteditable='true'] { cursor: text; }
-  a, a *, button, button *, summary, summary *, select, label[for], [role='button'], [role='button'] * { cursor: var(--cursor-star); }
-  input[type='checkbox'], input[type='radio'], input[type='submit'], input[type='button'] { cursor: var(--cursor-star); }
-  input[type='range'] { cursor: ew-resize; }
-  button:disabled, input:disabled, select:disabled, textarea:disabled { cursor: not-allowed; }
+  :root body :is(p, blockquote, h1, h2, h3, h4, h5, h6, pre, code, input, textarea, [contenteditable='true']) { cursor: var(--cursor-text); }
+  :root body :is(a, button, summary, select, label[for], [role='button']),
+  :root body :is(a, button, summary, select, label[for], [role='button']) * { cursor: var(--cursor-star); }
+  :root body :is(input[type='checkbox'], input[type='radio'], input[type='submit'], input[type='button']) { cursor: var(--cursor-star); }
+  :root body input[type='range'] { cursor: ew-resize; }
+  :root body :is(button, input, select, textarea):disabled,
+  :root body :is(button, input, select, textarea):disabled * { cursor: not-allowed; }
 }
 .pointer-burst { position: absolute; left: 0; top: 0; width: 0; height: 0; }
 .click-ring { position: absolute; left: -10px; top: -10px; width: 20px; height: 20px; border: 1px solid var(--accent); border-radius: 50%; opacity: 0; }
