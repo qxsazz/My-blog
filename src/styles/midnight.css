@@ -5,18 +5,34 @@ a, button, summary { touch-action: manipulation; }
 button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 button:disabled { opacity: .65; }
 button:not(:disabled), a, summary { transition: color var(--duration) ease, background-color var(--duration) ease, border-color var(--duration) ease; }
-/* One persistent SVG/CSS background. Identical base color prevents viewport seams. */
+/* Quiet star atlas: continuous base, static atmosphere, decoration at the edges. */
 .stellar-background.site-background, [data-theme='dark'] .stellar-background.site-background { background: var(--bg-page); animation: none; opacity: 1; }
-.stellar-nebula, [data-theme='dark'] .stellar-nebula { filter: none; background: radial-gradient(ellipse, color-mix(in srgb,var(--accent) 7%,transparent), transparent 67%); animation: nebula-breathe 24s ease-in-out infinite alternate; }
-.nebula-one { width: 80vw; height: 640px; left: 10vw; top: -80px; }
-.nebula-two { width: 55vw; height: 500px; right: -35vw; top: 30vh; opacity: .4; }
+.stellar-nebula, [data-theme='dark'] .stellar-nebula { filter: none; animation: none; opacity: 1; background: radial-gradient(ellipse, color-mix(in srgb,var(--accent) 6%,transparent), transparent 70%); }
+[data-theme='dark'] .stellar-nebula { background: radial-gradient(ellipse, #24518b26, #1234520c 45%, transparent 72%); }
+.nebula-one { width: min(1100px,110vw); height: 600px; left: 50%; top: -210px; transform: translateX(-50%); }
+.nebula-two { width: 520px; height: 760px; left: -400px; right: auto; top: 18vh; }
 .nebula-three { display: none; }
-.stellar-orbits, [data-theme='dark'] .stellar-orbits { opacity: .07; mask-image: linear-gradient(#000, transparent 85%); }
-.stellar-stars, .stellar-motes { mask-image: linear-gradient(90deg,#000,transparent 31%,transparent 69%,#000); }
-.stellar-star, [data-theme='dark'] .stellar-star { box-shadow: none; opacity: calc(var(--alpha) * .5); background: var(--accent); }
-.stellar-mote, [data-theme='dark'] .stellar-mote { box-shadow: none; opacity: calc(var(--alpha) * .4); background: var(--accent); }
-@keyframes starlight { from { opacity: calc(var(--alpha) * .2); } to { opacity: calc(var(--alpha) * .5); } }
-@keyframes nebula-breathe { from { opacity: .5; } to { opacity: .8; } }
+.stellar-orbits, [data-theme='dark'] .stellar-orbits { opacity: .2; mask-image: linear-gradient(90deg,#000,transparent 18%,transparent 82%,#000); }
+.stellar-stars { mask-image: linear-gradient(90deg,#000,transparent 20%,transparent 80%,#000); }
+.stellar-star, [data-theme='dark'] .stellar-star { box-shadow: none; opacity: calc(var(--alpha) * .5); background: var(--text-secondary); }
+.stellar-motes { display: none; }
+.stellar-fragments { position: absolute; inset: 0; pointer-events: none; }
+.stellar-fragment { position: absolute; top: -20px; left: var(--x); width: var(--size); height: calc(var(--size) * 2.5); background: var(--accent); opacity: 0; clip-path: polygon(50% 0,100% 50%,50% 100%,0 50%); animation: fragment-fall var(--speed) linear var(--delay) infinite; will-change: transform; }
+.stellar-fragment:nth-child(3n) { background: var(--text-primary); }
+@keyframes fragment-fall {
+  0% { transform: translate3d(0,-20px,0) rotate(-25deg); opacity: 0; }
+  12% { opacity: .35; }
+  50% { opacity: .22; }
+  85% { opacity: .35; }
+  100% { transform: translate3d(var(--drift),calc(100svh + 40px),0) rotate(115deg); opacity: 0; }
+}
+@keyframes starlight { from { opacity: calc(var(--alpha) * .25); } to { opacity: calc(var(--alpha) * .5); } }
+@media (max-width: 800px) {
+  .nebula-one { height: 480px; top: -180px; }
+  .stellar-stars { mask-image: linear-gradient(90deg,#000,transparent 12%,transparent 88%,#000); }
+  .stellar-orbits { display: none; }
+  .stellar-fragment:nth-child(n+5) { display: none; }
+}
 /* Navigation and shared surfaces. */
 .site-header { background: var(--header-surface); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 .header-inner { max-width: var(--content-max); }
@@ -245,5 +261,7 @@ button:not(:disabled), a, summary { transition: color var(--duration) ease, back
   .stellar-orbits, [data-theme='dark'] .stellar-orbits { opacity: .045; }
 }
 @media(prefers-reduced-motion:reduce) {
+  .stellar-fragments { display: none; }
+  .stellar-fragment { animation: none; will-change: auto; }
   .stellar-nebula, [data-theme='dark'] .stellar-nebula, .stellar-star, .stellar-mote, .portrait-ring, .route-loader-orbit::before, .route-loader-orbit span { animation: none; }
 }
