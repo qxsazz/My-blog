@@ -123,3 +123,8 @@ public/licenses/             # 字体许可与来源记录
 全站右下角音符与页脚「背景音乐」控制同一个原生音频播放器，曲目为德彪西《月光》，采用 Laurens Goedhart 2011 年演奏的 CC BY 3.0 录音；不是赵成珍版。完整来源和转换说明在 `public/licenses/music-credits.md`，播放器内保留演奏者与许可链接。
 
 默认关闭、音量 20%，首次点击才加载 MP3。支持暂停/继续、拖动进度、音量与单曲循环；音量和位置保存在 `dominator-music-state`。Astro ClientRouter 切换与前进后退时持续播放同一音频节点；整页刷新后保持暂停，用户点击播放时恢复位置。关闭背景效果或 reduced motion 不会停止用户主动播放的音乐，但关闭音符条装饰动画。可通过 `src/config.ts` 的 `site.music` 更换曲目与授权信息。
+
+
+## 背景预览
+
+`/preview/backgrounds/` 提供月面薄雾、极光流笺、深空星图及现有星屑对照，支持深浅主题、动静效果、首页/白色稿纸切换与复制当前预览链接。参数为 `scheme=mist|aurora|atlas|current`、`theme=dark|light`、`view=home|paper`、`motion=on|off`。预览设置只保存在 URL，不写入正式主题偏好，也不会替换正式背景；页面禁止索引并从 sitemap 排除。现有《月光》播放器可继续使用。

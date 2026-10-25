@@ -1,0 +1,73 @@
+---
+import '@fontsource-variable/noto-serif-sc';
+import { ClientRouter } from 'astro:transitions';
+import { getEntry, render } from 'astro:content';
+import { site } from '@/config';
+import { entries, entryUrl, shortDate, collectionLabel } from '@/lib';
+import Background from '@/components/Background.astro';
+import CursorStyles from '@/components/CursorStyles.astro';
+import NoteHeading from '@/components/NoteHeading.astro';
+import MusicPlayer from '@/components/MusicPlayer.astro';
+import '@/styles/global.css';
+import '@/styles/tokens.css';
+import '@/styles/stellar.css';
+import '@/styles/content.css';
+import '@/styles/reading.css';
+import '@/styles/midnight.css';
+import '@/styles/note-paper.css';
+import '@/styles/music-player.css';
+import '@/styles/background-preview.css';
+const all = await entries();
+const writings = all.filter(p=>p.collection==='posts').slice(0,4);
+const note = (await getEntry('notes','building-yobai'))!;
+const { Content } = await render(note);
+const thought = all.find(p=>p.collection==='thinking');
+const random = (i: number, salt: number) => { const n = Math.sin(i*127.1+salt*311.7)*43758.5453;return n-Math.floor(n); };
+const schemes = [
+ { id:'mist', no:'01', name:'月面薄雾', detail:'安静 · 推荐' },
+ { id:'aurora', no:'02', name:'极光流笺', detail:'流动 · 通透' },
+ { id:'atlas', no:'03', name:'深空星图', detail:'精密 · 克制' },
+ { id:'current', no:'04', name:'现有星屑', detail:'当前背景' },
+];
+---
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+  <head>
+    <CursorStyles /><ClientRouter fallback="swap" />
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>背景预览 · dominator</title>
+    <meta name="description" content="银蓝背景方案预览：月面薄雾、极光流笺与深空星图。" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/YohakuSans-VF.woff2" as="font" type="font/woff2" crossorigin />
+    <script is:inline>
+      (()=>{const q=new URLSearchParams(location.search);document.documentElement.dataset.theme=q.get('theme')==='light'?'light':'dark';})();
+    </script>
+  </head>
+  <body class="background-lab" data-background-preview data-scheme="mist" data-view="home" data-motion="on">
+    <a href="#main" class="skip-link">跳至预览正文</a>
+    <Background />
+    <div class="lab-atmosphere" aria-hidden="true">
+      <div class="lab-scene lab-scene-mist"><div class="lab-mist-cloud cloud-a"></div><div class="lab-mist-cloud cloud-b"></div><div class="lab-lunar-arc"></div><div class="lab-fine-grain"></div></div>
+      <div class="lab-scene lab-scene-aurora"><div class="lab-aurora-curtain curtain-a"></div><div class="lab-aurora-curtain curtain-b"></div><div class="lab-aurora-haze"></div></div>
+      <div class="lab-scene lab-scene-atlas"><svg class="lab-atlas-map" viewBox="0 0 1440 1000" preserveAspectRatio="xMidYMid slice"><g class="atlas-grid" fill="none"><circle cx="-80" cy="620" r="400"/><circle cx="-80" cy="620" r="320"/><circle cx="-80" cy="620" r="240"/><path d="M-120 50 280 980M-120 980 290 90M-50 620H320"/><ellipse cx="1410" cy="350" rx="320" ry="440" transform="rotate(26 1410 350)"/><ellipse cx="1410" cy="350" rx="260" ry="380" transform="rotate(26 1410 350)"/></g><g class="atlas-constellations" fill="none"><path d="M38 168 114 206 87 292 178 344 143 444 225 512M114 206 210 178 252 260M1228 120 1307 190 1262 287 1375 348 1323 455 1400 508M1307 190 1404 152M1110 760 1192 704 1288 778 1360 690 1414 808"/></g><g class="atlas-nodes">{[[38,168],[114,206],[87,292],[178,344],[143,444],[225,512],[210,178],[252,260],[1228,120],[1307,190],[1262,287],[1375,348],[1323,455],[1400,508],[1404,152],[1110,760],[1192,704],[1288,778],[1360,690],[1414,808]].map(([cx,cy],i)=><circle cx={cx} cy={cy} r={i%4===0?2.5:1.5}/>)}</g></svg></div>
+      <div class="lab-specks">{Array.from({length:42},(_,i)=><span style={`--x:${random(i,4)*100}%;--y:${random(i,5)*100}%;--size:${.8+random(i,6)*1.2}px;--delay:${-random(i,7)*16}s;--speed:${8+random(i,8)*10}s`}></span>)}</div>
+    </div>
+    <header class="lab-toolbar">
+      <div class="lab-toolbar-top"><a class="lab-brand" href="/"><img src={site.avatar} width="28" height="28" alt=""/><span>dominator <small>外观实验室</small></span></a><span class="lab-preview-badge">独立预览 · 不修改本站设置</span><a class="lab-exit" href="/">返回本站 ↗</a></div>
+      <div class="lab-toolbar-bottom"><div class="lab-schemes" role="group" aria-label="选择背景方案">{schemes.map((s,i)=><button type="button" data-lab-scheme={s.id} aria-pressed={i===0}><span class={`lab-swatch swatch-${s.id}`} aria-hidden="true"></span><span><b>{s.name}</b><small>{s.detail}</small></span></button>)}</div><div class="lab-settings"><button type="button" data-lab-theme aria-label="切换到浅色预览">☾ 深夜</button><button type="button" data-lab-motion aria-pressed="true">动效 开</button><button type="button" data-lab-share>复制链接</button></div></div>
+    </header>
+    <main id="main" class="lab-main" tabindex="-1">
+      <div class="lab-context"><div><span class="lab-kicker" data-lab-caption>01 / LUNAR MIST</span><p data-lab-description>银蓝薄雾与月弧，留出安静的阅读中心。</p></div><div class="lab-view-switch" role="group" aria-label="选择排版场景"><button type="button" data-lab-view="home" aria-pressed="true">首页排版</button><button type="button" data-lab-view="paper" aria-pressed="false">稿纸阅读</button></div></div>
+      <section class="lab-home" data-lab-home>
+        <div class="lab-hero"><img src={site.avatar} width="96" height="96" alt="dominator的头像：银白发色与冰蓝眼眸"/><h1>{site.hero.greeting} <strong>{site.author}</strong><br/><span>在 <em>代码</em> 与 <em>灵感</em> 之间，探索无限</span></h1><p>{site.hero.tagline}</p><blockquote>「 {site.hero.quote} 」</blockquote></div>
+        <div class="lab-home-columns"><section class="lab-writing"><div class="lab-section-heading"><h2>近期笔墨</h2><span>RECENT WRITING</span></div>{writings.map((entry,i)=><a class="lab-entry" href={entryUrl(entry)}><span class="lab-entry-no">{String(i+1).padStart(2,'0')}</span><div><div class="lab-entry-meta"><span>{collectionLabel[entry.collection]} · {entry.data.category}</span><time datetime={entry.data.date.toISOString()}>{shortDate(entry.data.date)}</time></div><h3>{entry.data.title}</h3>{i===0&&<p>{entry.data.description}</p>}</div></a>)}</section><aside><div class="lab-section-heading"><h2>碎念</h2><span>MUSINGS</span></div>{thought&&<p class="lab-thought">{thought.data.description}</p>}<div class="lab-section-heading lab-letter-title"><h2>来信</h2><span>LETTERS</span></div><a class="lab-letter" href={entryUrl(note)}><h3>{note.data.title}</h3><p>{note.data.description}</p></a></aside></div>
+      </section>
+      <section class="lab-note-view" data-lab-paper hidden><div class="note-reading lab-note"><article class="reading-sheet" data-default-font="serif"><NoteHeading entry={note}/><div class="article-prose letter-prose" id="article-body"><Content/></div><div class="lab-paper-signature"><span>dominator</span><p>谢谢你读到这里。愿这些文字，带给你一点灵感或共鸣。</p></div></article></div></section>
+      <footer class="lab-end"><span>背景方案预览</span><p>切换上方方案，比较留白、动效与真实文字的关系。</p><a href="/notes/building-yobai/">查看当前手记 ↗</a></footer>
+      <p class="sr-only" role="status" data-lab-status></p>
+    </main>
+    <MusicPlayer />
+    <script>import '@/scripts/transitions'; import '@/scripts/background-preview';</script>
+  </body>
+</html>

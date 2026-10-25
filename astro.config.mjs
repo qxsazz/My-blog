@@ -5,6 +5,6 @@ export default defineConfig({
   site: process.env.SITE_URL || 'https://blog.model-gate.fun',
   output: 'static',
   devToolbar: { enabled: false },
-  integrations: [sitemap()],
+  integrations: [sitemap({ filter: page => !new URL(page).pathname.startsWith('/preview/') })],
   markdown: { shikiConfig: { theme: 'github-dark' } },
 });
