@@ -36,7 +36,7 @@ function renderSearch() {
   const query = input.value.trim().toLocaleLowerCase();
   const matches = query ? searchIndex.filter(item => `${item.title} ${item.description} ${item.category} ${item.tags.join(' ')} ${item.body}`.toLocaleLowerCase().includes(query)) : searchIndex;
   results.replaceChildren();
-  if (!matches.length) { const empty = document.createElement('p'); empty.className = 'search-empty'; empty.textContent = '暂时没有找到。试试「设计」「生活」或「博客」？'; results.append(empty); return; }
+  if (!matches.length) { const empty = document.createElement('p'); empty.className = 'search-empty'; empty.textContent = searchIndex.length ? '暂时没有找到相关内容。' : '暂无内容，文稿与手记将在这里被找到。'; results.append(empty); return; }
   matches.forEach(item => {
     const link = document.createElement('a'); link.className = 'search-result'; link.href = item.url;
     const meta = document.createElement('small'); meta.textContent = `${item.type} · ${item.category}`;
@@ -88,3 +88,38 @@ if (tocLinks.length && 'IntersectionObserver' in window) {
   const observer = new IntersectionObserver(items => { for (const item of items) if (item.isIntersecting) tocLinks.forEach(link => link.classList.toggle('active', link.hash === `#${item.target.id}`)); }, { rootMargin: '-100px 0px -65% 0px' });
   document.querySelectorAll('.prose h2[id]').forEach(heading => observer.observe(heading));
 }
+
+// Reference-style paper menu: mouse, keyboard, touch and Escape all work.
+const moreMenu = document.querySelector<HTMLDetailsElement>('.more-menu');
+let closeMore: ReturnType<typeof setTimeout>;
+moreMenu?.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') { clearTimeout(closeMore); moreMenu.open = true; } });
+moreMenu?.addEventListener('pointerleave', event => { if (event.pointerType === 'mouse') closeMore = setTimeout(() => { moreMenu.open = false; }, 180); });
+document.addEventListener('click', event => { if (moreMenu && !moreMenu.contains(event.target as Node)) moreMenu.open = false; });
+document.addEventListener('keydown', event => { if (event.key === 'Escape' && moreMenu?.open) { moreMenu.open = false; moreMenu.querySelector('summary')?.focus(); } });
+
+for (const name of ['subscribe', 'tags']) {
+  const modal = document.querySelector<HTMLDialogElement>(`#${name}-dialog`);
+  document.querySelectorAll(`[data-${name}-open]`).forEach(button => button.addEventListener('click', () => { modal?.showModal(); document.body.style.overflow = 'hidden'; }));
+  document.querySelector(`[data-${name}-close]`)?.addEventListener('click', () => modal?.close());
+  modal?.addEventListener('close', () => { document.body.style.overflow = ''; });
+  modal?.addEventListener('click', event => { if (event.target !== modal) return; const box = modal.getBoundingClientRect(); if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) modal.close(); });
+}
+document.querySelector<HTMLButtonElement>('[data-copy-rss]')?.addEventListener('click', async event => {
+  const button = event.currentTarget as HTMLButtonElement;
+  try { await navigator.clipboard.writeText(new URL('/rss.xml', location.origin).href); button.textContent = '已复制'; } catch { button.textContent = '请打开上方链接，复制订阅地址'; }
+});
+document.querySelectorAll<HTMLButtonElement>('[data-post-sort]').forEach(button => button.addEventListener('click', () => {
+  document.querySelectorAll<HTMLButtonElement>('[data-post-sort]').forEach(other => { const active = other === button; other.classList.toggle('active', active); other.setAttribute('aria-pressed', String(active)); });
+}));
+document.querySelector('[data-human-only]')?.addEventListener('click', event => { const button = event.currentTarget as HTMLButtonElement; button.setAttribute('aria-pressed', String(button.getAttribute('aria-pressed') !== 'true')); });
+document.querySelectorAll<HTMLButtonElement>('[data-timeline-density]').forEach(button => button.addEventListener('click', () => {
+  const list = document.querySelector<HTMLElement>('[data-timeline-list]'); if (list) list.dataset.density = button.dataset.timelineDensity;
+  document.querySelectorAll<HTMLButtonElement>('[data-timeline-density]').forEach(other => { const active = button === other; other.classList.toggle('active', active); other.setAttribute('aria-pressed', String(active)); });
+}));
+
+// 按访问者的本地日期计算年度进度，无需依赖每天重新构建。
+const today = new Date();
+const dayIndex = Math.floor((Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) - Date.UTC(today.getFullYear(), 0, 0)) / 86400000);
+const yearLength = (Date.UTC(today.getFullYear()+1, 0, 1) - Date.UTC(today.getFullYear(), 0, 1)) / 86400000;
+const dayLabel = document.querySelector('[data-day-of-year]'); if (dayLabel) dayLabel.textContent = String(dayIndex);
+const yearProgress = document.querySelector('[data-year-progress]'); if (yearProgress) yearProgress.textContent = String(Math.floor(dayIndex / yearLength * 100));

@@ -1,8 +1,15 @@
 ---
 import Base from '@/layouts/Base.astro';
-import EntryList from '@/components/EntryList.astro';
-import { entries } from '@/lib';
-const posts = (await entries()).filter(p => p.collection === 'posts');
-const categories = [...new Set(posts.map(p => p.data.category))];
+import Placeholder from '@/components/Placeholder.astro';
+import Icon from '@/components/Icon.astro';
+import { entries, entryUrl, dateLabel } from '@/lib';
+const posts = (await entries()).filter(p=>p.collection==='posts');
 ---
-<Base title="文稿"><section class="listing-page container narrow"><div class="page-heading"><span class="eyebrow">WORDS & IDEAS</span><h1>纸上，<em>有回声。</em></h1><p>关于创造、技术与设计。把零散的想法，写成完整的句子。</p></div><div class="listing-toolbar"><div class="filter-tabs" aria-label="按分类筛选"><button class="active" data-category="全部" aria-pressed="true">全部 <span>{posts.length}</span></button>{categories.map(c => <button data-category={c} aria-pressed="false">{c}</button>)}</div><span class="small-label">共 {posts.length} 篇文稿</span></div><div id="filtered-entries"><EntryList items={posts} /></div><p class="page-end">— 文字未完，来日方长 —</p></section></Base>
+<Base title="文稿列表"><section class="posts-page replica-container"><div class="posts-grid"><div class="posts-main">
+  <div class="posts-title"><span>BLOG</span><h1>文章</h1></div>
+  <a class="pinned-post" href={posts[0]?entryUrl(posts[0]):'/preview/post/'} aria-label="预览置顶文章版式"><span class="pinned-label">置顶</span>{posts[0]?<><h2>{posts[0].data.title}</h2><p>{posts[0].data.description}</p><div class="post-meta"><time>{dateLabel(posts[0].data.date)}</time></div></>:<><Placeholder title widths={[81]}/><Placeholder widths={[100,72]}/><Placeholder class="meta-placeholder" widths={[42]}/></>}<div class="pinned-foot"><Icon name="book" size={12}/><span>—</span><span>♡ —</span></div></a>
+  <div class="post-toolbar"><span>共 {posts.length} 篇</span><div><button class="ai-writing-toggle" aria-pressed="false" data-human-only><Icon name="leaf" size={12}/> 无 AI 写作</button><i></i><button class="active" data-post-sort="newest" aria-pressed="true">最新</button><button data-post-sort="oldest" aria-pressed="false">最早</button><button data-post-sort="updated" aria-pressed="false">最近更新</button></div></div>
+  <div class="mobile-post-tools"><button data-search-open><Icon name="search" size={14}/> 搜索</button><button data-tags-open># 全部标签</button></div>
+  <div class="replica-post-list">{posts.length?posts.map(post=><a class="replica-post" href={entryUrl(post)}><h2>{post.data.title}</h2><p>{post.data.description}</p><div class="post-meta"><time>{dateLabel(post.data.date)}</time><span>·</span><span>{post.data.category}</span><span>/</span><span>{post.data.tags.join('，')}</span></div></a>):Array.from({length:9},(_,i)=><a class="replica-post placeholder-post" href="/preview/post/" aria-label={`文章版式占位 ${i+1}`}><Placeholder title widths={[[76,91,70,84,100,64,82,73,96][i]]}/><Placeholder widths={[100]}/><div class="post-meta"><Placeholder widths={[47]}/><span class="empty-counters">◉ —　♡ —</span></div></a>)}</div>
+  <div class="replica-pagination"><div><button disabled>上一页</button><span>·</span><button disabled>下一页</button></div><p>{posts.length?'第 1 页':'暂无文稿 · 当前为版式占位'}</p></div>
+</div><aside class="posts-sidebar"><div class="sidebar-search"><button data-search-open><Icon name="search" size={15}/> 搜索</button><div class="tag-cloud" aria-label="标签区域占位">{Array.from({length:10},(_,i)=><span class="placeholder-tag" aria-hidden="true" style={`width:${[82,104,75,107,60,63,54,57,96,73][i]}px`}><Placeholder widths={[73]}/></span>)}</div><button class="all-tags" data-tags-open>全部标签</button></div></aside></div></section></Base>

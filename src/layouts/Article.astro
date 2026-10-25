@@ -8,7 +8,7 @@ const { entry, headings, next } = Astro.props;
 const note = entry.collection === 'notes';
 ---
 <Base title={entry.data.title} description={entry.data.description}>
-  <div class="article-layout container">
+  <div class="article-layout replica-container">
     <article class="article-main">
       <a class="article-back text-link" href={note ? '/notes/' : '/posts/'}>← 返回{note ? '手记' : '文稿'}</a>
       <header class="article-heading"><span class="eyebrow">{note ? 'A NOTE FROM EVERYDAY' : 'WORDS & IDEAS'} <span> / {entry.data.category}</span></span><h1>{entry.data.title}</h1><p class="article-summary">{entry.data.description}</p><div class="article-meta"><a class="article-author" href="/about/" rel="author">{site.author}</a><i>·</i><time datetime={entry.data.date.toISOString()}>{dateLabel(entry.data.date)}</time><i>·</i><span>约 {readingTime(entry.body)} 分钟阅读</span><button class="copy-link" data-copy-link><Icon name="copy" size={13} /><span>复制链接</span></button></div></header>

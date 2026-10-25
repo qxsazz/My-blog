@@ -1,40 +1,24 @@
-/** 站点身份、首页文案和导航统一在这里修改。未配置的联系入口自动隐藏。 */
+/** 本轮仅复刻界面结构。内容集合保持为空，后续将文章改为 draft: false 即可发布。 */
 export const site = {
-  name: '余白',
+  name: 'dominator',
   author: 'dominator',
-  title: '余白 · dominator 的个人空间',
-  description: '由 dominator 创建的个人博客。记录构建的过程、设计的思考，以及生活里值得留下的片刻。',
-  motto: '把想法变成作品，把日常写成故事。',
+  title: 'dominator · 个人空间',
+  description: 'dominator 的个人空间。',
+  motto: 'Stay hungry. Stay foolish.',
   email: '',
   github: '',
   since: '2026-10-24',
-  hero: {
-    eyebrow: 'A PERSONAL SPACE BY DOMINATOR',
-    description: '把想法变成作品。',
-    aside: '也给生活，留一点白。',
-    quote: '不必一次抵达所有地方，先把脚下这一步走好。',
-  },
-  featured: {
-    href: '/notes/building-yobai/',
-    title: '从一个想法，到自己的小站',
-    description: '一次关于文字、设计与创造的持续实验。',
-    label: '建站手记',
-    image: '/images/autumn.svg',
-    imageAlt: '秋日山野插画，金黄的树与蜿蜒的小路',
-    date: 'OCT. 2026',
-  },
-  project: {
-    title: '余白 · 一个慢慢生长的个人空间',
-    description: '写作、设计、构建。从这一页开始，把值得留下的想法变成自己的作品。',
-    href: '/notes/building-yobai/',
-    version: 'v0.2',
-    tags: ['Astro', 'TypeScript', 'Markdown'],
-  },
   nav: [
     { label: '首页', href: '/' },
     { label: '文稿', href: '/posts/' },
     { label: '手记', href: '/notes/' },
-    { label: '时光', href: '/archive/' },
-    { label: '关于', href: '/about/' },
+    { label: '时光', href: '/timeline/' },
+    { label: '思考', href: '/thinking/' },
+  ],
+  more: [
+    { label: '友链', description: '互联网上的朋友们', href: '/friends/' },
+    { label: '项目', description: '开源项目与作品集', href: '/projects/' },
+    { label: '一言', description: '言语的碎片', href: '/says/' },
+    { label: '跃迁', description: '空间跃迁门', href: '/travelling/' },
   ],
 };

@@ -1,0 +1,7 @@
+---
+import Base from '@/layouts/Base.astro';
+import Placeholder from '@/components/Placeholder.astro';
+import Icon from '@/components/Icon.astro';
+import { site } from '@/config';
+---
+<Base title="文稿版式"><div class="article-layout replica-container"><article class="article-main"><a class="article-back" href="/posts/">← 返回文稿</a><header class="article-heading"><span class="eyebrow">文章 · 版式预览</span><Placeholder title widths={[86,57]}/><div class="article-meta"><a href="/about/" rel="author">{site.author}</a><span>·</span><span>—</span><span>·</span><span>— 分钟阅读</span></div></header><div class="article-body-sample" aria-label="文章正文版式占位"><Placeholder widths={[100,100,100,75]}/><section id="section-1"><Placeholder title widths={[35]}/><Placeholder widths={[100,100,100,100,65]}/><blockquote><Placeholder widths={[100,80]}/></blockquote></section><section id="section-2"><Placeholder title widths={[42]}/><Placeholder widths={[100,100,75]}/><div class="code-placeholder"><Placeholder widths={[45,63,82,69,41]}/></div><Placeholder widths={[100,100,88]}/></section></div><div class="article-signature"><span>✳</span><p>{site.author}</p><a href="/rss.xml">订阅 RSS <Icon name="rss" size={14}/></a></div></article><aside class="article-toc"><span class="eyebrow">文章目录</span><a href="#section-1">章节一</a><a href="#section-2">章节二</a><a href="#main">回到开头 ↑</a></aside></div></Base>

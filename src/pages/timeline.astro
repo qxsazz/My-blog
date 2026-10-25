@@ -1,0 +1,12 @@
+---
+import Base from '@/layouts/Base.astro';
+import Placeholder from '@/components/Placeholder.astro';
+import Icon from '@/components/Icon.astro';
+import { entries, entryUrl, shortDate } from '@/lib';
+const all=await entries();
+const date=new Date(new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York'}).format(new Date())+'T12:00:00Z');
+const year=date.getUTCFullYear();
+const elapsed=Math.ceil((Date.UTC(year,date.getUTCMonth(),date.getUTCDate())-Date.UTC(year,0,0))/86400000);
+const days=(Date.UTC(year+1,0,1)-Date.UTC(year,0,1))/86400000;
+---
+<Base title="时间线"><section class="timeline-page"><div class="timeline-topbar"><span>时间线</span><div><button class="active" data-timeline-density="relaxed" aria-pressed="true">舒</button><button data-timeline-density="compact" aria-pressed="false">密</button><button data-timeline-density="overview" aria-pressed="false">概览</button><button data-search-open><Icon name="search" size={14}/> 搜索</button></div></div><div class="timeline-total"><strong>{all.length}</strong><span>篇，再接再厉</span></div><div class="time-progress"><div><strong data-day-of-year>{elapsed}</strong><span>今年第几天</span></div><div><strong><span data-year-progress>{Math.floor(elapsed/days*100)}</span><small>%</small></strong><span>年度进度</span></div></div><p class="timeline-motto">活在当下，珍惜眼下</p><div class="timeline-years" data-timeline-list><div class="timeline-year"><strong>{year}</strong><span>本年 {all.length} 篇</span></div>{all.length?<div class="timeline-month"><h2>十月 · OCT</h2>{all.map(item=><a class="timeline-row" href={entryUrl(item)}><time>{shortDate(item.data.date)}</time><span>{item.data.title}</span><small>{item.collection==='posts'?'博文':'手记'}</small></a>)}</div>:['十月 · OCT','九月 · SEP','八月 · AUG'].map((month,m)=><div class="timeline-month"><h2>{month}</h2>{Array.from({length:m===0?3:4},(_,i)=><a class="timeline-row timeline-placeholder" href={i%2?'/preview/note/':'/preview/post/'} aria-label="时间线条目版式"><time>—</time><Placeholder widths={[[68,87,52,75][i]]}/><small>{i%2?'手记':'博文'}</small></a>)}</div>)}</div></section></Base>

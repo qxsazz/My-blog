@@ -1,7 +1,14 @@
 ---
 import Base from '@/layouts/Base.astro';
-import Icon from '@/components/Icon.astro';
+import Placeholder from '@/components/Placeholder.astro';
+import LetterCover from '@/components/LetterCover.astro';
 import { entries, entryUrl, dateLabel } from '@/lib';
-const notes = (await entries()).filter(p => p.collection === 'notes');
+const notes = (await entries()).filter(p=>p.collection==='notes');
+const latest = notes[0];
 ---
-<Base title="手记"><section class="listing-page container narrow"><div class="page-heading"><span class="eyebrow">NOTES FROM EVERYDAY</span><h1>把日常，<em>轻轻收藏。</em></h1><p>散步时的风，没读完的书，还有一些不成篇的小心事。</p></div><div class="notes-grid">{notes.map((note,i) => <a href={entryUrl(note)} class="note-card"><div class="note-top"><span>手记 NO. {String(notes.length-i).padStart(2,'0')}</span><Icon name="diagonal" size={17} /></div>{i === 0 && <img src="/images/autumn.svg" width="600" height="380" alt="秋日山野插画" />}<time datetime={note.data.date.toISOString()}>{dateLabel(note.data.date)}</time><h2>{note.data.title}</h2><p>{note.data.description}</p><span class="note-tag">{note.data.tags.map(t=>`#${t}`).join('　')}</span></a>)}</div><p class="page-end">— 平凡的日子，也有微光 —</p></section></Base>
+<Base title="手记列表"><section class="notes-page replica-container"><article class="featured-letter paper-panel">
+  <div class="featured-letter-top"><LetterCover/><div class="letter-cover-heading"><div class="letter-cover-meta"><span>秋</span><span>·</span><Placeholder widths={[100]}/><span>·</span><span>{latest?dateLabel(latest.data.date):'—'}</span></div>{latest?<h1>{latest.data.title}</h1>:<Placeholder title widths={[28]}/>}</div></div>
+  <div class="letter-excerpt">{latest?<><h1>{latest.data.title}</h1><p>{latest.data.description}</p></>:<div class="letter-body-placeholder" aria-label="手记正文版式占位"><span class="dropcap-placeholder" aria-hidden="true"></span><Placeholder widths={[100,100,72]}/><Placeholder title widths={[40]}/><Placeholder widths={[100,100,100,100,73]}/></div>}<div class="letter-fade" aria-hidden="true"></div></div>
+  <div class="letter-footer"><span>YOHAKU · LETTER № {notes.length||'—'}</span><a href={latest?entryUrl(latest):'/preview/note/'}>阅读全文 →</a></div>
+</article><div class="letters-divider"><span>更早的手记</span></div><div class="letter-year-heading"><div><span>ANNO</span><strong>{new Date().getFullYear()}</strong></div><span>{Math.max(0,notes.length-1)} LETTERS</span></div>
+<div class="older-letters">{Array.from({length:3},(_,i)=><article class="older-letter"><div class="letter-date-block"><strong>—</strong><span>十月</span><small>—</small></div><a class="older-letter-main" href="/preview/note/" aria-label={`较早手记版式 ${i+1}`}><LetterCover small/><div class="older-letter-text"><Placeholder class="meta-placeholder" widths={[24]}/><Placeholder title widths={[67]}/><Placeholder widths={[100,100,92,66]}/><div class="letter-footer"><span>LETTER № —</span><span>阅读全文 →</span></div></div></a></article>)}</div><div class="replica-pagination"><div><button disabled>更近的手记</button><span>·</span><button disabled>更早的手记</button></div><p>暂无手记 · 当前为版式占位</p></div></section></Base>

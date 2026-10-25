@@ -1,0 +1,7 @@
+---
+import Base from '@/layouts/Base.astro';
+import Placeholder from '@/components/Placeholder.astro';
+import LetterCover from '@/components/LetterCover.astro';
+import { site } from '@/config';
+---
+<Base title="手记版式"><section class="notes-page replica-container"><a class="article-back" href="/notes/">← 返回手记</a><article class="featured-letter full-letter paper-panel"><div class="featured-letter-top"><LetterCover/><div class="letter-cover-heading"><div class="letter-cover-meta"><span>秋 · 手记</span></div><Placeholder title widths={[30]}/></div></div><div class="full-letter-body" aria-label="手记正文版式占位"><Placeholder widths={[100,100,75]}/><Placeholder title widths={[35]}/><Placeholder widths={[100,100,100,100,85]}/><blockquote><Placeholder widths={[100,78]}/></blockquote><Placeholder widths={[100,100,100,64]}/><div class="letter-signature">{site.author}<span>LETTER № —</span></div></div></article></section></Base>

@@ -2,17 +2,13 @@
 import { site } from '@/config';
 import Icon from './Icon.astro';
 const path = Astro.url.pathname;
+const active = (href: string) => href === '/' ? path === '/' : path.startsWith(href);
+const moreActive = site.more.some(item => active(item.href));
 ---
-<header class="site-header">
-  <div class="header-inner">
-    <a class="wordmark" href="/" aria-label={`${site.name}首页`}><img src="/images/avatar.svg" alt="" width="27" height="27" /><span>{site.name}<i>by {site.author}</i></span></a>
-    <nav class="desktop-nav" aria-label="主导航">{site.nav.map(item => <a href={item.href} aria-current={(item.href === '/' ? path === '/' : path.startsWith(item.href)) ? 'page' : undefined} class:list={[{ active: item.href === '/' ? path === '/' : path.startsWith(item.href) }]}>{item.label}</a>)}</nav>
-    <div class="header-actions">
-      <button class="icon-button" data-search-open aria-label="搜索文章"><Icon name="search" size={18} /><kbd>⌘ K</kbd></button>
-      <span class="action-divider"></span>
-      <button class="icon-button theme-toggle" data-theme-toggle aria-label="切换深色主题"><Icon name="sun" size={18} class="sun-icon" /><Icon name="moon" size={18} class="moon-icon" /></button>
-      <button class="icon-button mobile-menu-toggle" aria-label="展开导航" aria-expanded="false" aria-controls="mobile-nav"><Icon name="menu" /></button>
-    </div>
-  </div>
-  <nav id="mobile-nav" class="mobile-nav" aria-label="移动导航" hidden>{site.nav.map(item => <a href={item.href} aria-current={path === item.href ? 'page' : undefined}>{item.label}</a>)}</nav>
-</header>
+<header class="site-header"><div class="header-inner">
+  <a class="wordmark" href="/" aria-label={`${site.author}首页`}><img src="/images/avatar.svg" alt="" width="30" height="30" /><span>{site.author}</span></a>
+  <nav class="desktop-nav" aria-label="主导航">{site.nav.map(item => <a href={item.href} aria-current={active(item.href) ? 'page' : undefined} class:list={[{ active: active(item.href) }]}>{item.label}</a>)}
+    <details class="more-menu"><summary class:list={[{ active: moreActive }]}>更多</summary><div class="more-menu-paper">{site.more.map(item => <a href={item.href}><span>{item.label}{item.label==='跃迁' && <Icon name="diagonal" size={13}/>}</span><i></i><small>{item.description}</small></a>)}</div></details>
+  </nav>
+  <div class="header-actions"><span class="action-divider"></span><a class="icon-button" href="/about/" aria-label="关于dominator"><Icon name="user" size={15}/></a><button class="icon-button mobile-menu-toggle" aria-label="展开导航" aria-expanded="false" aria-controls="mobile-nav"><Icon name="menu"/></button></div>
+</div><nav id="mobile-nav" class="mobile-nav" aria-label="移动导航" hidden>{[...site.nav,...site.more].map(item => <a href={item.href} aria-current={active(item.href)?'page':undefined}>{item.label}</a>)}</nav></header>

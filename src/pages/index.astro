@@ -1,51 +1,19 @@
 ---
 import Base from '@/layouts/Base.astro';
 import Icon from '@/components/Icon.astro';
-import EntryList from '@/components/EntryList.astro';
+import Placeholder from '@/components/Placeholder.astro';
 import { site } from '@/config';
 import { entries } from '@/lib';
 const all = await entries();
-const featured = site.featured;
-const words = all.reduce((sum, p) => sum + (p.body?.length || 0), 0);
 ---
 <Base home>
-  <section class="hero">
-    <div class="hero-orbit" aria-hidden="true"></div>
-    <div class="falling-leaves" aria-hidden="true">{Array.from({ length: 9 }, (_, i) => <span style={`--i:${i};--x:${[9, 24, 82, 69, 16, 91, 75, 37, 58][i]}%;--y:${[18, 54, 25, 66, 81, 72, 12, 16, 86][i]}%`}>✦</span>)}</div>
-    <div class="hero-intro">
-      <div class="avatar-wrap"><img class="hero-avatar" src="/images/avatar.svg" width="96" height="96" alt={`${site.author} 的字母 d 个人标识`} /><span class="avatar-spark">✧</span></div>
-      <div class="hero-eyebrow">{site.hero.eyebrow}</div>
-      <h1>Hi, I'm <strong>{site.author}</strong><span class="wave">👋</span><br /><span class="hero-line">I turn <em>ideas</em> into <span class="shimmer">real things<span>✦</span></span><span class="cursor"></span></span></h1>
-      <p class="hero-description">{site.hero.description}<span>{site.hero.aside}</span></p>
-    </div>
-    <div class="hero-bottom">
-      <p class="hero-quote">「 {site.hero.quote} 」</p>
-      <div class="hero-stats"><span>{all.length} 篇文字</span><i>·</i><span>{(words / 1000).toFixed(1)} k 字</span><i>·</i><span>无限的可能</span></div>
-      <div class="social-links">{site.github && <a href={site.github} target="_blank" rel="noreferrer" aria-label="GitHub"><Icon name="github" size={18} /></a>}<a href="/rss.xml" aria-label="RSS 订阅"><Icon name="rss" size={18} /></a>{site.email && <a href={`mailto:${site.email}`} aria-label="发邮件"><Icon name="mail" size={18} /></a>}<a href="/archive/" aria-label="浏览时光归档"><Icon name="book" size={18} /></a><a href="/about/" aria-label="关于我"><Icon name="leaf" size={18} /></a></div>
-    </div>
-    <a href="#writing" class="scroll-cue"><span>向下，遇见一些日常</span><span>↓</span></a>
-    <span class="hero-side-note">DESIGN · CODE · EVERYDAY LIFE</span>
+  <section class="reference-hero">
+    <div class="reference-hero-intro"><img class="reference-avatar" src="/images/avatar.svg" width="112" height="112" alt={`${site.author}头像`}/><h1><span>Hi, I'm </span><strong>{site.author}</strong><span class="reference-wave"> 👋</span><br/><span>I turn <em>ideas</em> into things with </span><span class="ai-spark">✦</span><code class="ai-pill">Creativity</code><span class="typing-cursor"></span></h1><p class="reference-tagline">A PERSONAL SPACE FOR IDEAS, CREATION, AND EVERYDAY LIFE.</p></div>
+    <div class="reference-hero-bottom"><div class="quote-placeholder">「 <Placeholder widths={[100]} /> 」</div><div class="reference-stats"><span>{all.length} 篇</span><i>·</i><span>0 万字</span><i>·</i><span>从此刻开始</span></div><div class="social-links"><a href="/rss.xml" aria-label="RSS订阅"><Icon name="rss" size={18}/></a><button data-search-open aria-label="搜索本站"><Icon name="search" size={18}/></button><a href="/message/" aria-label="留言"><Icon name="mail" size={18}/></a><a href="/about/" aria-label="关于dominator"><Icon name="leaf" size={18}/></a></div></div>
   </section>
-  <section id="writing" class="home-content container">
-    <div class="writing-column reveal">
-      <div class="section-heading"><div><span class="eyebrow">RECENT WRITING</span><h2>近期笔墨<span class="heading-dot">.</span></h2></div><a href="/posts/" class="text-link">所有文稿 <Icon name="arrow" size={16} /></a></div>
-      <EntryList items={all.slice(0, 5)} featured />
-      <a href="/archive/" class="archive-link">沿着时间的线，继续阅读 <Icon name="arrow" size={15} /></a>
-    </div>
-    <aside class="home-aside reveal">
-      <div class="season-heading"><span class="eyebrow">A SPACE IN THE MAKING</span><span class="season-badge"><i></i> {featured.label}</span></div>
-      <a href={featured.href} class="season-card"><div class="season-image"><img src={featured.image} alt={featured.imageAlt} width="600" height="380" loading="lazy" /><span>{featured.date}</span></div><div class="season-caption"><h3>{featured.title}</h3><Icon name="diagonal" size={18} /></div><p>{featured.description}</p></a>
-      <div class="letter-note"><div class="letter-icon"><Icon name="leaf" size={23} /></div><div><h3>关于 dominator</h3><p>这个空间背后的人，与一些想法。</p></div><a href="/about/" aria-label="了解 dominator"><Icon name="arrow" size={19} /></a></div>
-      <a class="rss-note" href="/rss.xml"><Icon name="rss" size={15} /><span>订阅 RSS，让文字自然抵达。</span><Icon name="diagonal" size={13} /></a>
-    </aside>
+  <section class="reference-home-columns">
+    <div class="home-writing"><div class="reference-section-title"><span>RECENT WRITING</span><h2>近期笔墨</h2></div><div class="home-writing-track" aria-label="近期文章版式占位">{Array.from({length:5},(_,i)=><a class:list={['home-writing-placeholder',{'first':i===0}]} href={i%2===0?'/preview/post/':'/preview/note/'} aria-label={`预览${i%2===0?'文稿':'手记'}版式`}><span class="track-number">{String(i+1).padStart(2,'0')}</span><Placeholder widths={[i===0?21:65]}/><Placeholder title={i===0} widths={[i===0?79:36]}/></a>)}</div></div>
+    <aside class="home-marginalia"><div><div class="reference-section-title"><span>MUSINGS</span><h2>碎念</h2></div><div class="home-musing-placeholder"><Placeholder widths={[100,87,54]}/><a href="/thinking/" aria-label="查看思考"><Icon name="arrow" size={16}/></a></div></div><div><div class="reference-section-title"><span>LETTERS</span><h2>来信</h2></div><div class="home-letter-placeholder"><Placeholder widths={[85,100,45]}/><a href="/notes/" aria-label="查看手记"><Icon name="arrow" size={16}/></a></div></div></aside>
   </section>
-  <section class="project-section container reveal" aria-labelledby="project-title">
-    <div class="section-heading"><div><span class="eyebrow">CURRENTLY BUILDING</span><h2 id="project-title">正在构建<span class="heading-dot">.</span></h2></div><span class="project-status"><i></i> 持续生长中</span></div>
-    <a class="project-card" href={site.project.href}>
-      <div class="project-mark" aria-hidden="true">d<span>✦</span></div>
-      <div class="project-copy"><span class="project-kicker">A SMALL IDEA, MADE REAL <b>{site.project.version}</b></span><h3>{site.project.title}</h3><p>{site.project.description}</p><div class="project-tags">{site.project.tags.map(tag => <span>{tag}</span>)}</div></div>
-      <span class="project-open"><Icon name="diagonal" size={23} /><span>阅读构建记录</span></span>
-    </a>
-  </section>
-  <section class="home-epilogue container reveal"><span>✳</span><p>不必追赶所有的风景。<br />这里，收集一些值得停留的瞬间。</p><span class="epilogue-label">MAKE ROOM FOR THE LITTLE THINGS.</span></section>
+  <section class="home-mail-panel"><div class="mail-panel-paper paper-panel"><span class="season-caption-label">深秋叶丹</span><div class="mail-panel-content"><span class="season-decoration" aria-hidden="true">✳</span><div><span class="eyebrow">A LETTER, A CONNECTION</span><h2>欢迎来信</h2></div><div class="mail-panel-actions"><a href="/message/">留下印记 <span>♥</span></a><button data-subscribe-open>订阅通信 <Icon name="arrow" size={15}/></button><p>不错过每一纸书。</p></div></div><div class="mail-panel-links">{site.more.map((item,i)=><>{i>0&&<span>·</span>}<a href={item.href}>{item.label==='友链'?'朋友们':item.label}</a></>)}</div></div></section>
 </Base>

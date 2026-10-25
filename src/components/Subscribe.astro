@@ -1,0 +1,4 @@
+---
+import Icon from './Icon.astro';
+---
+<dialog id="subscribe-dialog" class="small-dialog" aria-labelledby="subscribe-title"><div class="dialog-title"><h2 id="subscribe-title">订阅通信</h2><button class="icon-button" data-subscribe-close aria-label="关闭订阅"><Icon name="close"/></button></div><p>通过 RSS，在你的阅读器里接收更新。</p><a class="rss-address" href="/rss.xml"><Icon name="rss" size={17}/><span>blog.model-gate.fun/rss.xml</span><Icon name="diagonal" size={15}/></a><button class="copy-rss" data-copy-rss>复制订阅地址</button></dialog>

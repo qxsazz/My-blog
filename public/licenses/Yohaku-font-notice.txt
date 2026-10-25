@@ -1,0 +1,7 @@
+Yohaku Sans webfont
+Source: https://innei.in/_next/static/media/YohakuSans_VF-s.p.0l-hebauspbxg.woff2
+Used to match the reference typography. Original font family and metadata are retained.
+
+MiSans subsets
+Source: https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/
+Original MiSans family and metadata are retained.

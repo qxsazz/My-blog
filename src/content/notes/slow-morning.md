@@ -1,4 +1,5 @@
 ---
+draft: true
 title: 一个不赶时间的早晨
 description: 咖啡还热着，窗外的光慢慢走进房间。
 date: 2026-10-15

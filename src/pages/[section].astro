@@ -1,0 +1,16 @@
+---
+import Base from '@/layouts/Base.astro';
+import Placeholder from '@/components/Placeholder.astro';
+export function getStaticPaths() {
+  return [
+    {id:'friends',title:'友链',english:'FRIENDS',description:'互联网上的朋友们'},
+    {id:'projects',title:'项目',english:'PROJECTS',description:'开源项目与作品集'},
+    {id:'says',title:'一言',english:'FRAGMENTS',description:'言语的碎片'},
+    {id:'travelling',title:'跃迁',english:'TRAVELLING',description:'空间跃迁门'},
+    {id:'gallery',title:'照片廊',english:'GALLERY',description:''},
+    {id:'message',title:'留言',english:'LETTERS',description:'留下印记'},
+  ].map(page=>({params:{section:page.id},props:page}));
+}
+const { id,title,english,description }=Astro.props;
+---
+<Base title={title}><section class="secondary-page replica-container"><header><span class="eyebrow">{english}</span><h1>{title}</h1>{description&&<p>{description}</p>}</header><div class:list={['secondary-placeholder-grid',{'gallery-grid':id==='gallery'}]}>{Array.from({length:id==='says'?1:6},()=> <div class="secondary-placeholder paper-panel" aria-label={`${title}版式占位`}>{id==='gallery'?<div class="gallery-image-placeholder" aria-hidden="true"></div>:<><Placeholder title widths={[56]}/><Placeholder widths={[100,76]}/></>}</div>)}</div><p class="structure-footnote">暂无内容</p></section></Base>

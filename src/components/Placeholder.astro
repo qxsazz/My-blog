@@ -1,0 +1,5 @@
+---
+interface Props { widths?: number[]; title?: boolean; class?: string }
+const { widths = [88, 100, 68], title = false, class: className } = Astro.props;
+---
+<div class:list={['content-placeholder', className, { 'placeholder-title': title }]} aria-hidden="true">{widths.map(width => <span style={`--line-width:${width}%`}></span>)}</div>
