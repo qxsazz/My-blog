@@ -26,7 +26,7 @@ function initPage() {
     savePreference('dominator-theme', theme);
     document.querySelectorAll<HTMLButtonElement>('[data-set-theme]').forEach(button => { const active = button.dataset.setTheme === theme; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)); });
     document.querySelector('[data-theme-toggle]')?.setAttribute('aria-label', root.dataset.theme === 'dark' ? '切换浅色主题' : '切换深色主题');
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', root.dataset.theme === 'dark' ? '#050b18' : '#f2f7fd');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', getComputedStyle(document.body).getPropertyValue('--bg-page').trim());
   }
   setTheme(preference);
   systemTheme.addEventListener('change', () => { if (preference === 'system') setTheme('system'); }, { signal });

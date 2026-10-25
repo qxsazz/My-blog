@@ -21,6 +21,13 @@ export function initEditorialReading(signal: AbortSignal) {
   const guide = article.querySelector<HTMLElement>('[data-reading-guide]');
   const expanded = guide?.querySelector<HTMLElement>('[data-reading-outline-expanded]');
   const toggle = guide?.querySelector<HTMLButtonElement>('[data-reading-guide-toggle]');
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  let visualFraction = 0;
+  let targetFraction = 0;
+  let railFrame = 0;
+  let railFrom = 0;
+  let railStarted = 0;
+  let railInitialized = false;
   let guideActive = false;
   let pointerInside = false;
   let manualOpen = false;
@@ -77,14 +84,45 @@ export function initEditorialReading(signal: AbortSignal) {
     });
     stops.forEach(stop => stop.classList.toggle('active', stop.dataset.readingRailStop === current?.id));
     if (currentTitle) currentTitle.textContent = value === 100 ? '已读完' : current?.title || '正文开篇';
+    guideActive = scrollY > Math.max(24, start * .35);
+    syncGuide();
+    moveRail(fraction);
+  }
+  function drawRail(fraction: number) {
     const y = 36 + fraction * 488;
     const bend = `M12 ${y - 28} C12 ${y - 14} 22 ${y - 14} 22 ${y} C22 ${y + 14} 12 ${y + 14} 12 ${y + 28}`;
     path?.setAttribute('d', `M12 8 V${y - 28} ${bend.slice(bend.indexOf('C'))} V552`);
     curve?.setAttribute('d', bend);
     point?.setAttribute('cy', String(y));
     if (label) label.style.top = `${y / 560 * 100}%`;
-    guideActive = scrollY > Math.max(24, start * .35);
-    syncGuide();
+  }
+  function settleRail() {
+    cancelAnimationFrame(railFrame);
+    railFrame = 0;
+    visualFraction = targetFraction;
+    drawRail(visualFraction);
+  }
+  function animateRail(now: number) {
+    railFrame = 0;
+    if (signal.aborted) return;
+    if (reducedMotion.matches || rail?.hidden) { settleRail(); return; }
+    const time = Math.min(1, (now - railStarted) / 560);
+    visualFraction = railFrom + (targetFraction - railFrom) * (1 - (1 - time) ** 3);
+    drawRail(visualFraction);
+    if (time < 1) railFrame = requestAnimationFrame(animateRail);
+  }
+  function moveRail(fraction: number) {
+    if (!railInitialized || reducedMotion.matches || rail?.hidden) {
+      targetFraction = fraction;
+      railInitialized = true;
+      settleRail();
+      return;
+    }
+    if (Math.abs(targetFraction - fraction) < .00001) return;
+    targetFraction = fraction;
+    railFrom = visualFraction;
+    railStarted = performance.now();
+    if (!railFrame) railFrame = requestAnimationFrame(animateRail);
   }
   function syncGuide() {
     if (!guide || !expanded || !rail) return;
@@ -95,6 +133,7 @@ export function initEditorialReading(signal: AbortSignal) {
     expanded.setAttribute('aria-hidden', String(compact));
     rail.hidden = !compact || sheetBottom - scrollY < 100;
     rail.inert = rail.hidden;
+    if (rail.hidden) settleRail();
     toggle?.setAttribute('aria-expanded', String(!compact));
   }
   function openGuide(slug?: string) {
@@ -105,7 +144,7 @@ export function initEditorialReading(signal: AbortSignal) {
   }
   guide?.addEventListener('pointerenter', () => {
     clearTimeout(hoverTimer);
-    hoverTimer = setTimeout(() => { pointerInside = true; syncGuide(); }, 180);
+    hoverTimer = setTimeout(() => { pointerInside = true; syncGuide(); }, 260);
   }, { signal });
   guide?.addEventListener('pointerleave', () => {
     clearTimeout(hoverTimer);
@@ -136,6 +175,7 @@ export function initEditorialReading(signal: AbortSignal) {
     if (frame) return;
     frame = requestAnimationFrame(() => { frame = 0; if (!signal.aborted) update(); });
   }
+  reducedMotion.addEventListener('change', settleRail, { signal });
   window.addEventListener('scroll', () => schedule(), { passive: true, signal });
   window.addEventListener('resize', () => schedule(true), { passive: true, signal });
   const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => schedule(true)) : undefined;
@@ -146,6 +186,6 @@ export function initEditorialReading(signal: AbortSignal) {
   const main = article.closest('#main');
   main?.addEventListener('animationend', event => { if (event.target === main) schedule(true); }, { signal });
   document.fonts.ready.then(() => { if (!signal.aborted) schedule(true); });
-  signal.addEventListener('abort', () => { observer?.disconnect(); cancelAnimationFrame(frame); clearTimeout(hoverTimer); }, { once: true });
+  signal.addEventListener('abort', () => { observer?.disconnect(); cancelAnimationFrame(frame); cancelAnimationFrame(railFrame); clearTimeout(hoverTimer); }, { once: true });
   update();
 }
