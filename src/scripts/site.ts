@@ -38,6 +38,25 @@ function initPage() {
   const mobileNav = document.querySelector<HTMLElement>('#mobile-nav');
   menuToggle?.addEventListener('click', () => { if (!mobileNav) return; mobileNav.hidden = !mobileNav.hidden; menuToggle.setAttribute('aria-expanded', String(!mobileNav.hidden)); menuToggle.setAttribute('aria-label', mobileNav.hidden ? '展开导航' : '收起导航'); });
 
+  // Keep one modal open, preserve a stable return target, and lock root/body together.
+  const returnTargets = new WeakMap<HTMLDialogElement, HTMLElement>();
+  function openModal(modal: HTMLDialogElement) {
+    const active = document.activeElement instanceof HTMLElement ? document.activeElement : undefined;
+    const owner = active?.closest('dialog');
+    const target = owner ? returnTargets.get(owner) : active;
+    document.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach(other => { if (other !== modal) other.close(); });
+    if (target) returnTargets.set(modal, target);
+    if (!modal.open) modal.showModal();
+    document.body.style.overflow = 'hidden'; root.style.overflow = 'hidden';
+  }
+  function closeModal(modal: HTMLDialogElement) {
+    if (document.querySelector('dialog[open]')) return;
+    document.body.style.overflow = ''; root.style.overflow = '';
+    const target = returnTargets.get(modal);
+    if (target?.isConnected && target.getClientRects().length) target.focus({ preventScroll: true });
+    else document.querySelector<HTMLElement>('#main')?.focus({ preventScroll: true });
+  }
+
   // 原生 dialog 提供焦点约束与 Esc 关闭；所有搜索在本地完成。
   interface SearchEntry { title: string; description: string; category: string; tags: string[]; body: string; url: string; type: string }
   const searchIndex: SearchEntry[] = JSON.parse(document.querySelector('#search-index')?.textContent || '[]');
@@ -58,10 +77,10 @@ function initPage() {
       link.append(meta, title, description); results.append(link);
     });
   }
-  function openSearch() { if (!dialog || !input) return; document.dispatchEvent(new Event('dominator:close-navigation')); if (mobileNav) mobileNav.hidden = true; menuToggle?.setAttribute('aria-expanded', 'false'); dialog.showModal(); document.body.style.overflow = 'hidden'; renderSearch(); input.focus(); }
+  function openSearch() { if (!dialog || !input) return; document.dispatchEvent(new Event('dominator:close-navigation')); if (mobileNav) mobileNav.hidden = true; menuToggle?.setAttribute('aria-expanded', 'false'); openModal(dialog); renderSearch(); input.focus(); }
   document.querySelectorAll('[data-search-open]').forEach(button => button.addEventListener('click', openSearch));
   document.querySelector('[data-search-close]')?.addEventListener('click', () => dialog?.close());
-  dialog?.addEventListener('close', () => { document.body.style.overflow = ''; });
+  dialog?.addEventListener('close', () => closeModal(dialog));
   dialog?.addEventListener('click', event => { if (event.target === dialog) { const r = dialog.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close(); } });
   input?.addEventListener('input', renderSearch);
   input?.addEventListener('keydown', event => { if (event.key === 'ArrowDown') { event.preventDefault(); results?.querySelector<HTMLAnchorElement>('a')?.focus(); } if (event.key === 'Enter') results?.querySelector<HTMLAnchorElement>('a')?.click(); });
@@ -111,9 +130,9 @@ function initPage() {
 
   for (const name of ['subscribe', 'tags']) {
     const modal = document.querySelector<HTMLDialogElement>(`#${name}-dialog`);
-    document.querySelectorAll(`[data-${name}-open]`).forEach(button => button.addEventListener('click', () => { modal?.showModal(); document.body.style.overflow = 'hidden'; }));
+    document.querySelectorAll(`[data-${name}-open]`).forEach(button => button.addEventListener('click', () => { if (modal) openModal(modal); }));
     document.querySelector(`[data-${name}-close]`)?.addEventListener('click', () => modal?.close());
-    modal?.addEventListener('close', () => { document.body.style.overflow = ''; });
+    modal?.addEventListener('close', () => closeModal(modal));
     modal?.addEventListener('click', event => { if (event.target !== modal) return; const box = modal.getBoundingClientRect(); if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) modal.close(); });
   }
   document.querySelector<HTMLButtonElement>('[data-copy-rss]')?.addEventListener('click', async event => {

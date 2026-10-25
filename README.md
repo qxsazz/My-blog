@@ -64,7 +64,9 @@ src/scripts/navigation.ts    # 悬停、键盘、触屏与面板定位
 src/scripts/collection-filters.ts # 手记专栏与时光类型的 URL 筛选
 src/components/MenuPage.astro # 人设、灵魂、迭代等独立页面
 src/styles/mega-menu.css     # 桌面信纸菜单与移动端面板
-src/styles/global.css        # 尺寸、排版与响应式
+src/styles/tokens.css        # 深浅主题语义变量与旧组件兼容别名
+src/styles/midnight.css      # 中文排版、首页节奏与公共组件精修
+src/styles/global.css        # 原有尺寸、排版与响应式
 src/styles/stellar.css       # 冰蓝星夜 / 浅色冰霜
 src/styles/content.css       # 有正文的栏目与文章样式
 src/styles/reading.css       # 信纸阅读、文稿正文与过场动画
@@ -101,6 +103,12 @@ public/licenses/             # 字体许可与来源记录
 菜单筛选链接可分享：`/posts/?category=设计`、`/notes/?category=日常`、`/timeline/?type=notes`；手记全部专栏位于 `/notes/columns/`。文稿分类可与标签筛选组合。咨询与赞助页面说明目前尚未开放。
 
 未接入评论、点赞统计、登录或邮件后台。RSS 可以直接订阅。邮箱和 GitHub 未提供时不显示入口。
+
+## Midnight Editorial 精修
+
+视觉规则与验证范围见 `DESIGN.md`。首页采用紧凑的内容式首屏、1168px 主辅版心、轻量来信区和信笺页脚；详情正文最大 760px，桌面 17px / 1.85、手机 16px / 1.85。深浅主题共用语义 tokens，不添加额外字体或动画依赖。
+
+弹窗保持单一打开状态，锁定根元素与 body 的滚动，关闭后恢复焦点。背景继续由同一组 SVG/CSS 节点呈现，减少粒子与中央装饰；主题、背景效果与阅读字体仍保存在 localStorage。
 
 ## 发布
 

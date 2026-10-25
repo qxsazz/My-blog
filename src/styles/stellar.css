@@ -1,35 +1,4 @@
 /* 冰蓝星夜：从头像的深海蓝、银白发色和冰蓝瞳色提取主题。 */
-:root {
-  --paper: #f2f7fd;
-  --panel: #f7fbff;
-  --ink: #182d48;
-  --secondary: #506784;
-  --muted: #8194af;
-  --n6: #637e9e;
-  --line: #527eb524;
-  --accent: #367fd3;
-  --accent-soft: #438fe813;
-  --placeholder: #4e79aa12;
-  --placeholder-strong: #426f9c21;
-  --stellar-glow: #4aa8ff;
-  --glass: #f4f9ffd6;
-}
-
-:root[data-theme='dark'] {
-  --paper: #050b18;
-  --panel: #0a1528;
-  --ink: #e6f1ff;
-  --secondary: #b0c2dc;
-  --muted: #738aaa;
-  --n6: #91a8c8;
-  --line: #90c5ff1a;
-  --accent: #7bcfff;
-  --accent-soft: #56b8ff10;
-  --placeholder: #91b9ed0f;
-  --placeholder-strong: #91b9ed20;
-  --stellar-glow: #439fff;
-  --glass: #0a1527bf;
-}
 
 body {
   transition: background-color 300ms ease, color 300ms ease;

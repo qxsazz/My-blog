@@ -1,0 +1,55 @@
+/* Midnight Editorial: semantic roles; legacy aliases keep existing components compatible. */
+:root {
+  color-scheme: light;
+  --bg-page: #f2f7fd;
+  --surface-raised: #f7fbff;
+  --text-primary: #182d48;
+  --text-body: #445d7a;
+  --text-secondary: #536b87;
+  --text-muted: #586e8a;
+  --color-accent: #2463a3;
+  --border-subtle: #426f9c29;
+  --surface-hover: #2463a30a;
+  --header-surface: #f2f7fdf5;
+  --overlay-scrim: #182d4878;
+  --code-bg: #0b1424;
+  --code-ink: #c9d9ef;
+  --content-max: 1168px;
+  --reading-max: 760px;
+  --space-section: clamp(40px, 5vw, 64px);
+  --duration: 200ms;
+  --ease: cubic-bezier(.22,1,.36,1);
+  --stellar-glow: #4aa8ff;
+  --placeholder: #426f9c12;
+  --placeholder-strong: #426f9c21;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg-page: #050b18;
+  --surface-raised: #0a1528;
+  --text-primary: #e6f1ff;
+  --text-body: #b0c2dc;
+  --text-secondary: #91a8c8;
+  --text-muted: #8ea4c2;
+  --color-accent: #7bcfff;
+  --border-subtle: #91a8c82b;
+  --surface-hover: #7bcfff0a;
+  --header-surface: #050b18f5;
+  --overlay-scrim: #020814b8;
+  --placeholder: #91b9ed0f;
+  --placeholder-strong: #91b9ed20;
+}
+
+/* Match legacy dark selectors as well as light defaults. */
+:root, :root[data-theme='dark'] {
+  --paper: var(--bg-page);
+  --panel: var(--surface-raised);
+  --ink: var(--text-primary);
+  --secondary: var(--text-body);
+  --n6: var(--text-secondary);
+  --muted: var(--text-muted);
+  --accent: var(--color-accent);
+  --line: var(--border-subtle);
+  --accent-soft: var(--surface-hover);
+  --glass: var(--surface-raised);
+}

@@ -6,6 +6,7 @@ function finish() {
   clearTimeout(loaderTimer); clearTimeout(recoveryTimer);
   document.documentElement.classList.remove('route-pending', 'route-loading');
   document.querySelector('#main')?.removeAttribute('aria-busy');
+  document.querySelector('#main')?.removeAttribute('inert');
   document.querySelector('#route-loader')?.setAttribute('aria-hidden', 'true');
 }
 document.addEventListener('astro:before-preparation', event => {
@@ -15,6 +16,7 @@ document.addEventListener('astro:before-preparation', event => {
   document.dispatchEvent(new Event('dominator:close-navigation'));
   document.documentElement.classList.add('route-pending');
   document.querySelector('#main')?.setAttribute('aria-busy', 'true');
+  document.querySelector('#main')?.setAttribute('inert', '');
   loaderTimer = setTimeout(() => {
     document.documentElement.classList.add('route-loading');
     document.querySelector('#route-loader')?.setAttribute('aria-hidden', 'false');
