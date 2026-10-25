@@ -11,6 +11,13 @@
   :root body input[type='range'] { cursor: ew-resize; }
   :root body :is(button, input, select, textarea):disabled,
   :root body :is(button, input, select, textarea):disabled * { cursor: not-allowed; }
+  /* Scrollbar hit testing bypasses body descendants; cover its own pseudo tree. */
+  :root::-webkit-scrollbar, :root::-webkit-scrollbar-track,
+  :root::-webkit-scrollbar-track-piece, :root::-webkit-scrollbar-thumb,
+  :root::-webkit-scrollbar-corner, :root::-webkit-scrollbar-button,
+  :root body *::-webkit-scrollbar, :root body *::-webkit-scrollbar-track,
+  :root body *::-webkit-scrollbar-track-piece, :root body *::-webkit-scrollbar-thumb,
+  :root body *::-webkit-scrollbar-corner, :root body *::-webkit-scrollbar-button { cursor: var(--cursor-ice); }
   :root body dialog::backdrop { cursor: var(--cursor-ice); }
   :root::view-transition, :root::view-transition-group(*),
   :root::view-transition-image-pair(*), :root::view-transition-old(*),
