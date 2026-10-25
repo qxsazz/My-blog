@@ -1,8 +1,8 @@
 /* A single article establishes the next reading style before wider adoption. */
 .editorial-reading {
-  max-width: 1000px;
-  grid-template-columns: minmax(0,720px) 208px;
-  gap: 72px;
+  max-width: 1168px;
+  grid-template-columns: minmax(0,864px) 208px;
+  gap: 96px;
   padding: 40px 0 0;
   --editorial-rule: color-mix(in srgb,var(--accent) 18%,transparent);
 }
@@ -75,7 +75,7 @@
 .editorial-reading .next-article .eyebrow { font-size: 11px; color: var(--text-secondary); }
 .editorial-reading .next-article h2 { font: 400 22px/1.7 var(--font-serif); margin-top: 9px; }
 .editorial-reading .next-article > svg { flex-shrink: 0; width: 32px; height: 32px; padding: 7px; border: 1px solid var(--line); border-radius: 50%; color: var(--accent); }
-@media(max-width:1199px) { .editorial-reading { gap: 40px; grid-template-columns: minmax(0,1fr) 184px; } }
+@media(max-width:1279px) { .editorial-reading { width: calc(100% - 40px); max-width: 1072px; gap: 32px; grid-template-columns: minmax(0,1fr) 176px; } }
 @media(max-width:800px) {
   .editorial-reading { display: block; width: calc(100% - 64px); max-width: 720px; padding-top: 40px; }
   .editorial-reading .article-heading { margin-bottom: 28px; }
