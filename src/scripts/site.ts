@@ -2,6 +2,7 @@ import { initPostsBrowser } from './posts-browser';
 import { initNavigationMenus } from './navigation';
 import { initCollectionFilters } from './collection-filters';
 import { initPointerTrail } from './pointer-trail';
+import { initEditorialReading } from './editorial-reading';
 let cleanupPage = () => {};
 function initPage() {
   cleanupPage();
@@ -163,36 +164,16 @@ function initPage() {
   document.querySelectorAll<HTMLButtonElement>('[data-reading-font]').forEach(button => button.addEventListener('click', () => { readingFont = button.dataset.readingFont!; savePreference('dominator-reading-font', readingFont); updateReadingFont(); }));
   const progress = document.querySelector<HTMLElement>('[data-reading-progress]');
   const articleBody = document.querySelector<HTMLElement>('.article-prose');
-  const readingMeter = document.querySelector<HTMLElement>('[data-reading-meter]');
-  const editorialToc = document.querySelectorAll<HTMLAnchorElement>('.editorial-reading .reading-outline nav a[href^="#"]');
-  const editorialHeadings = readingMeter ? Array.from(articleBody?.querySelectorAll<HTMLElement>('h2[id],h3[id]') || []) : [];
-  if (progress && articleBody) {
+  if (progress && articleBody && !document.querySelector('.editorial-reading')) {
     const update = () => {
       const box = articleBody.getBoundingClientRect();
       const distance = Math.max(1, box.height - innerHeight * .55);
       const value = Math.round(Math.min(1, Math.max(0, (innerHeight * .25 - box.top) / distance)) * 100);
       progress.textContent = `${value}%`;
       progress.style.setProperty('--progress', `${value}%`);
-      readingMeter?.style.setProperty('--progress', `${value}%`);
-      if (readingMeter) {
-        // The section nearest the reading line wins, even when several are visible.
-        const current = editorialHeadings.filter(heading => heading.getBoundingClientRect().top <= 145).at(-1);
-        editorialToc.forEach(link => {
-          const active = decodeURIComponent(link.hash) === `#${current?.id}`;
-          link.classList.toggle('active', active);
-          if (active) link.setAttribute('aria-current', 'location');
-          else link.removeAttribute('aria-current');
-        });
-      }
     };
     window.addEventListener('scroll', update, { passive: true, signal });
-    window.addEventListener('resize', update, { passive: true, signal });
-    if (readingMeter && 'ResizeObserver' in window) {
-      const observer = new ResizeObserver(update);
-      observer.observe(articleBody);
-      signal.addEventListener('abort', () => observer.disconnect(), { once: true });
-    }
-    update();
+    window.addEventListener('resize', update, { passive: true, signal }); update();
   }
   document.querySelectorAll<HTMLElement>('.article-prose pre').forEach(pre => {
     if (pre.closest('.code-block')) return;
@@ -216,6 +197,7 @@ function initPage() {
     figure.append(img);
     if (img.alt) { const caption = document.createElement('figcaption'); caption.textContent = img.alt; figure.append(caption); }
   });
+  initEditorialReading(signal);
 }
 document.addEventListener('astro:page-load', initPage);
 document.addEventListener('astro:before-swap', () => cleanupPage());
