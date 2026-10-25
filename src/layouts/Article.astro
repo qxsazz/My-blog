@@ -2,22 +2,31 @@
 import Base from './Base.astro';
 import { site } from '@/config';
 import Icon from '@/components/Icon.astro';
-import { dateLabel, entryUrl, readingTime, collectionLabel, type Entry } from '@/lib';
+import { dateLabel, entryUrl, readingTime, collectionLabel, entries, type Entry } from '@/lib';
 interface Props { entry: Entry; headings: { depth: number; slug: string; text: string }[]; next?: Entry }
 const { entry, headings, next } = Astro.props;
 const note = entry.collection === 'notes';
 const label = collectionLabel[entry.collection];
+const recent = (await entries()).filter(item => item.collection === entry.collection).slice(0, 5);
+const outline = headings.filter(h => h.depth === 2 || h.depth === 3);
 ---
 <Base title={entry.data.title} description={entry.data.description}>
-  <div class="article-layout replica-container">
-    <article class="article-main">
-      <a class="article-back text-link" href={`/${entry.collection}/`}>← 返回{label}</a>
-      <header class="article-heading"><span class="eyebrow">{note ? 'A NOTE FROM EVERYDAY' : 'WORDS & IDEAS'} <span> / {entry.data.category}</span></span><h1>{entry.data.title}</h1><p class="article-summary">{entry.data.description}</p><div class="article-meta"><a class="article-author" href="/about/" rel="author">{site.author}</a><i>·</i><time datetime={entry.data.date.toISOString()}>{dateLabel(entry.data.date)}</time><i>·</i><span>约 {readingTime(entry.body)} 分钟阅读</span><button class="copy-link" data-copy-link><Icon name="copy" size={13} /><span>复制链接</span></button></div></header>
-      <div class="prose"><slot /></div>
+  <div class:list={['article-layout', 'reading-layout', { 'note-reading': note, 'post-reading': !note }]}>
+    {note && <aside class="reading-recent" aria-label="近期手记"><p>最近的来信</p>{recent.map(item => <a href={entryUrl(item)} aria-current={item.id === entry.id ? 'page' : undefined}>{item.data.title}</a>)}<a class="recent-all" href="/notes/">所有手记 ↗</a></aside>}
+    <article class="article-main reading-sheet" data-default-font={note ? 'serif' : 'sans'}>
+      <a class="article-back text-link" href={`/${entry.collection}/`}>← 返回{label} <span> / {entry.data.category}</span></a>
+      <header class="article-heading">
+        <h1>{entry.data.title}</h1>
+        <div class="article-meta"><time datetime={entry.data.date.toISOString()}>{dateLabel(entry.data.date)}</time><i>·</i><span>{entry.data.category}</span>{entry.data.mood && <><i>·</i><span>{entry.data.mood}</span></>}<i>·</i><span>约 {readingTime(entry.body)} 分钟阅读</span>{entry.data.updated && <><i>·</i><span>更新于 {dateLabel(entry.data.updated)}</span></>}</div>
+        <div class="reading-byline"><a class="article-author" href="/about/" rel="author"><img src={site.avatar} width="22" height="22" alt=""/>{site.author}</a><button class="copy-link" data-copy-link><Icon name="copy" size={13} /><span>复制链接</span></button></div>
+      </header>
+      <details class="mobile-reading-tools"><summary>文章目录与阅读设置 <span>⌄</span></summary><nav aria-label="移动端文章目录">{outline.length ? outline.map(h => <a href={`#${h.slug}`} class:list={{'toc-nested':h.depth===3}}>{h.text}</a>) : <a href="#article-body">正文</a>}</nav><div class="reading-font-controls"><span>正文字体</span><button data-reading-font="serif" aria-pressed={note}>宋体</button><button data-reading-font="sans" aria-pressed={!note}>黑体</button></div></details>
+      <section class="reading-synopsis" aria-label="内容提要"><span>内容提要</span><p>{entry.data.description}</p></section>
+      <div class:list={['prose', 'article-prose', {'letter-prose':note}]} id="article-body"><slot /></div>
       <div class="article-tags">{entry.data.tags.map(tag => <a href={`/posts/?tag=${encodeURIComponent(tag)}`}>#{tag}</a>)}</div>
-      <div class="article-signature"><span>✳</span><p>{site.author} <span class="signature-separator">/</span> 谢谢你读到这里。<br /><small>愿这些文字，带给你一点灵感或共鸣。</small></p><a href="/rss.xml" class="text-link">订阅 RSS <Icon name="rss" size={15} /></a></div>
-      {next && <a class="next-article" href={entryUrl(next)}><div><span class="eyebrow">继续阅读</span><h2>{next.data.title}</h2></div><Icon name="arrow" /></a>}
+      <div class="article-signature"><span>✦</span><p>{site.author} <span class="signature-separator">/</span> 谢谢你读到这里。<br /><small>愿这些文字，带给你一点灵感或共鸣。</small></p><a href="/rss.xml" class="text-link" data-astro-reload>订阅 RSS <Icon name="rss" size={15} /></a></div>
+      {next && <a class="next-article" href={entryUrl(next)}><div><span class="eyebrow">继续阅读 · {collectionLabel[next.collection]}</span><h2>{next.data.title}</h2></div><Icon name="arrow" /></a>}
     </article>
-    <aside class="article-toc"><span class="eyebrow">ON THIS PAGE</span><p>文章目录</p>{headings.filter(h=>h.depth===2).map(h=><a href={`#${h.slug}`}>{h.text}</a>)}<a href="#main" class="toc-top">回到开头 ↑</a></aside>
+    <aside class="article-toc reading-outline" aria-label="文章目录"><p>此页目录</p><nav>{outline.length ? outline.map(h => <a href={`#${h.slug}`} class:list={{'toc-nested':h.depth===3}}>{h.text}</a>) : <a href="#article-body">正文</a>}</nav><div class="reading-tools"><div class="reading-progress-row"><span>阅读进度</span><span data-reading-progress>0%</span></div><div class="reading-font-controls"><span>正文字体</span><button data-reading-font="serif" aria-pressed={note}>宋体</button><button data-reading-font="sans" aria-pressed={!note}>黑体</button></div><a href="#main" class="toc-top">回到开头 ↑</a></div></aside>
   </div>
 </Base>
