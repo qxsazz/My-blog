@@ -9,4 +9,4 @@ const random = (i: number, salt = 1) => { const x = Math.sin(i * 127.1 + salt * 
   <div class="stellar-fragments">{[2, 98, 6, 94, 10, 90, 14, 86, 18, 82, 4, 96, 8, 92, 12, 88, 1, 99, 16, 84].map((x,i)=><span class="stellar-fragment" style={`--x:${x}%;--delay:${-i*5-7}s;--speed:${24+i%6*3}s;--size:${3+i%3}px;--drift:${i%2?-10:10}px`}></span>)}</div>
 </div>
 
-<div transition:persist="stellar-pointer" class="stellar-pointer" aria-hidden="true">{Array.from({length:14},()=> <span class="pointer-spark"></span>)}</div>
+<div transition:persist="stellar-pointer" class="stellar-pointer" aria-hidden="true">{Array.from({length:14},()=> <span class="pointer-spark"></span>)}{Array.from({length:3},()=> <span class="pointer-burst"><span class="click-ring"></span>{Array.from({length:8},()=> <span class="click-shard"></span>)}</span>)}</div>

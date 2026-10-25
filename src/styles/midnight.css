@@ -34,11 +34,26 @@ button:not(:disabled), a, summary { transition: color var(--duration) ease, back
   .stellar-fragment:nth-child(n+11) { display: none; }
 }
 /* Small, short-lived native-pointer trail; never intercepts an interaction. */
-.stellar-pointer { display: none; position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 35; contain: strict; }
+.stellar-pointer { display: none; position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 90; contain: strict; }
 .pointer-spark { position: absolute; left: 0; top: 0; width: 5px; height: 5px; border-radius: 50%; opacity: 0; background: radial-gradient(circle,var(--ink),var(--accent) 40%,transparent 72%); box-shadow: 0 0 6px color-mix(in srgb,var(--accent) 28%,transparent); }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) { .stellar-pointer { display: block; } }
 [data-effects='off'] .stellar-pointer { display: none; }
 @media print { .stellar-pointer { display: none; } }
+/* Native SVG cursors retain a real hotspot and work without JavaScript. */
+:root { --cursor-ice: url('/cursors/ice-light.svg') 3 2, auto; --cursor-star: url('/cursors/star-light.svg') 12 12, pointer; }
+:root[data-theme='dark'] { --cursor-ice: url('/cursors/ice-dark.svg') 3 2, auto; --cursor-star: url('/cursors/star-dark.svg') 12 12, pointer; }
+@media (hover: hover) and (pointer: fine) {
+  html, body { cursor: var(--cursor-ice); }
+  p, blockquote, h1, h2, h3, h4, h5, h6, pre, code, input, textarea, [contenteditable='true'] { cursor: text; }
+  a, a *, button, button *, summary, summary *, select, label[for], [role='button'], [role='button'] * { cursor: var(--cursor-star); }
+  input[type='checkbox'], input[type='radio'], input[type='submit'], input[type='button'] { cursor: var(--cursor-star); }
+  input[type='range'] { cursor: ew-resize; }
+  button:disabled, input:disabled, select:disabled, textarea:disabled { cursor: not-allowed; }
+}
+.pointer-burst { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+.click-ring { position: absolute; left: -10px; top: -10px; width: 20px; height: 20px; border: 1px solid var(--accent); border-radius: 50%; opacity: 0; }
+.click-shard { position: absolute; left: -1.5px; top: -3.5px; width: 3px; height: 7px; background: var(--accent); clip-path: polygon(50% 0,100% 50%,50% 100%,0 50%); opacity: 0; }
+.click-shard:nth-child(3n) { background: var(--ink); }
 /* Navigation and shared surfaces. */
 .site-header { background: var(--header-surface); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 .header-inner { max-width: var(--content-max); }
