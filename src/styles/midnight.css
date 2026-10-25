@@ -21,9 +21,9 @@ button:not(:disabled), a, summary { transition: color var(--duration) ease, back
 .stellar-fragment:nth-child(3n) { background: var(--text-primary); }
 @keyframes fragment-fall {
   0% { transform: translate3d(0,-20px,0) rotate(-25deg); opacity: 0; }
-  12% { opacity: .35; }
-  50% { opacity: .22; }
-  85% { opacity: .35; }
+  12% { opacity: .65; }
+  50% { opacity: .4; }
+  85% { opacity: .65; }
   100% { transform: translate3d(var(--drift),calc(100svh + 40px),0) rotate(115deg); opacity: 0; }
 }
 @keyframes starlight { from { opacity: calc(var(--alpha) * .25); } to { opacity: calc(var(--alpha) * .5); } }
@@ -31,8 +31,14 @@ button:not(:disabled), a, summary { transition: color var(--duration) ease, back
   .nebula-one { height: 480px; top: -180px; }
   .stellar-stars { mask-image: linear-gradient(90deg,#000,transparent 12%,transparent 88%,#000); }
   .stellar-orbits { display: none; }
-  .stellar-fragment:nth-child(n+5) { display: none; }
+  .stellar-fragment:nth-child(n+11) { display: none; }
 }
+/* Small, short-lived native-pointer trail; never intercepts an interaction. */
+.stellar-pointer { display: none; position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 35; contain: strict; }
+.pointer-spark { position: absolute; left: 0; top: 0; width: 5px; height: 5px; border-radius: 50%; opacity: 0; background: radial-gradient(circle,var(--ink),var(--accent) 40%,transparent 72%); box-shadow: 0 0 6px color-mix(in srgb,var(--accent) 28%,transparent); }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) { .stellar-pointer { display: block; } }
+[data-effects='off'] .stellar-pointer { display: none; }
+@media print { .stellar-pointer { display: none; } }
 /* Navigation and shared surfaces. */
 .site-header { background: var(--header-surface); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
 .header-inner { max-width: var(--content-max); }

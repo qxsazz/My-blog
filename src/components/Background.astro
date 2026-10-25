@@ -5,6 +5,8 @@ const random = (i: number, salt = 1) => { const x = Math.sin(i * 127.1 + salt * 
 <div transition:persist="stellar-background" class="site-background stellar-background" aria-hidden="true">
   <div class="stellar-nebula nebula-one"></div><div class="stellar-nebula nebula-two"></div>
   <svg class="stellar-orbits" viewBox="0 0 1440 1050" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="orbit-blue"><stop stop-color="#7ecfff" stop-opacity="0"/><stop offset=".48" stop-color="#90cbff" stop-opacity=".4"/><stop offset="1" stop-color="#7ecfff" stop-opacity="0"/></linearGradient></defs><g fill="none" stroke="url(#orbit-blue)" stroke-width=".6"><ellipse cx="720" cy="320" rx="690" ry="300" transform="rotate(-28 720 320)"/><ellipse cx="720" cy="320" rx="620" ry="345" transform="rotate(-28 720 320)"/><path d="M-120 800C270 370 1080 1190 1580 240"/><path d="M-100 850C330 410 1060 1250 1520 330"/></g></svg>
-  <div class="stellar-stars">{Array.from({length:32},(_,i)=><span class="stellar-star" style={`--x:${random(i,2)*100}%;--y:${random(i,3)*100}%;--size:${random(i,4)*1.5+.6}px;--alpha:${random(i,5)*.45+.15};--delay:${-random(i,6)*12}s;--speed:${random(i,7)*8+5}s`}></span>)}</div>
-  <div class="stellar-fragments">{[3, 95, 8, 98, 1, 91].map((x,i)=><span class="stellar-fragment" style={`--x:${x}%;--delay:${-i*8-7}s;--speed:${38+i*4}s;--size:${i%2?3:2}px;--drift:${i%2?-14:14}px`}></span>)}</div>
+  <div class="stellar-stars">{Array.from({length:48},(_,i)=><span class="stellar-star" style={`--x:${random(i,2)*100}%;--y:${random(i,3)*100}%;--size:${random(i,4)*1.5+.6}px;--alpha:${random(i,5)*.45+.15};--delay:${-random(i,6)*12}s;--speed:${random(i,7)*8+5}s`}></span>)}</div>
+  <div class="stellar-fragments">{[2, 98, 6, 94, 10, 90, 14, 86, 18, 82, 4, 96, 8, 92, 12, 88, 1, 99, 16, 84].map((x,i)=><span class="stellar-fragment" style={`--x:${x}%;--delay:${-i*5-7}s;--speed:${24+i%6*3}s;--size:${3+i%3}px;--drift:${i%2?-10:10}px`}></span>)}</div>
 </div>
+
+<div transition:persist="stellar-pointer" class="stellar-pointer" aria-hidden="true">{Array.from({length:14},()=> <span class="pointer-spark"></span>)}</div>

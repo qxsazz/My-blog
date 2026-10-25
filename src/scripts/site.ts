@@ -1,6 +1,7 @@
 import { initPostsBrowser } from './posts-browser';
 import { initNavigationMenus } from './navigation';
 import { initCollectionFilters } from './collection-filters';
+import { initPointerTrail } from './pointer-trail';
 let cleanupPage = () => {};
 function initPage() {
   cleanupPage();
@@ -11,6 +12,7 @@ function initPage() {
   initPostsBrowser(signal);
   initNavigationMenus(signal);
   initCollectionFilters();
+  initPointerTrail(signal);
   // 小型交互独立于页面和内容；页面本身始终由 Astro 静态生成。
   const root = document.documentElement;
   const readPreference = (key: string, fallback: string) => { try { return localStorage.getItem(key) || fallback; } catch { return fallback; } };
