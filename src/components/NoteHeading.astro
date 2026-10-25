@@ -1,0 +1,20 @@
+---
+import Icon from './Icon.astro';
+import { site } from '@/config';
+import { dateLabel, readingTime, type Entry } from '@/lib';
+interface Props { entry: Entry }
+const { entry } = Astro.props;
+const weekday = new Intl.DateTimeFormat('zh-CN', { weekday: 'long', timeZone: 'UTC' }).format(entry.data.date);
+---
+<a class="note-category-ribbon" href={`/notes/?category=${encodeURIComponent(entry.data.category)}`} aria-label={`查看${entry.data.category}手记`}>{entry.data.category}</a>
+<header class="article-heading note-heading">
+  <h1>{entry.data.title}</h1>
+  <div class="note-dateline"><time datetime={entry.data.date.toISOString()}>{dateLabel(entry.data.date)}{weekday}</time><span>约 {readingTime(entry.body)} 分钟阅读</span></div>
+  <div class="note-imprint">
+    <a href="/about/" rel="author" class="article-author"><Icon name="book" size={14} />{site.author}</a>
+    {entry.data.mood && <span class="note-mood">{entry.data.mood}</span>}
+    {entry.data.updated && <span>更新于 {dateLabel(entry.data.updated)}</span>}
+    <button class="copy-link" data-copy-link><Icon name="copy" size={13} /><span>复制链接</span></button>
+  </div>
+</header>
+{entry.data.description && <section class="reading-synopsis" aria-label="概要"><span>概要</span><p>{entry.data.description}</p></section>}

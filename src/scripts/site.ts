@@ -120,7 +120,7 @@ function initPage() {
     topButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reducedMotion ? 'instant' : 'smooth' }));
   }
   const tocLinks = document.querySelectorAll<HTMLAnchorElement>('.article-toc a[href^="#"]');
-  if (tocLinks.length && 'IntersectionObserver' in window && !document.querySelector('.editorial-reading')) {
+  if (tocLinks.length && 'IntersectionObserver' in window && !document.querySelector('.editorial-reading, .note-reading')) {
     const observer = new IntersectionObserver(items => { for (const item of items) if (item.isIntersecting) tocLinks.forEach(link => link.classList.toggle('active', link.hash === `#${item.target.id}`)); }, { rootMargin: '-100px 0px -65% 0px' });
     observers.push(observer);
     document.querySelectorAll('.article-prose :is(h2,h3)[id]').forEach(heading => observer.observe(heading));
@@ -164,7 +164,7 @@ function initPage() {
   document.querySelectorAll<HTMLButtonElement>('[data-reading-font]').forEach(button => button.addEventListener('click', () => { readingFont = button.dataset.readingFont!; savePreference('dominator-reading-font', readingFont); updateReadingFont(); }));
   const progress = document.querySelector<HTMLElement>('[data-reading-progress]');
   const articleBody = document.querySelector<HTMLElement>('.article-prose');
-  if (progress && articleBody && !document.querySelector('.editorial-reading')) {
+  if (progress && articleBody && !document.querySelector('.editorial-reading, .note-reading')) {
     const update = () => {
       const box = articleBody.getBoundingClientRect();
       const distance = Math.max(1, box.height - innerHeight * .55);

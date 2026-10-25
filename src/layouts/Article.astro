@@ -3,6 +3,7 @@ import Base from './Base.astro';
 import { site } from '@/config';
 import Icon from '@/components/Icon.astro';
 import ReadingOutline from '@/components/ReadingOutline.astro';
+import NoteHeading from '@/components/NoteHeading.astro';
 import ReadingRail from '@/components/ReadingRail.astro';
 import { dateLabel, entryUrl, readingTime, collectionLabel, entries, type Entry } from '@/lib';
 interface Props { entry: Entry; headings: { depth: number; slug: string; text: string }[]; next?: Entry; editorial?: boolean }
@@ -16,6 +17,7 @@ const outline = headings.filter(h => h.depth === 2 || h.depth === 3);
   <div class:list={['article-layout', 'reading-layout', { 'note-reading': note, 'post-reading': !note, 'editorial-reading': editorial }]}>
     {note && <aside class="reading-recent" aria-label="近期手记"><p>最近的来信</p>{recent.map(item => <a href={entryUrl(item)} aria-current={item.id === entry.id ? 'page' : undefined}>{item.data.title}</a>)}<a class="recent-all" href="/notes/">所有手记 ↗</a></aside>}
     <article class="article-main reading-sheet" data-default-font={note ? 'serif' : 'sans'}>
+      {note ? <NoteHeading entry={entry} /> : <>
       <a class="article-back text-link" href={`/${entry.collection}/`}>← 返回{label} {!editorial && <span> / {entry.data.category}</span>}</a>
       <header class="article-heading">
         <h1>{entry.data.title}</h1>
@@ -30,8 +32,9 @@ const outline = headings.filter(h => h.depth === 2 || h.depth === 3);
         {!editorial && <div class="reading-byline"><a class="article-author" href="/about/" rel="author"><img src={site.avatar} width="22" height="22" alt=""/>{site.author}</a><button class="copy-link" data-copy-link><Icon name="copy" size={13} /><span>复制链接</span></button></div>}
         {editorial && entry.data.description && <section class="editorial-summary" aria-label="内容提要"><span>✧ 内容提要</span><p class="editorial-deck">{entry.data.description}</p></section>}
       </header>
-      <details class="mobile-reading-tools"><summary>文章目录与阅读设置 {editorial && <span class="reading-mobile-percent" data-reading-progress>0%</span>}<span>⌄</span></summary><nav aria-label="移动端文章目录">{outline.length ? outline.map(h => <a href={`#${h.slug}`} class:list={{'toc-nested':h.depth===3}}>{h.text}</a>) : <a href="#article-body">正文</a>}</nav><div class="reading-font-controls"><span>正文字体</span><button data-reading-font="serif" aria-pressed={note}>宋体</button><button data-reading-font="sans" aria-pressed={!note}>黑体</button></div></details>
-      {!editorial && <section class="reading-synopsis" aria-label="内容提要"><span>内容提要</span><p>{entry.data.description}</p></section>}
+      </>}
+      <details class="mobile-reading-tools"><summary>文章目录与阅读设置 {(editorial || note) && <span class="reading-mobile-percent" data-reading-progress>0%</span>}<span>⌄</span></summary><nav aria-label="移动端文章目录">{outline.length ? outline.map(h => <a href={`#${h.slug}`} class:list={{'toc-nested':h.depth===3}}>{h.text}</a>) : <a href="#article-body">正文</a>}</nav><div class="reading-font-controls"><span>正文字体</span><button data-reading-font="serif" aria-pressed={note}>宋体</button><button data-reading-font="sans" aria-pressed={!note}>黑体</button></div></details>
+      {!editorial && !note && <section class="reading-synopsis" aria-label="内容提要"><span>内容提要</span><p>{entry.data.description}</p></section>}
       <div class:list={['prose', 'article-prose', {'letter-prose':note}]} id="article-body"><slot /></div>
       <div class="article-tags">{entry.data.tags.map(tag => <a href={`/posts/?tag=${encodeURIComponent(tag)}`}>#{tag}</a>)}</div>
       <div class="article-signature"><span>✦</span><p>{site.author} <span class="signature-separator">/</span> 谢谢你读到这里。<br /><small>愿这些文字，带给你一点灵感或共鸣。</small></p><a href="/rss.xml" class="text-link" data-astro-reload>订阅 RSS <Icon name="rss" size={15} /></a></div>
@@ -41,8 +44,8 @@ const outline = headings.filter(h => h.depth === 2 || h.depth === 3);
       {editorial ? <>
         <div class="reading-outline-expanded" id="reading-outline-expanded" data-reading-outline-expanded><ReadingOutline outline={outline} note={note} enhanced /></div>
         <ReadingRail outline={outline} />
-      </> : <ReadingOutline outline={outline} note={note} />}
+      </> : <ReadingOutline outline={outline} note={note} enhanced={note} />}
     </aside>
   </div>
-  <Fragment slot="reading-overlay">{editorial && <div class="reading-top-progress" aria-hidden="true"><span data-reading-top-meter></span></div>}</Fragment>
+  <Fragment slot="reading-overlay">{(editorial || note) && <div class="reading-top-progress" aria-hidden="true"><span data-reading-top-meter></span></div>}</Fragment>
 </Base>

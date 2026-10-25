@@ -1,6 +1,6 @@
 /** One reading model drives the TOC, ring, rail and mobile meter. */
 export function initEditorialReading(signal: AbortSignal) {
-  const article = document.querySelector<HTMLElement>('.editorial-reading');
+  const article = document.querySelector<HTMLElement>('.editorial-reading, .note-reading');
   const body = article?.querySelector<HTMLElement>('.article-prose');
   if (!article || !body) return;
   const sheet = article.querySelector<HTMLElement>('.reading-sheet')!;
@@ -112,6 +112,7 @@ export function initEditorialReading(signal: AbortSignal) {
     if (time < 1) railFrame = requestAnimationFrame(animateRail);
   }
   function moveRail(fraction: number) {
+    if (!rail) return;
     if (!railInitialized || reducedMotion.matches || rail?.hidden) {
       targetFraction = fraction;
       railInitialized = true;
