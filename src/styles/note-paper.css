@@ -1,4 +1,4 @@
-/* Notes are white manuscripts in both themes; the surrounding site keeps its theme. */
+/* Manuscript surfaces and ink follow the selected reading theme. */
 .note-reading {
   --note-paper: #fff;
   --note-ink: #242930;
@@ -6,11 +6,24 @@
   --note-muted: #59636e;
   --note-rule: #dce2e9;
   --note-accent: #2463a3;
+  --note-soft: #edf5fc;
+  --note-scheme: light;
   max-width: 1320px;
   width: calc(100% - 64px);
   grid-template-columns: minmax(0,1fr) minmax(0,840px) minmax(0,1fr);
   gap: 32px;
   padding: 84px 0 0;
+}
+/* Keep the dark paper aligned with the surrounding page, including its layers. */
+:root[data-theme='dark'] .note-reading {
+  --note-paper: var(--bg-page);
+  --note-ink: #f1f4f8;
+  --note-body: #d0d5de;
+  --note-muted: #91a8c8;
+  --note-rule: #91a8c82b;
+  --note-accent: #7bcfff;
+  --note-soft: #7bcfff0a;
+  --note-scheme: dark;
 }
 .note-reading .reading-sheet {
   --ink: var(--note-ink);
@@ -19,13 +32,13 @@
   --muted: var(--note-muted);
   --line: var(--note-rule);
   --accent: var(--note-accent);
-  --accent-soft: #edf5fc;
+  --accent-soft: var(--note-soft);
   --panel: var(--note-paper);
   --text-primary: var(--note-ink);
   --text-body: var(--note-body);
   --text-secondary: var(--note-muted);
   --text-muted: var(--note-muted);
-  color-scheme: light;
+  color-scheme: var(--note-scheme);
   position: relative;
   min-width: 0;
   background: var(--note-paper);
@@ -132,6 +145,7 @@
   .note-reading .next-article h2 { font-size: 20px; }
 }
 @media print {
+  :root .note-reading, :root[data-theme='dark'] .note-reading { --note-paper: #fff; --note-ink: #242930; --note-body: #343d47; --note-muted: #59636e; --note-rule: #dce2e9; --note-accent: #2463a3; --note-soft: #edf5fc; --note-scheme: light; }
   .note-reading { display: block; width: 100%; max-width: none; padding: 0; }
   .note-reading .reading-sheet { padding: 0; border: 0; box-shadow: none; }
   .note-category-ribbon, .note-imprint button { display: none; }

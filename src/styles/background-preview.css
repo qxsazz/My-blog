@@ -140,3 +140,6 @@
 }
 @media(prefers-reduced-motion:reduce) { .background-lab .lab-atmosphere *, .background-lab .site-background * { animation: none !important; } }
 @media print { .lab-toolbar, .lab-atmosphere, .lab-context, .lab-end { display: none !important; } }
+
+:root[data-theme='dark'] .background-lab .lab-note { --note-paper: var(--lab-base); }
+@media print { :root[data-theme='dark'] .background-lab .lab-note { --note-paper: #fff; } }
