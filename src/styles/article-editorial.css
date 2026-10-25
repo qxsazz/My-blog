@@ -47,13 +47,13 @@
 .editorial-reading .article-prose figcaption { font-size: 12px; margin-top: 12px; }
 .editorial-reading .article-prose table { font-size: 14px; }
 .editorial-reading .reading-outline { margin-top: 72px; top: 110px; padding-left: 22px; border-left: 1px solid var(--line); }
-.editorial-reading .reading-outline > p { display: flex; justify-content: space-between; align-items: center; margin: 0 0 20px; color: var(--text-secondary); font: 12px/1.8 var(--font-sans); letter-spacing: .05em; }
+.editorial-reading .reading-outline .reading-outline-heading { display: flex; justify-content: space-between; align-items: center; margin: 0 0 20px; color: var(--text-secondary); font: 12px/1.8 var(--font-sans); letter-spacing: .05em; }
 .outline-count { color: var(--muted); font: 10px/1.8 var(--font-mono); letter-spacing: 0; }
-.editorial-reading .reading-outline nav { counter-reset: outline-section; }
-.editorial-reading .reading-outline nav a { display: flex; gap: 10px; border: 0; padding: 9px 0; line-height: 1.8; font-size: 12px; color: var(--text-secondary); }
-.editorial-reading .reading-outline nav a:not(.toc-nested)::before { counter-increment: outline-section; content: counter(outline-section,decimal-leading-zero); color: var(--muted); font: 10px/2.16 var(--font-mono); flex-shrink: 0; }
-.editorial-reading .reading-outline nav a.toc-nested { padding-left: 24px; font-size: 11px; }
-.editorial-reading .reading-outline nav a.active, .editorial-reading .reading-outline nav a:hover, .editorial-reading .reading-outline nav a.active::before { color: var(--accent); }
+.editorial-reading .reading-outline .reading-outline-menu { counter-reset: outline-section; }
+.editorial-reading .reading-outline .reading-outline-menu a { display: flex; gap: 10px; border: 0; padding: 9px 0; line-height: 1.8; font-size: 12px; color: var(--text-secondary); }
+.editorial-reading .reading-outline .reading-outline-menu a:not(.toc-nested)::before { counter-increment: outline-section; content: counter(outline-section,decimal-leading-zero); color: var(--muted); font: 10px/2.16 var(--font-mono); flex-shrink: 0; }
+.editorial-reading .reading-outline .reading-outline-menu a.toc-nested { padding-left: 24px; font-size: 11px; }
+.editorial-reading .reading-outline .reading-outline-menu a.active, .editorial-reading .reading-outline .reading-outline-menu a:hover, .editorial-reading .reading-outline .reading-outline-menu a.active::before { color: var(--accent); }
 .editorial-reading .reading-tools { margin-top: 22px; padding-top: 22px; }
 .editorial-reading .reading-progress-row { font-size: 11px; }
 .editorial-reading [data-reading-progress] { font-family: var(--font-mono); color: var(--accent); }
@@ -136,6 +136,18 @@
 @media(max-width:640px) { .editorial-title-break { display: block; } }
 @media print { .reading-rail, .reading-top-progress { display: none !important; } }
 
-/* Keep a visible right-hand reading guide when a full label cannot fit. */
-.editorial-reading .reading-outline::before { content: ''; position: absolute; left: -1px; top: 0; width: 1px; height: calc(var(--reading-fraction,0) * 100%); background: var(--accent); pointer-events: none; }
-@media(min-width:1100px) and (max-width:1399px) { .reading-rail:not([hidden]) { display: block; width: 24px; right: 12px; } .reading-rail-label { display: none; } }
+/* The rail shares the TOC column, so it fits every desktop reading width. */
+@media(min-width:801px) {
+  .editorial-reading .reading-outline { min-height: min(560px,calc(100svh - 160px)); }
+  .editorial-reading .reading-outline .reading-rail { display: none; position: absolute; inset: 0; width: 100%; height: 100%; transform: none; z-index: 2; }
+  .editorial-reading .reading-outline .reading-rail:not([hidden]) { display: block; }
+  .editorial-reading .reading-outline .reading-rail-label { display: block; left: 40px; }
+  .editorial-reading .reading-outline .reading-rail-stop { display: grid; position: absolute; padding: 0; border: 0; width: 24px; height: 24px; }
+  .editorial-reading .reading-outline .reading-rail-stop::before { content: none; }
+  .reading-outline-expanded { transition: opacity 180ms ease,transform 180ms ease,visibility 0s; }
+  .reading-outline[data-guide-compact='true'] { border-left-color: transparent; }
+  .reading-outline[data-guide-compact='true'] .reading-outline-expanded { opacity: 0; transform: translateX(-6px); visibility: hidden; pointer-events: none; transition: opacity 180ms ease,transform 180ms ease,visibility 0s 180ms; }
+}
+.reading-guide-toggle { position: absolute; right: 0; top: 0; display: inline-flex; align-items: center; gap: 9px; padding: 5px 0 5px 8px; color: var(--text-secondary); font: 11px/1.8 var(--font-sans); pointer-events: auto; }
+.reading-guide-toggle:hover { color: var(--accent); }
+@media(prefers-reduced-motion:reduce) { .reading-outline-expanded { transition: none !important; } }

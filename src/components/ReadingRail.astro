@@ -1,0 +1,11 @@
+---
+interface Props { outline: { depth: number; slug: string; text: string }[] }
+const { outline } = Astro.props;
+const stops = outline.length ? outline : [{ slug: 'article-body', text: '正文' }];
+---
+<nav class="reading-rail" aria-label="阅读轨迹" data-reading-rail hidden>
+  <svg class="reading-rail-track" viewBox="0 0 32 560" preserveAspectRatio="none" aria-hidden="true"><path class="reading-rail-base" data-reading-rail-path d="M12 8V552"/><path class="reading-rail-curve" data-reading-rail-curve d="M12 8V64"/><circle class="reading-rail-point" data-reading-rail-point cx="22" cy="36" r="2.8"/></svg>
+  {stops.map((h,i)=><a href={`#${h.slug}`} class="reading-rail-stop" data-reading-rail-stop={h.slug} aria-label={`跳到：${h.text}`} title={h.text} style={`top:${8+(i+1)/(stops.length+1)*84}%`}><span></span></a>)}
+  <div class="reading-rail-label" data-reading-rail-label aria-hidden="true"><span data-reading-current-title>正文开篇</span><span data-reading-progress>0%</span></div>
+  <button class="reading-guide-toggle" data-reading-guide-toggle aria-label="展开目录与阅读设置" aria-expanded="false" aria-controls="reading-outline-expanded">目录与设置 <span aria-hidden="true">↗</span></button>
+</nav>
