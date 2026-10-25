@@ -1,3 +1,4 @@
+import './posts-browser';
 // 小型交互独立于页面和内容；页面本身始终由 Astro 静态生成。
 const root = document.documentElement;
 const readPreference = (key: string, fallback: string) => { try { return localStorage.getItem(key) || fallback; } catch { return fallback; } };
@@ -108,10 +109,6 @@ document.querySelector<HTMLButtonElement>('[data-copy-rss]')?.addEventListener('
   const button = event.currentTarget as HTMLButtonElement;
   try { await navigator.clipboard.writeText(new URL('/rss.xml', location.origin).href); button.textContent = '已复制'; } catch { button.textContent = '请打开上方链接，复制订阅地址'; }
 });
-document.querySelectorAll<HTMLButtonElement>('[data-post-sort]').forEach(button => button.addEventListener('click', () => {
-  document.querySelectorAll<HTMLButtonElement>('[data-post-sort]').forEach(other => { const active = other === button; other.classList.toggle('active', active); other.setAttribute('aria-pressed', String(active)); });
-}));
-document.querySelector('[data-human-only]')?.addEventListener('click', event => { const button = event.currentTarget as HTMLButtonElement; button.setAttribute('aria-pressed', String(button.getAttribute('aria-pressed') !== 'true')); });
 document.querySelectorAll<HTMLButtonElement>('[data-timeline-density]').forEach(button => button.addEventListener('click', () => {
   const list = document.querySelector<HTMLElement>('[data-timeline-list]'); if (list) list.dataset.density = button.dataset.timelineDensity;
   document.querySelectorAll<HTMLButtonElement>('[data-timeline-density]').forEach(other => { const active = button === other; other.classList.toggle('active', active); other.setAttribute('aria-pressed', String(active)); });

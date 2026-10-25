@@ -1,16 +1,25 @@
 ---
 import Base from '@/layouts/Base.astro';
-import Placeholder from '@/components/Placeholder.astro';
+import Icon from '@/components/Icon.astro';
 export function getStaticPaths() {
   return [
     {id:'friends',title:'友链',english:'FRIENDS',description:'互联网上的朋友们'},
-    {id:'projects',title:'项目',english:'PROJECTS',description:'开源项目与作品集'},
+    {id:'projects',title:'项目',english:'PROJECTS',description:'把想法做成可以使用的东西'},
     {id:'says',title:'一言',english:'FRAGMENTS',description:'言语的碎片'},
-    {id:'travelling',title:'跃迁',english:'TRAVELLING',description:'空间跃迁门'},
-    {id:'gallery',title:'照片廊',english:'GALLERY',description:''},
-    {id:'message',title:'留言',english:'LETTERS',description:'留下印记'},
+    {id:'travelling',title:'跃迁',english:'TRAVELLING',description:'换一个入口，遇见另一段文字'},
+    {id:'gallery',title:'照片廊',english:'GALLERY',description:'把值得停留的画面，慢慢收进来'},
+    {id:'message',title:'留言',english:'LETTERS',description:'见字如面，欢迎停留'},
   ].map(page=>({params:{section:page.id},props:page}));
 }
-const { id,title,english,description }=Astro.props;
+const {id,title,english,description}=Astro.props;
+const sayings=['先完成一小步，再让想法慢慢长大。','不必追赶所有的光，也可以照亮自己的一小片地方。','允许一个问题暂时没有答案，保持好奇就很好。','把强调留给重要的事，把空间留给正在阅读的人。'];
+const paths=[{title:'去读一篇文稿',description:'技术、设计与创造的完整思考',href:'/posts/'},{title:'翻开一封手记',description:'日常里的片刻与不经意的发现',href:'/notes/'},{title:'沿着时光漫游',description:'顺着日期，回看每一次落笔',href:'/timeline/'},{title:'听听最近的思考',description:'短一点的观点，和还在生长的问题',href:'/thinking/'}];
 ---
-<Base title={title}><section class="secondary-page replica-container"><header><span class="eyebrow">{english}</span><h1>{title}</h1>{description&&<p>{description}</p>}</header><div class:list={['secondary-placeholder-grid',{'gallery-grid':id==='gallery'}]}>{Array.from({length:id==='says'?1:6},()=> <div class="secondary-placeholder paper-panel" aria-label={`${title}版式占位`}>{id==='gallery'?<div class="gallery-image-placeholder" aria-hidden="true"></div>:<><Placeholder title widths={[56]}/><Placeholder widths={[100,76]}/></>}</div>)}</div><p class="structure-footnote">暂无内容</p></section></Base>
+<Base title={title}><section class="secondary-page replica-container"><header><span class="eyebrow">{english}</span><h1>{title}</h1><p>{description}</p></header>
+{id==='projects'&&<div class="secondary-content-grid"><a class="content-panel paper-panel project-content-card" href="/"><span class="eyebrow">PERSONAL SPACE</span><h2>dominator · 星夜</h2><p>一处关于技术、设计与日常的个人空间。用文字留下思考，用持续的创造回应好奇。</p><div class="panel-bottom"><span>持续更新</span><Icon name="diagonal" size={18}/></div></a></div>}
+{id==='says'&&<div class="sayings-list">{sayings.map((text,i)=><blockquote class="paper-panel"><span>{String(i+1).padStart(2,'0')}</span><p>{text}</p><cite>dominator</cite></blockquote>)}</div>}
+{id==='travelling'&&<div class="secondary-content-grid">{paths.map(item=><a class="content-panel paper-panel" href={item.href}><h2>{item.title}</h2><p>{item.description}</p><div class="panel-bottom"><span>继续漫游</span><Icon name="arrow" size={17}/></div></a>)}</div>}
+{id==='friends'&&<div class="quiet-state paper-panel"><Icon name="leaf" size={28}/><h2>连接，总会慢慢发生。</h2><p>友链正在整理。愿每一次路过，都能遇见认真表达的人。</p><a href="/posts/">先读一篇文字 →</a></div>}
+{id==='gallery'&&<div class="quiet-state paper-panel"><Icon name="book" size={28}/><h2>把风景留给下一次相遇。</h2><p>这里还没有照片。不妨先翻开手记，读一段关于日常的记录。</p><a href="/notes/">翻开生活手记 →</a></div>}
+{id==='message'&&<div class="quiet-state paper-panel"><Icon name="mail" size={28}/><h2>你来过，就是一次相遇。</h2><p>留言暂未开放。愿你在这里读到的文字，带来一点灵感和共鸣。</p><button data-subscribe-open>订阅下一封来信 →</button></div>}
+</section></Base>

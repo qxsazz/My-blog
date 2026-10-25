@@ -1,5 +1,5 @@
 ---
-draft: true
+draft: false
 title: 保持好奇，是一件很具体的事
 description: 允许自己做一个初学者，允许无用的热爱占据一点时间。
 date: 2026-10-08

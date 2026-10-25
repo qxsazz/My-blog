@@ -1,4 +1,4 @@
-/** 本轮仅复刻界面结构。内容集合保持为空，后续将文章改为 draft: false 即可发布。 */
+/** 站点身份、主题与导航集中配置。文章与手记在内容目录中维护。 */
 export const site = {
   name: 'dominator',
   author: 'dominator',

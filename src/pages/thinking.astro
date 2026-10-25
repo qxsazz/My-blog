@@ -1,7 +1,9 @@
 ---
+import { render } from 'astro:content';
 import Base from '@/layouts/Base.astro';
-import Placeholder from '@/components/Placeholder.astro';
 import Icon from '@/components/Icon.astro';
 import { site } from '@/config';
+import { entries, entryUrl, dateLabel } from '@/lib';
+const thoughts=await Promise.all((await entries()).filter(p=>p.collection==='thinking').map(async entry=>({entry,...await render(entry)})));
 ---
-<Base title="思考"><section class="thinking-page"><div class="thinking-title"><h1>思考 <a href="/rss.xml" aria-label="订阅思考"><Icon name="rss" size={14}/></a></h1><p>感君倾耳。</p></div><div class="thinking-feed">{Array.from({length:4},(_,i)=><article class="thinking-card paper-panel" aria-label={`思考版式占位 ${i+1}`}><div class="thinking-author"><a href="/about/">{site.author}</a><Placeholder widths={[100]}/></div>{i<2?<div class="thinking-link-preview"><div class="thinking-link-copy"><Placeholder widths={[25]}/><Placeholder title widths={[54]}/><Placeholder widths={[100,100,100,100,88,58]}/><Placeholder class="meta-placeholder" widths={[69]}/></div><div class="thinking-cover-placeholder" aria-hidden="true"></div></div>:<Placeholder class="thinking-text-placeholder" widths={[100,100,88,76]}/>}<div class="thinking-actions" aria-label="互动区域未配置"><span>♡ —</span><span>♧ —</span><Icon name="mail" size={12}/><span>—</span></div></article>)}</div><p class="structure-footnote">暂无思考 · 当前为版式占位</p></section></Base>
+<Base title="思考"><section class="thinking-page"><div class="thinking-title"><h1>思考 <a href="/rss.xml" aria-label="订阅思考"><Icon name="rss" size={14}/></a></h1><p>一些还在生长的想法。</p></div><div class="thinking-feed">{thoughts.map(({entry,Content})=><article class="thinking-card paper-panel"><div class="thinking-author"><a href="/about/">{site.author}</a><time datetime={entry.data.date.toISOString()}>{dateLabel(entry.data.date)}</time></div><div class="thinking-prose prose"><Content/></div><div class="thinking-actions thinking-links"><span>{entry.data.category}</span><a href={entryUrl(entry)}>查看全文 <Icon name="diagonal" size={12}/></a></div></article>)}</div></section></Base>

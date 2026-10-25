@@ -1,0 +1,103 @@
+/* 有内容的栏目使用同一套字体、冷光与版心。 */
+.about-copy { margin-top: 36px; }
+.about-copy p { line-height: 1.95; color: var(--secondary); }
+.about-copy h2 { margin-top: 2em; }
+.about-copy a, .article-tags a { text-decoration: underline; text-underline-offset: 4px; }
+.home-entry-meta { display: flex; justify-content: space-between; gap: 15px; color: var(--muted); font: 12px/1.5 var(--font-sans); margin-bottom: 7px; }
+.home-entry-meta time { font-size: 10px; }
+.home-writing-placeholder h3 { font: 400 14px/1.7 var(--font-serif); color: var(--secondary); transition: color var(--duration); }
+.home-writing-placeholder.first h3 { font-size: 20px; font-weight: 500; color: var(--ink); }
+.home-writing-placeholder p { font: 12px/1.8 var(--font-sans); color: var(--n6); margin-top: 8px; }
+.home-writing-placeholder:hover h3 { color: var(--accent); }
+.home-musing-placeholder > div, .home-letter-placeholder > div { flex: 1; }
+.home-musing-placeholder p, .home-letter-placeholder p { font: 13px/1.8 var(--font-serif); color: var(--secondary); }
+.home-musing-placeholder > div > span { display: block; margin-top: 12px; font: 10px var(--font-sans); color: var(--muted); }
+.home-letter-placeholder h3 { font: 400 16px/1.7 var(--font-serif); margin-bottom: 9px; color: var(--ink); }
+.pinned-post > .post-meta { margin-top: 13px; flex-wrap: wrap; }
+.pinned-post .pinned-foot { margin-top: 13px; }
+.pinned-post h2, .replica-post h2 { overflow-wrap: anywhere; }
+.replica-post > p { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.post-meta { flex-wrap: wrap; }
+.real-tag-cloud { display: flex; flex-wrap: wrap; gap: 7px; }
+.real-tag-cloud a { font: 12px/1.6 var(--font-sans); border: 1px solid var(--line); border-radius: 4px; padding: 5px 9px; color: var(--secondary); background: var(--accent-soft); }
+.real-tag-cloud a span { color: var(--muted); font-size: 11px; margin-left: 3px; }
+.real-tag-cloud a:hover, .real-tag-cloud a.active { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.current-tag { font-size: 10px; color: var(--accent); max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.post-filter-empty { padding: 55px 20px; text-align: center; color: var(--n6); font-size: 13px; }
+.post-filter-empty a { display: inline-block; color: var(--accent); font-size: 12px; margin-top: 18px; }
+.letter-preview-prose { font-size: 17px; line-height: 1.95; color: var(--secondary); }
+.letter-preview-prose p { margin: 0 0 1.4em; }
+.letter-preview-prose > p:first-child::first-letter { float: left; font-size: 40px; line-height: 1; margin: 5px 8px 0 0; color: var(--ink); }
+.letter-preview-prose h2 { font-size: 23px; margin: 1.2em 0 .7em; }
+.letter-year-group + .letter-year-group { margin-top: 40px; }
+.older-note-meta { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+.older-letter-text > h2 { font: 500 23px/1.6 var(--font-serif); color: var(--ink); margin: 7px 0 14px; }
+.older-letter-text > p { font: 15px/1.9 var(--font-serif); color: var(--secondary); }
+.older-letter-main:hover .older-letter-text > h2 { color: var(--accent); }
+.thinking-author time { color: var(--muted); font-size: 12px; }
+.thinking-prose { font: 14px/1.85 var(--font-sans); color: var(--secondary); }
+.thinking-prose p { margin: 14px 0; }
+.thinking-links { justify-content: space-between; }
+.thinking-links a { display: inline-flex; align-items: center; gap: 6px; color: var(--n6); }
+.thinking-links a:hover { color: var(--accent); }
+.timeline-year-section + .timeline-year-section { margin-top: 35px; }
+.timeline-row > span { min-width: 0; overflow-wrap: anywhere; }
+.prose ul, .prose ol { padding-left: 1.6em; margin: 1.4em 0; color: var(--secondary); }
+.prose li { margin: .65em 0; line-height: 1.85; }
+.prose table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: 2em 0; font: 13px/1.8 var(--font-sans); }
+.prose td, .prose th { text-align: left; padding: 13px 16px; border-bottom: 1px solid var(--line); }
+.prose th { background: var(--accent-soft); font-weight: 500; }
+.prose > p, .prose > li { color: var(--secondary); }
+.prose :not(pre) > code { font: 12px var(--font-mono); color: var(--accent); padding: 2px 5px; border-radius: 3px; background: var(--accent-soft); }
+.article-toc > p { font-size: 12px; margin: 10px 0 18px; color: var(--muted); }
+.article-toc a.active { color: var(--accent); border-left-color: var(--accent); }
+.article-signature p { line-height: 1.9; }
+.article-signature small { font-size: 10px; color: var(--muted); }
+.secondary-content-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 42px; }
+.content-panel { display: block; padding: 29px; border: 1px solid var(--line); transition: border-color var(--duration), transform var(--duration); }
+.content-panel h2 { font: 400 21px/1.6 var(--font-serif); margin: 10px 0 16px; }
+.content-panel p { color: var(--n6); font-size: 13px; line-height: 1.9; }
+.content-panel:hover { border-color: color-mix(in srgb, var(--accent) 45%, transparent); transform: translateY(-3px); }
+.panel-bottom { display: flex; justify-content: space-between; align-items: center; color: var(--accent); font-size: 11px; margin-top: 25px; }
+.sayings-list { display: flex; flex-direction: column; gap: 24px; margin-top: 42px; }
+.sayings-list blockquote { padding: 30px; margin: 0; }
+.sayings-list blockquote > span { color: var(--muted); font: 11px var(--font-mono); }
+.sayings-list p { font: 400 20px/1.9 var(--font-serif); margin: 15px 0; }
+.sayings-list cite { color: var(--muted); font: 12px var(--font-sans); }
+.quiet-state { margin-top: 42px; padding: 55px 30px; text-align: center; }
+.quiet-state > svg { color: var(--accent); margin: 0 auto 24px; }
+.quiet-state h2 { font: 400 24px/1.7 var(--font-serif); }
+.quiet-state p { color: var(--n6); font-size: 13px; line-height: 1.9; margin-top: 15px; }
+.quiet-state > a, .quiet-state > button { display: inline-block; color: var(--accent); font-size: 12px; margin-top: 25px; }
+@media(max-width:640px) {
+  .home-entry-meta { font-size: 10px; }
+  .home-writing-placeholder h3 { font-size: 14px; }
+  .home-writing-placeholder.first h3 { font-size: 18px; }
+  .home-writing-placeholder p { font-size: 11px; }
+  .post-toolbar > div { gap: 10px; }
+  .current-tag { max-width: 70px; font-size: 9px; }
+  .pinned-post { min-height: 0; }
+  .pinned-post h2 { line-height: 1.75; }
+  .pinned-post .pinned-foot { margin-top: 16px; }
+  .letter-cover-heading h1 { font-size: 25px; line-height: 1.5; }
+  .letter-cover-meta { font-size: 10px; flex-wrap: wrap; }
+  .letter-preview-prose { font-size: 16px; line-height: 1.95; }
+  .letter-preview-prose h2 { font-size: 21px; }
+  .older-letter-text > h2 { font-size: 20px; }
+  .older-letter-text > p { font-size: 14px; }
+  .older-note-meta { font-size: 10px; }
+  .thinking-author time { font-size: 10px; }
+  .timeline-row { align-items: baseline; }
+  .timeline-row > small { font-size: 9px; max-width: 75px; text-align: right; white-space: normal; }
+  .timeline-row > span { font-size: 13px; line-height: 1.7; }
+  .secondary-content-grid { grid-template-columns: 1fr; gap: 20px; margin-top: 30px; }
+  .content-panel { padding: 24px; }
+  .quiet-state { padding: 40px 22px; }
+  .quiet-state h2 { font-size: 21px; }
+  .sayings-list p { font-size: 18px; }
+  .article-signature { flex-wrap: wrap; }
+  .article-signature > a { margin-left: 41px; }
+  .next-article h2 { font-size: 15px; }
+  .prose { font-size: 15px; line-height: 1.9; }
+  .prose h2 { font-size: 22px; }
+}

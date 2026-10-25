@@ -1,0 +1,12 @@
+---
+import { render } from 'astro:content';
+import Article from '@/layouts/Article.astro';
+import { entries } from '@/lib';
+export async function getStaticPaths() {
+  const thoughts=(await entries()).filter(p=>p.collection==='thinking');
+  return thoughts.map((entry,index)=>({params:{id:entry.id},props:{entry,next:thoughts[index+1]}}));
+}
+const {entry,next}=Astro.props;
+const {Content,headings}=await render(entry);
+---
+<Article entry={entry} headings={headings} next={next}><Content/></Article>
