@@ -1,34 +1,34 @@
-/* A single article establishes the next reading style before wider adoption. */
+/* Shared post typography, using the measured reference article scale. */
 .editorial-reading {
   max-width: 1168px;
   grid-template-columns: minmax(0,864px) 208px;
   gap: 96px;
-  padding: 40px 0 0;
+  padding: 72px 0 0;
   --editorial-rule: color-mix(in srgb,var(--accent) 18%,transparent);
 }
 .editorial-reading .reading-sheet { padding: 0; }
 .editorial-reading .article-back { display: inline-flex; font-size: 12px; line-height: 1.8; }
-.editorial-reading .article-heading { text-align: left; margin: 25px 0 24px; }
-.editorial-kicker { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; color: var(--accent); font: 12px/1.7 var(--font-sans); letter-spacing: 1px; }
-.editorial-kicker > span { font-size: 14px; }
-.editorial-kicker::after { content: ''; width: 48px; height: 1px; margin-left: 5px; background: var(--editorial-rule); }
-.editorial-reading .article-heading h1 { max-width: none; font: 500 36px/1.4 var(--font-sans); letter-spacing: -.01em; margin: 0 0 16px; text-wrap: balance; overflow-wrap: anywhere; }
-.editorial-deck { color: var(--text-body); font: 15px/1.75 var(--font-sans); max-width: 42em; margin: 0 0 18px; }
-.editorial-reading .article-meta { justify-content: flex-start; font: 12px/1.8 var(--font-sans); gap: 10px; }
-.editorial-reading .reading-byline { padding: 12px 0 15px; margin-top: 8px; border-color: var(--editorial-rule); }
-.editorial-reading .reading-byline .article-author { font-size: 13px; gap: 10px; color: var(--text-body); }
-.editorial-reading .reading-byline img { width: 28px; height: 28px; box-shadow: 0 0 0 1px var(--line); }
-.editorial-reading .reading-byline .copy-link { display: inline-flex; align-items: center; gap: 7px; font: 12px/1.8 var(--font-sans); padding: 5px 0 5px 10px; color: var(--text-secondary); }
+.editorial-reading .article-heading { text-align: center; margin: 24px 0 32px; }
+.editorial-reading .article-heading h1 { max-width: none; font: 700 36px/1.25 var(--font-sans); letter-spacing: .01rem; text-align: center; margin: 0 0 10.5px; text-wrap: balance; overflow-wrap: anywhere; }
+.editorial-summary { margin-top: 28px; padding: 16px 18px; border: 1px solid var(--editorial-rule); border-radius: 3px; text-align: left; }
+.editorial-summary > span { display: block; margin-bottom: 8px; color: var(--text-secondary); font: 12px/1.5 var(--font-sans); }
+.editorial-deck { color: var(--text-body); font: 14px/1.75 var(--font-sans); letter-spacing: .01rem; margin: 0; }
+.editorial-reading .article-meta .reading-byline { display: contents; }
+.editorial-reading .article-meta .article-author { font: inherit; color: inherit; gap: 6px; }
+.editorial-reading .article-meta .article-author img { width: 18px; height: 18px; box-shadow: none; }
+.editorial-reading .article-meta .copy-link { display: inline-flex; align-items: center; gap: 5px; padding: 0; margin-left: 0; font: inherit; color: inherit; }
+.editorial-reading .article-category:hover { color: var(--accent); }
+.editorial-reading .article-meta { justify-content: center; align-items: center; font: 12px/1.5 var(--font-sans); letter-spacing: .01rem; gap: 7px; }
 .editorial-reading .copy-link:hover { color: var(--accent); }
-.editorial-reading .article-prose { font-size: 16px; line-height: 1.75; letter-spacing: 0; counter-reset: article-section; }
-.editorial-reading .article-prose p { line-height: 1.75; letter-spacing: 0; }
+.editorial-reading .article-prose { font-size: 16px; line-height: 1.75; letter-spacing: .01rem; }
+.editorial-reading .article-prose p { line-height: 1.75; letter-spacing: inherit; }
 .editorial-reading .article-prose > p { margin-bottom: 1.25em; }
 .editorial-reading .article-prose > p:first-child { font-size: 16px; color: var(--text-body); line-height: 1.75; }
-.editorial-reading .article-prose h2 { display: flex; align-items: baseline; gap: 13px; font: 500 24px/1.45 var(--font-sans); margin: 1.5em 0 .65em; letter-spacing: 0; }
-.editorial-reading .article-prose h2::before { counter-increment: article-section; content: counter(article-section,decimal-leading-zero); flex-shrink: 0; color: var(--accent); font: 11px/1.8 var(--font-mono); letter-spacing: 0; }
+.editorial-reading .article-prose h2 { font: 700 24px/1.25 var(--font-sans); margin: 1.4em 0 .45em; letter-spacing: inherit; }
 /* The root already reserves 90px of scroll padding; avoid adding another 110px. */
 .editorial-reading .article-prose :is(h2,h3,h4) { scroll-margin-top: 24px; }
-.editorial-reading .article-prose h3 { font: 500 20px/1.5 var(--font-sans); margin: 1.4em 0 .6em; }
+.editorial-reading .article-prose h3 { font: 700 20px/1.25 var(--font-sans); margin: 1.4em 0 .45em; letter-spacing: inherit; }
+.editorial-reading .article-prose h4 { font: 700 18px/1.4 var(--font-sans); margin: 1.4em 0 .45em; letter-spacing: inherit; }
 .editorial-reading .article-prose a { color: var(--accent); text-decoration-color: color-mix(in srgb,var(--accent) 40%,transparent); text-underline-offset: 5px; }
 .editorial-reading .article-prose a:hover { text-decoration-color: currentColor; }
 .editorial-reading .article-prose :is(ul,ol) { margin-block: 1.25em; padding-left: 1.5em; }
@@ -46,14 +46,12 @@
 .editorial-reading .article-prose img { border: 1px solid var(--line); border-radius: 5px; }
 .editorial-reading .article-prose figcaption { font-size: 12px; margin-top: 12px; }
 .editorial-reading .article-prose table { font-size: 14px; }
-.editorial-reading .reading-outline { margin-top: 72px; top: 110px; padding-left: 22px; border-left: 1px solid var(--line); }
+.editorial-reading .reading-outline { margin-top: 168px; top: 110px; padding-left: 22px; border-left: 1px solid var(--line); }
 .editorial-reading .reading-outline .reading-outline-heading { display: flex; justify-content: space-between; align-items: center; margin: 0 0 20px; color: var(--text-secondary); font: 12px/1.8 var(--font-sans); letter-spacing: .05em; }
 .outline-count { color: var(--muted); font: 10px/1.8 var(--font-mono); letter-spacing: 0; }
-.editorial-reading .reading-outline .reading-outline-menu { counter-reset: outline-section; }
-.editorial-reading .reading-outline .reading-outline-menu a { display: flex; gap: 10px; border: 0; padding: 9px 0; line-height: 1.8; font-size: 12px; color: var(--text-secondary); }
-.editorial-reading .reading-outline .reading-outline-menu a:not(.toc-nested)::before { counter-increment: outline-section; content: counter(outline-section,decimal-leading-zero); color: var(--muted); font: 10px/2.16 var(--font-mono); flex-shrink: 0; }
-.editorial-reading .reading-outline .reading-outline-menu a.toc-nested { padding-left: 24px; font-size: 11px; }
-.editorial-reading .reading-outline .reading-outline-menu a.active, .editorial-reading .reading-outline .reading-outline-menu a:hover, .editorial-reading .reading-outline .reading-outline-menu a.active::before { color: var(--accent); }
+.editorial-reading .reading-outline .reading-outline-menu a { display: flex; gap: 10px; border: 0; padding: 3px 0; line-height: 1.75; font-size: 14px; color: var(--text-secondary); }
+.editorial-reading .reading-outline .reading-outline-menu a.toc-nested { padding-left: 14px; font-size: 13px; }
+.editorial-reading .reading-outline .reading-outline-menu a.active, .editorial-reading .reading-outline .reading-outline-menu a:hover { color: var(--accent); }
 .editorial-reading .reading-tools { margin-top: 22px; padding-top: 22px; }
 .editorial-reading .reading-progress-row { font-size: 11px; }
 .editorial-reading [data-reading-progress] { font-family: var(--font-mono); color: var(--accent); }
@@ -79,21 +77,17 @@
 @media(max-width:800px) {
   .editorial-reading { display: block; width: calc(100% - 64px); max-width: 720px; padding-top: 40px; }
   .editorial-reading .article-heading { margin-bottom: 28px; }
-  .editorial-reading .article-heading h1 { font-size: 34px; }
   .editorial-reading .mobile-reading-tools { margin-bottom: 30px; padding-block: 15px; font-size: 12px; }
 }
 @media(max-width:640px) {
   .editorial-reading { width: calc(100% - 40px); padding-top: 30px; }
-  .editorial-reading .article-heading { margin-top: 30px; }
-  .editorial-kicker { font-size: 11px; margin-bottom: 17px; }
-  .editorial-reading .article-heading h1 { font-size: clamp(26px,7.2vw,29px); line-height: 1.4; letter-spacing: -.01em; margin-bottom: 14px; }
-  .editorial-deck { font-size: 14px; line-height: 1.75; margin-bottom: 16px; }
-  .editorial-reading .article-meta { font-size: 11px; }
-  .editorial-reading .reading-byline { padding-bottom: 18px; }
+  .editorial-reading .article-heading { margin-top: 24px; }
+  .editorial-reading .article-heading h1 { margin-bottom: 12px; }
+  .editorial-summary { margin-top: 24px; padding: 14px 16px; }
   .editorial-reading .article-prose { font-size: 16px; }
   .editorial-reading .article-prose > p:first-child { font-size: 16px; }
-  .editorial-reading .article-prose h2 { font-size: 22px; gap: 10px; margin-top: 1.5em; }
-  .editorial-reading .article-prose h3 { font-size: 19px; }
+  .editorial-reading .article-prose h2 { font-size: 24px; }
+  .editorial-reading .article-prose h3 { font-size: 20px; }
   .editorial-reading .article-prose blockquote { padding: 17px 19px; }
   .editorial-reading .article-prose .code-block pre { padding: 19px 16px; font-size: 12px; }
   .editorial-reading .code-toolbar { padding: 11px 15px; }
@@ -108,8 +102,6 @@
   .editorial-reading .article-heading h1 { max-width: none; }
 }
 
-/* Desktop titles fit on one line; mobile retains the semantic comma break. */
-.editorial-title-break { display: none; }
 .editorial-reading .article-prose li { line-height: 1.75; margin-block: .35em; }
 .editorial-reading .article-prose :is(blockquote,li) p { line-height: 1.75; }
 .reading-progress-status { display: inline-flex; align-items: center; gap: 7px; color: var(--accent); }
@@ -133,7 +125,6 @@
 .reading-top-progress > span { display: block; height: 100%; background: var(--accent); transform: scaleX(var(--reading-fraction,0)); transform-origin: left; }
 @media(min-width:1400px) { .reading-rail:not([hidden]) { display: block; } }
 @media(max-width:800px) { .reading-top-progress { display: block; } }
-@media(max-width:640px) { .editorial-title-break { display: block; } }
 @media print { .reading-rail, .reading-top-progress { display: none !important; } }
 
 /* The rail shares the TOC column, so it fits every desktop reading width. */

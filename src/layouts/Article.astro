@@ -9,7 +9,6 @@ interface Props { entry: Entry; headings: { depth: number; slug: string; text: s
 const { entry, headings, next, editorial = false } = Astro.props;
 const note = entry.collection === 'notes';
 const label = collectionLabel[entry.collection];
-const titleBreak = editorial ? entry.data.title.indexOf('，') : -1;
 const recent = (await entries()).filter(item => item.collection === entry.collection).slice(0, 5);
 const outline = headings.filter(h => h.depth === 2 || h.depth === 3);
 ---
@@ -19,11 +18,17 @@ const outline = headings.filter(h => h.depth === 2 || h.depth === 3);
     <article class="article-main reading-sheet" data-default-font={note ? 'serif' : 'sans'}>
       <a class="article-back text-link" href={`/${entry.collection}/`}>← 返回{label} {!editorial && <span> / {entry.data.category}</span>}</a>
       <header class="article-heading">
-        {editorial && <div class="editorial-kicker"><span aria-hidden="true">✦</span>{label} / {entry.data.category}</div>}
-        <h1>{titleBreak >= 0 ? <>{entry.data.title.slice(0,titleBreak + 1)}<br class="editorial-title-break" />{entry.data.title.slice(titleBreak + 1)}</> : entry.data.title}</h1>
-        {editorial && <p class="editorial-deck">{entry.data.description}</p>}
-        <div class="article-meta"><time datetime={entry.data.date.toISOString()}>{dateLabel(entry.data.date)}</time>{!editorial && <><i>·</i><span>{entry.data.category}</span></>}{entry.data.mood && <><i>·</i><span>{entry.data.mood}</span></>}<i>·</i><span>约 {readingTime(entry.body)} 分钟阅读</span>{entry.data.updated && <><i>·</i><span>更新于 {dateLabel(entry.data.updated)}</span></>}</div>
-        <div class="reading-byline"><a class="article-author" href="/about/" rel="author"><img src={site.avatar} width="22" height="22" alt=""/>{site.author}</a><button class="copy-link" data-copy-link><Icon name="copy" size={13} /><span>复制链接</span></button></div>
+        <h1>{entry.data.title}</h1>
+        <div class="article-meta">
+          <time datetime={entry.data.date.toISOString()}>{dateLabel(entry.data.date)}</time>
+          <i>·</i>{editorial ? <a class="article-category" href={`/posts/?category=${encodeURIComponent(entry.data.category)}`}>{entry.data.category}</a> : <span>{entry.data.category}</span>}
+          {entry.data.mood && <><i>·</i><span>{entry.data.mood}</span></>}
+          <i>·</i><span>约 {readingTime(entry.body)} 分钟阅读</span>
+          {entry.data.updated && <><i>·</i><span>更新于 {dateLabel(entry.data.updated)}</span></>}
+          {editorial && <><i>·</i><div class="reading-byline"><a class="article-author" href="/about/" rel="author"><img src={site.avatar} width="22" height="22" alt=""/>{site.author}</a><button class="copy-link" data-copy-link><Icon name="copy" size={13} /><span>复制链接</span></button></div></>}
+        </div>
+        {!editorial && <div class="reading-byline"><a class="article-author" href="/about/" rel="author"><img src={site.avatar} width="22" height="22" alt=""/>{site.author}</a><button class="copy-link" data-copy-link><Icon name="copy" size={13} /><span>复制链接</span></button></div>}
+        {editorial && entry.data.description && <section class="editorial-summary" aria-label="内容提要"><span>✧ 内容提要</span><p class="editorial-deck">{entry.data.description}</p></section>}
       </header>
       <details class="mobile-reading-tools"><summary>文章目录与阅读设置 {editorial && <span class="reading-mobile-percent" data-reading-progress>0%</span>}<span>⌄</span></summary><nav aria-label="移动端文章目录">{outline.length ? outline.map(h => <a href={`#${h.slug}`} class:list={{'toc-nested':h.depth===3}}>{h.text}</a>) : <a href="#article-body">正文</a>}</nav><div class="reading-font-controls"><span>正文字体</span><button data-reading-font="serif" aria-pressed={note}>宋体</button><button data-reading-font="sans" aria-pressed={!note}>黑体</button></div></details>
       {!editorial && <section class="reading-synopsis" aria-label="内容提要"><span>内容提要</span><p>{entry.data.description}</p></section>}
