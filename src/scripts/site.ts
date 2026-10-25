@@ -119,7 +119,7 @@ function initPage() {
     topButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: reducedMotion ? 'instant' : 'smooth' }));
   }
   const tocLinks = document.querySelectorAll<HTMLAnchorElement>('.article-toc a[href^="#"]');
-  if (tocLinks.length && 'IntersectionObserver' in window) {
+  if (tocLinks.length && 'IntersectionObserver' in window && !document.querySelector('.editorial-reading')) {
     const observer = new IntersectionObserver(items => { for (const item of items) if (item.isIntersecting) tocLinks.forEach(link => link.classList.toggle('active', link.hash === `#${item.target.id}`)); }, { rootMargin: '-100px 0px -65% 0px' });
     observers.push(observer);
     document.querySelectorAll('.article-prose :is(h2,h3)[id]').forEach(heading => observer.observe(heading));
@@ -163,6 +163,9 @@ function initPage() {
   document.querySelectorAll<HTMLButtonElement>('[data-reading-font]').forEach(button => button.addEventListener('click', () => { readingFont = button.dataset.readingFont!; savePreference('dominator-reading-font', readingFont); updateReadingFont(); }));
   const progress = document.querySelector<HTMLElement>('[data-reading-progress]');
   const articleBody = document.querySelector<HTMLElement>('.article-prose');
+  const readingMeter = document.querySelector<HTMLElement>('[data-reading-meter]');
+  const editorialToc = document.querySelectorAll<HTMLAnchorElement>('.editorial-reading .reading-outline nav a[href^="#"]');
+  const editorialHeadings = readingMeter ? Array.from(articleBody?.querySelectorAll<HTMLElement>('h2[id],h3[id]') || []) : [];
   if (progress && articleBody) {
     const update = () => {
       const box = articleBody.getBoundingClientRect();
@@ -170,9 +173,26 @@ function initPage() {
       const value = Math.round(Math.min(1, Math.max(0, (innerHeight * .25 - box.top) / distance)) * 100);
       progress.textContent = `${value}%`;
       progress.style.setProperty('--progress', `${value}%`);
+      readingMeter?.style.setProperty('--progress', `${value}%`);
+      if (readingMeter) {
+        // The section nearest the reading line wins, even when several are visible.
+        const current = editorialHeadings.filter(heading => heading.getBoundingClientRect().top <= 145).at(-1);
+        editorialToc.forEach(link => {
+          const active = decodeURIComponent(link.hash) === `#${current?.id}`;
+          link.classList.toggle('active', active);
+          if (active) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        });
+      }
     };
     window.addEventListener('scroll', update, { passive: true, signal });
-    window.addEventListener('resize', update, { passive: true, signal }); update();
+    window.addEventListener('resize', update, { passive: true, signal });
+    if (readingMeter && 'ResizeObserver' in window) {
+      const observer = new ResizeObserver(update);
+      observer.observe(articleBody);
+      signal.addEventListener('abort', () => observer.disconnect(), { once: true });
+    }
+    update();
   }
   document.querySelectorAll<HTMLElement>('.article-prose pre').forEach(pre => {
     if (pre.closest('.code-block')) return;

@@ -9,4 +9,4 @@ export async function getStaticPaths() {
 const { entry, next } = Astro.props;
 const { Content, headings } = await render(entry);
 ---
-<Article entry={entry} headings={headings} next={next}><Content /></Article>
+<Article entry={entry} headings={headings} next={next} editorial={entry.id === 'blue-hour-design'}><Content /></Article>
