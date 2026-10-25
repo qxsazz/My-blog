@@ -1,14 +1,15 @@
 ---
 import { site } from '@/config';
 import Icon from './Icon.astro';
+import MegaMenu from './MegaMenu.astro';
 const path = Astro.url.pathname;
 const active = (href: string) => href === '/' ? path === '/' : path.startsWith(href);
-const moreActive = site.more.some(item => active(item.href));
+const moreActive = [...site.more, ...site.pages].some(item => active(item.href)) && !site.nav.some(item => item.href !== '/' && active(item.href));
 ---
 <header class="site-header"><div class="header-inner">
   <a class="wordmark" href="/" aria-label={`${site.author}首页`}><img src={site.avatar} alt="" width="30" height="30" /><span>{site.author}</span></a>
   <nav class="desktop-nav" aria-label="主导航">{site.nav.map(item => <a href={item.href} aria-current={active(item.href) ? 'page' : undefined} class:list={[{ active: active(item.href) }]}>{item.label}</a>)}
-    <details class="more-menu"><summary class:list={[{ active: moreActive }]}>更多</summary><div class="more-menu-paper">{site.more.map(item => <a href={item.href}><span>{item.label}{item.label==='跃迁' && <Icon name="diagonal" size={13}/>}</span><i></i><small>{item.description}</small></a>)}</div></details>
+    <details class="more-menu"><summary class:list={[{ active: moreActive }]} aria-controls="desktop-mega-menu">更多</summary><div class="more-menu-paper" id="desktop-mega-menu"><MegaMenu /></div></details>
   </nav>
   <div class="header-actions"><span class="action-divider"></span><a class="icon-button" href="/about/" aria-label="关于dominator"><Icon name="user" size={15}/></a><button class="icon-button mobile-menu-toggle" aria-label="展开导航" aria-expanded="false" aria-controls="mobile-nav"><Icon name="menu"/></button></div>
-</div><nav id="mobile-nav" class="mobile-nav" aria-label="移动导航" hidden>{[...site.nav,...site.more].map(item => <a href={item.href} aria-current={active(item.href)?'page':undefined}>{item.label}</a>)}</nav></header>
+</div><nav id="mobile-nav" class="mobile-nav" aria-label="移动导航" hidden><div class="mobile-primary-links">{site.nav.map(item => <a href={item.href} aria-current={active(item.href)?'page':undefined}>{item.label}</a>)}</div><MegaMenu mobile /></nav></header>

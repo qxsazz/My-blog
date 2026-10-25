@@ -54,7 +54,7 @@ function initPage() {
       link.append(meta, title, description); results.append(link);
     });
   }
-  function openSearch() { if (!dialog || !input) return; dialog.showModal(); document.body.style.overflow = 'hidden'; renderSearch(); input.focus(); }
+  function openSearch() { if (!dialog || !input) return; document.querySelector<HTMLDetailsElement>('.more-menu')?.removeAttribute('open'); if (mobileNav) mobileNav.hidden = true; menuToggle?.setAttribute('aria-expanded', 'false'); dialog.showModal(); document.body.style.overflow = 'hidden'; renderSearch(); input.focus(); }
   document.querySelectorAll('[data-search-open]').forEach(button => button.addEventListener('click', openSearch));
   document.querySelector('[data-search-close]')?.addEventListener('click', () => dialog?.close());
   dialog?.addEventListener('close', () => { document.body.style.overflow = ''; });
@@ -100,13 +100,37 @@ function initPage() {
     document.querySelectorAll('.article-prose :is(h2,h3)[id]').forEach(heading => observer.observe(heading));
   }
 
-  // Reference-style paper menu: mouse, keyboard, touch and Escape all work.
+  // A single native details panel supports hover, touch, keyboard and Escape.
   const moreMenu = document.querySelector<HTMLDetailsElement>('.more-menu');
+  const moreSummary = moreMenu?.querySelector('summary');
   let closeMore: ReturnType<typeof setTimeout>;
-  moreMenu?.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') { clearTimeout(closeMore); moreMenu.open = true; } });
-  moreMenu?.addEventListener('pointerleave', event => { if (event.pointerType === 'mouse') closeMore = setTimeout(() => { moreMenu.open = false; }, 180); });
-  document.addEventListener('click', event => { if (moreMenu && !moreMenu.contains(event.target as Node)) moreMenu.open = false; }, { signal });
-  document.addEventListener('keydown', event => { if (event.key === 'Escape' && moreMenu?.open) { moreMenu.open = false; moreMenu.querySelector('summary')?.focus(); } }, { signal });
+  const openMore = () => { clearTimeout(closeMore); if (moreMenu) moreMenu.open = true; };
+  const shutMore = () => { clearTimeout(closeMore); if (moreMenu) moreMenu.open = false; };
+  moreSummary?.setAttribute('aria-expanded', String(!!moreMenu?.open));
+  moreMenu?.addEventListener('toggle', () => moreSummary?.setAttribute('aria-expanded', String(moreMenu.open)));
+  moreMenu?.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') openMore(); });
+  moreMenu?.addEventListener('pointerleave', event => {
+    if (event.pointerType === 'mouse') closeMore = setTimeout(() => {
+      if (!moreMenu.contains(document.activeElement)) shutMore();
+    }, 200);
+  });
+  moreMenu?.addEventListener('focusout', event => { if (!moreMenu.contains(event.relatedTarget as Node)) shutMore(); });
+  document.addEventListener('click', event => { if (moreMenu && !moreMenu.contains(event.target as Node)) shutMore(); }, { signal });
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    if (moreMenu?.open) { shutMore(); moreSummary?.focus(); }
+    if (mobileNav && !mobileNav.hidden) { mobileNav.hidden = true; menuToggle?.setAttribute('aria-expanded', 'false'); menuToggle?.setAttribute('aria-label', '展开导航'); menuToggle?.focus(); }
+  }, { signal });
+  document.addEventListener('pointerdown', event => {
+    const target = event.target as Node;
+    if (mobileNav && !mobileNav.hidden && !mobileNav.contains(target) && !menuToggle?.contains(target)) {
+      mobileNav.hidden = true; menuToggle?.setAttribute('aria-expanded', 'false'); menuToggle?.setAttribute('aria-label', '展开导航');
+    }
+  }, { signal });
+  document.querySelectorAll<HTMLElement>('[data-site-since]').forEach(element => {
+    const start = Date.parse(`${element.dataset.siteSince}T00:00:00Z`);
+    element.textContent = String(Math.max(1, Math.floor((Date.now() - start) / 86400000) + 1));
+  });
 
   for (const name of ['subscribe', 'tags']) {
     const modal = document.querySelector<HTMLDialogElement>(`#${name}-dialog`);

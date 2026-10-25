@@ -22,6 +22,18 @@ export const site = {
     { label: '时光', href: '/timeline/' },
     { label: '思考', href: '/thinking/' },
   ],
+  pages: [
+    { label: '自述', href: '/about/' },
+    { label: '人设', href: '/persona/' },
+    { label: '灵魂', href: '/soul/' },
+    { label: '此站点', href: '/about-site/' },
+    { label: '历史', href: '/timeline/' },
+    { label: '迭代', href: '/changelog/' },
+    { label: '留言', href: '/message/' },
+    { label: '关于友链', href: '/friends/about/' },
+    { label: '一对一咨询', href: '/consulting/' },
+    { label: '赞助', href: '/support/' },
+  ],
   more: [
     { label: '友链', description: '互联网上的朋友们', href: '/friends/' },
     { label: '项目', description: '开源项目与作品集', href: '/projects/' },
