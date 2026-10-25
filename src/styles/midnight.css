@@ -16,16 +16,30 @@ button:not(:disabled), a, summary { transition: color var(--duration) ease, back
 .stellar-stars { mask-image: linear-gradient(90deg,#000,transparent 20%,transparent 80%,#000); }
 .stellar-star, [data-theme='dark'] .stellar-star { box-shadow: none; opacity: calc(var(--alpha) * .5); background: var(--text-secondary); }
 .stellar-motes { display: none; }
-.stellar-fragments { position: absolute; inset: 0; pointer-events: none; }
-.stellar-fragment { position: absolute; top: -20px; left: var(--x); width: var(--size); height: calc(var(--size) * 2.5); background: var(--accent); opacity: 0; clip-path: polygon(50% 0,100% 50%,50% 100%,0 50%); animation: fragment-fall var(--speed) linear var(--delay) infinite; will-change: transform; }
-.stellar-fragment:nth-child(3n) { background: var(--text-primary); }
+/* Three small silhouettes and independent depths avoid a uniform confetti effect. */
+.stellar-fragments { position: absolute; inset: 0; pointer-events: none; --fragment-silver: #315d88; --fragment-ice: #487faa; }
+[data-theme='dark'] .stellar-fragments { --fragment-silver: #e6f1ff; --fragment-ice: #7bcfff; }
+.stellar-fragment { position: absolute; top: -30px; left: var(--x); width: var(--size); height: calc(var(--size) * 1.7); opacity: 0; animation: fragment-fall var(--speed) linear var(--delay) infinite; }
+.fragment-body { display: block; position: relative; width: 100%; height: 100%; background: linear-gradient(135deg,var(--fragment-silver) 0 42%,var(--fragment-ice) 43% 68%,var(--fragment-silver) 100%); clip-path: polygon(50% 0,100% 42%,62% 88%,50% 100%,0 58%,38% 12%); animation: fragment-turn var(--turn) ease-in-out var(--delay) infinite alternate; }
+.fragment-body::after { content: ''; position: absolute; inset: 12% 48%; background: var(--fragment-silver); opacity: .65; transform: rotate(-12deg); }
+.fragment-star { height: var(--size); }
+.fragment-star .fragment-body { clip-path: polygon(50% 0,61% 37%,100% 50%,61% 63%,50% 100%,39% 63%,0 50%,39% 37%); background: var(--fragment-silver); }
+.fragment-star::before { content: ''; position: absolute; inset: -5px; border-radius: 50%; background: radial-gradient(circle,color-mix(in srgb,var(--fragment-ice) 24%,transparent),transparent 65%); }
+.fragment-tail { display: none; }
+.fragment-star .fragment-tail { display: block; position: absolute; bottom: 70%; left: 50%; width: 1px; height: 16px; background: linear-gradient(transparent,var(--fragment-ice)); opacity: .24; transform: rotate(12deg); transform-origin: bottom; }
+.fragment-dust { height: var(--size); }
+.fragment-dust .fragment-body { border-radius: 50%; clip-path: none; background: var(--fragment-ice); animation: none; }
+.fragment-dust .fragment-body::after { display: none; }
 @keyframes fragment-fall {
-  0% { transform: translate3d(0,-20px,0) rotate(-25deg); opacity: 0; }
-  12% { opacity: .65; }
-  50% { opacity: .4; }
-  85% { opacity: .65; }
-  100% { transform: translate3d(var(--drift),calc(100svh + 40px),0) rotate(115deg); opacity: 0; }
+  0% { transform: translate3d(0,-30px,0); opacity: 0; }
+  15% { opacity: var(--visibility); }
+  25% { transform: translate3d(var(--sway),25svh,0); }
+  50% { transform: translate3d(calc(var(--drift) * .5),50svh,0); opacity: calc(var(--visibility) * .72); }
+  75% { transform: translate3d(calc(var(--drift) - var(--sway)),75svh,0); }
+  85% { opacity: var(--visibility); }
+  100% { transform: translate3d(var(--drift),calc(100svh + 60px),0); opacity: 0; }
 }
+@keyframes fragment-turn { from { transform: rotate(-25deg) rotateY(0deg); } to { transform: rotate(80deg) rotateY(40deg); } }
 @keyframes starlight { from { opacity: calc(var(--alpha) * .25); } to { opacity: calc(var(--alpha) * .5); } }
 @media (max-width: 800px) {
   .nebula-one { height: 480px; top: -180px; }
@@ -39,19 +53,6 @@ button:not(:disabled), a, summary { transition: color var(--duration) ease, back
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) { .stellar-pointer { display: block; } }
 [data-effects='off'] .stellar-pointer { display: none; }
 @media print { .stellar-pointer { display: none; } }
-/* Native SVG cursors: explicit functional states outrank legacy component rules. */
-:root { --cursor-ice: url('/cursors/ice-light.svg') 3 2, auto; --cursor-star: url('/cursors/star-light.svg') 12 12, pointer; --cursor-text: url('/cursors/text-light.svg') 12 12, text; }
-:root[data-theme='dark'] { --cursor-ice: url('/cursors/ice-dark.svg') 3 2, auto; --cursor-star: url('/cursors/star-dark.svg') 12 12, pointer; --cursor-text: url('/cursors/text-dark.svg') 12 12, text; }
-@media (hover: hover) and (pointer: fine) {
-  html, body { cursor: var(--cursor-ice); }
-  :root body :is(p, blockquote, h1, h2, h3, h4, h5, h6, pre, code, input, textarea, [contenteditable='true']) { cursor: var(--cursor-text); }
-  :root body :is(a, button, summary, select, label[for], [role='button']),
-  :root body :is(a, button, summary, select, label[for], [role='button']) * { cursor: var(--cursor-star); }
-  :root body :is(input[type='checkbox'], input[type='radio'], input[type='submit'], input[type='button']) { cursor: var(--cursor-star); }
-  :root body input[type='range'] { cursor: ew-resize; }
-  :root body :is(button, input, select, textarea):disabled,
-  :root body :is(button, input, select, textarea):disabled * { cursor: not-allowed; }
-}
 .pointer-burst { position: absolute; left: 0; top: 0; width: 0; height: 0; }
 .click-ring { position: absolute; left: -10px; top: -10px; width: 20px; height: 20px; border: 1px solid var(--accent); border-radius: 50%; opacity: 0; }
 .click-shard { position: absolute; left: -1.5px; top: -3.5px; width: 3px; height: 7px; background: var(--accent); clip-path: polygon(50% 0,100% 50%,50% 100%,0 50%); opacity: 0; }
@@ -285,6 +286,6 @@ button:not(:disabled), a, summary { transition: color var(--duration) ease, back
 }
 @media(prefers-reduced-motion:reduce) {
   .stellar-fragments { display: none; }
-  .stellar-fragment { animation: none; will-change: auto; }
+  .stellar-fragment, .fragment-body { animation: none; will-change: auto; }
   .stellar-nebula, [data-theme='dark'] .stellar-nebula, .stellar-star, .stellar-mote, .portrait-ring, .route-loader-orbit::before, .route-loader-orbit span { animation: none; }
 }

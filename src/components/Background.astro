@@ -6,7 +6,11 @@ const random = (i: number, salt = 1) => { const x = Math.sin(i * 127.1 + salt * 
   <div class="stellar-nebula nebula-one"></div><div class="stellar-nebula nebula-two"></div>
   <svg class="stellar-orbits" viewBox="0 0 1440 1050" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="orbit-blue"><stop stop-color="#7ecfff" stop-opacity="0"/><stop offset=".48" stop-color="#90cbff" stop-opacity=".4"/><stop offset="1" stop-color="#7ecfff" stop-opacity="0"/></linearGradient></defs><g fill="none" stroke="url(#orbit-blue)" stroke-width=".6"><ellipse cx="720" cy="320" rx="690" ry="300" transform="rotate(-28 720 320)"/><ellipse cx="720" cy="320" rx="620" ry="345" transform="rotate(-28 720 320)"/><path d="M-120 800C270 370 1080 1190 1580 240"/><path d="M-100 850C330 410 1060 1250 1520 330"/></g></svg>
   <div class="stellar-stars">{Array.from({length:48},(_,i)=><span class="stellar-star" style={`--x:${random(i,2)*100}%;--y:${random(i,3)*100}%;--size:${random(i,4)*1.5+.6}px;--alpha:${random(i,5)*.45+.15};--delay:${-random(i,6)*12}s;--speed:${random(i,7)*8+5}s`}></span>)}</div>
-  <div class="stellar-fragments">{[2, 98, 6, 94, 10, 90, 14, 86, 18, 82, 4, 96, 8, 92, 12, 88, 1, 99, 16, 84].map((x,i)=><span class="stellar-fragment" style={`--x:${x}%;--delay:${-i*5-7}s;--speed:${24+i%6*3}s;--size:${3+i%3}px;--drift:${i%2?-10:10}px`}></span>)}</div>
+  <div class="stellar-fragments">{[2, 98, 6, 94, 10, 90, 14, 86, 18, 82, 4, 96, 8, 92, 12, 88, 1, 99, 16, 84].map((x,i)=>{
+    const shape = i % 5 === 0 ? 'star' : i % 5 === 4 ? 'dust' : 'crystal';
+    const size = shape === 'star' ? 7 : shape === 'dust' ? 2 : 3.5 + random(i,21) * 2;
+    return <span class={`stellar-fragment fragment-${shape}`} style={`--x:${x}%;--delay:${-random(i,22)*90}s;--speed:${30+random(i,23)*22}s;--turn:${8+random(i,24)*7}s;--size:${size}px;--visibility:${shape==='dust'?.42:shape==='star'?.8:.65};--drift:${i%2?-12:12}px;--sway:${(random(i,25)-.5)*16}px`}><span class="fragment-tail"></span><span class="fragment-body"></span></span>;
+  })}</div>
 </div>
 
 <div transition:persist="stellar-pointer" class="stellar-pointer" aria-hidden="true">{Array.from({length:14},()=> <span class="pointer-spark"></span>)}{Array.from({length:3},()=> <span class="pointer-burst"><span class="click-ring"></span>{Array.from({length:8},()=> <span class="click-shard"></span>)}</span>)}</div>

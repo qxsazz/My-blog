@@ -1,0 +1,18 @@
+/* Shared critical cursor rules. Keep navigation, dialogs and nested content consistent. */
+@media (hover: hover) and (pointer: fine) {
+  :root, :root body, :root body * { cursor: var(--cursor-ice); }
+  :root body *::before, :root body *::after { cursor: inherit; }
+  /* A normal pointer does not disable text selection; use I-beams for editing. */
+  :root body :is(input, textarea, [contenteditable='true'], [contenteditable='']),
+  :root body :is(textarea, [contenteditable='true'], [contenteditable='']) * { cursor: var(--cursor-text); }
+  :root body :is(a, button, summary, select, label[for], [role='button']),
+  :root body :is(a, button, summary, select, label[for], [role='button']) * { cursor: var(--cursor-star); }
+  :root body :is(input[type='checkbox'], input[type='radio'], input[type='submit'], input[type='button']) { cursor: var(--cursor-star); }
+  :root body input[type='range'] { cursor: ew-resize; }
+  :root body :is(button, input, select, textarea):disabled,
+  :root body :is(button, input, select, textarea):disabled * { cursor: not-allowed; }
+  :root body dialog::backdrop { cursor: var(--cursor-ice); }
+  :root::view-transition, :root::view-transition-group(*),
+  :root::view-transition-image-pair(*), :root::view-transition-old(*),
+  :root::view-transition-new(*) { cursor: var(--cursor-ice); }
+}

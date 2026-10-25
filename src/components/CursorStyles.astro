@@ -1,0 +1,14 @@
+---
+// Inline cursor images are available on every route, including during page swaps.
+import iceLight from '../../public/cursors/ice-light.svg?raw';
+import iceDark from '../../public/cursors/ice-dark.svg?raw';
+import starLight from '../../public/cursors/star-light.svg?raw';
+import starDark from '../../public/cursors/star-dark.svg?raw';
+import textLight from '../../public/cursors/text-light.svg?raw';
+import textDark from '../../public/cursors/text-dark.svg?raw';
+import rules from '@/styles/cursors.css?raw';
+const image = (svg: string, hotspot: string, fallback: string) => `url("data:image/svg+xml,${encodeURIComponent(svg)}") ${hotspot}, ${fallback}`;
+const variables = (ice: string, star: string, text: string) => `--cursor-ice:${image(ice,'3 2','auto')};--cursor-star:${image(star,'12 12','pointer')};--cursor-text:${image(text,'12 12','text')};`;
+const styles = `:root{${variables(iceLight,starLight,textLight)}}:root[data-theme='dark']{${variables(iceDark,starDark,textDark)}}${rules}`;
+---
+<style id="site-cursors" is:inline transition:persist="site-cursors" set:html={styles} />
