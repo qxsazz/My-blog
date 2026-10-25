@@ -6,7 +6,7 @@ const active = (href: string) => href === '/' ? path === '/' : path.startsWith(h
 const moreActive = site.more.some(item => active(item.href));
 ---
 <header class="site-header"><div class="header-inner">
-  <a class="wordmark" href="/" aria-label={`${site.author}首页`}><img src="/images/avatar.svg" alt="" width="30" height="30" /><span>{site.author}</span></a>
+  <a class="wordmark" href="/" aria-label={`${site.author}首页`}><img src={site.avatar} alt="" width="30" height="30" /><span>{site.author}</span></a>
   <nav class="desktop-nav" aria-label="主导航">{site.nav.map(item => <a href={item.href} aria-current={active(item.href) ? 'page' : undefined} class:list={[{ active: active(item.href) }]}>{item.label}</a>)}
     <details class="more-menu"><summary class:list={[{ active: moreActive }]}>更多</summary><div class="more-menu-paper">{site.more.map(item => <a href={item.href}><span>{item.label}{item.label==='跃迁' && <Icon name="diagonal" size={13}/>}</span><i></i><small>{item.description}</small></a>)}</div></details>
   </nav>

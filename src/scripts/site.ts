@@ -3,14 +3,14 @@ const root = document.documentElement;
 const readPreference = (key: string, fallback: string) => { try { return localStorage.getItem(key) || fallback; } catch { return fallback; } };
 const savePreference = (key: string, value: string) => { try { localStorage.setItem(key, value); } catch { /* Storage can be disabled. */ } };
 const systemTheme = matchMedia('(prefers-color-scheme: dark)');
-let preference = readPreference('yobai-theme', 'system');
+let preference = readPreference('dominator-theme', 'dark');
 function setTheme(theme: string) {
   preference = theme;
   root.dataset.theme = theme === 'system' ? (systemTheme.matches ? 'dark' : 'light') : theme;
-  savePreference('yobai-theme', theme);
+  savePreference('dominator-theme', theme);
   document.querySelectorAll<HTMLButtonElement>('[data-set-theme]').forEach(button => { const active = button.dataset.setTheme === theme; button.classList.toggle('active', active); button.setAttribute('aria-pressed', String(active)); });
   document.querySelector('[data-theme-toggle]')?.setAttribute('aria-label', root.dataset.theme === 'dark' ? '切换浅色主题' : '切换深色主题');
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', root.dataset.theme === 'dark' ? '#1c1c1e' : '#fefdfa');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', root.dataset.theme === 'dark' ? '#050b18' : '#f2f7fd');
 }
 setTheme(preference);
 systemTheme.addEventListener('change', () => { if (preference === 'system') setTheme('system'); });
@@ -19,7 +19,7 @@ document.querySelectorAll<HTMLButtonElement>('[data-set-theme]').forEach(button 
 const effectsButton = document.querySelector<HTMLButtonElement>('[data-effects-toggle]');
 function updateEffects() { if (effectsButton) { effectsButton.textContent = root.dataset.effects === 'off' ? '关' : '开'; effectsButton.setAttribute('aria-pressed', String(root.dataset.effects !== 'off')); } }
 updateEffects();
-effectsButton?.addEventListener('click', () => { root.dataset.effects = root.dataset.effects === 'off' ? 'on' : 'off'; savePreference('yobai-effects', root.dataset.effects); updateEffects(); });
+effectsButton?.addEventListener('click', () => { root.dataset.effects = root.dataset.effects === 'off' ? 'on' : 'off'; savePreference('dominator-effects', root.dataset.effects); updateEffects(); });
 
 const menuToggle = document.querySelector<HTMLButtonElement>('.mobile-menu-toggle');
 const mobileNav = document.querySelector<HTMLElement>('#mobile-nav');

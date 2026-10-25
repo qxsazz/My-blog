@@ -83,3 +83,7 @@ public/
 ## 发布
 
 既有 Site ID 保存在 `.openai/hosting.json`，后续复用该身份发布到同一个域名。发布源码工作目录为 `/workspace/sites/blog-model-gate`；`/workspace/My-blog` 同步保留可二开的项目文件。正式域名已写入 Astro 配置，部署环境可用 `SITE_URL` 覆盖。打包目录为 `dist/`。
+
+## 冰蓝星夜主题
+
+头像采用用户提供肖像的方形适配版本，统一配置在 `src/config.ts` 的 `avatar`。首页、导航与关于页共用该资源。`src/styles/stellar.css` 集中管理银白、冰蓝与深海蓝配色及浅色冰霜模式；`Background.astro` 绘制轻量星尘、冷光与轨道细线，不使用人物大图铺底。首页中文介绍配置在 `site.hero`，新访客默认深色，页脚可切换并记住选择。内容集合继续保持为空。
