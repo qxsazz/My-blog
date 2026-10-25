@@ -72,6 +72,9 @@ src/styles/content.css       # 有正文的栏目与文章样式
 src/styles/reading.css       # 信纸阅读、文稿正文与过场动画
 src/styles/fonts.css         # 本地字体声明
 public/images/avatar.png     # 头像
+public/audio/clair-de-lune.mp3 # 月光，Laurens Goedhart 的 CC BY 3.0 录音
+src/components/MusicPlayer.astro # 持久化星夜电台
+src/scripts/music-player.ts  # 播放、进度、音量与存储
 public/licenses/             # 字体许可与来源记录
 ```
 
@@ -113,3 +116,10 @@ public/licenses/             # 字体许可与来源记录
 ## 发布
 
 部署目录 `dist/`；默认域名 `https://blog.model-gate.fun`，可由环境变量 `SITE_URL` 覆盖。复用 `.openai/hosting.json` 中的项目身份，不另建站点。正式发布源码在 `/workspace/sites/blog-model-gate`；`/workspace/My-blog` 同步保留可二开的项目文件。
+
+
+## 星夜电台
+
+全站右下角音符与页脚「背景音乐」控制同一个原生音频播放器，曲目为德彪西《月光》，采用 Laurens Goedhart 2011 年演奏的 CC BY 3.0 录音；不是赵成珍版。完整来源和转换说明在 `public/licenses/music-credits.md`，播放器内保留演奏者与许可链接。
+
+默认关闭、音量 20%，首次点击才加载 MP3。支持暂停/继续、拖动进度、音量与单曲循环；音量和位置保存在 `dominator-music-state`。Astro ClientRouter 切换与前进后退时持续播放同一音频节点；整页刷新后保持暂停，用户点击播放时恢复位置。关闭背景效果或 reduced motion 不会停止用户主动播放的音乐，但关闭音符条装饰动画。可通过 `src/config.ts` 的 `site.music` 更换曲目与授权信息。

@@ -1,0 +1,26 @@
+---
+import { site } from '@/config';
+const { music } = site;
+---
+<aside class="stellar-radio" data-music-player data-state="idle" transition:persist="stellar-radio" aria-label="星夜电台">
+  <audio data-music-audio data-src={music.src} preload="none" loop aria-label={`${music.title}，${music.performer}演奏`}></audio>
+  <section class="radio-panel" id="stellar-radio-panel" aria-label="音乐播放控制" hidden>
+    <div class="radio-heading"><span>星夜电台 <span aria-hidden="true">/ NIGHT RADIO</span></span><button type="button" class="radio-close" data-music-close aria-label="收起星夜电台">×</button></div>
+    <div class="radio-track"><span class="radio-moon" aria-hidden="true">☾</span><div><h2>{music.title}</h2><p>{music.originalTitle} · {music.composer}</p></div></div>
+    <div class="radio-playback">
+      <button type="button" class="radio-play" data-music-play aria-label={`播放${music.title}`} aria-pressed="false">
+        <svg class="radio-play-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg>
+        <svg class="radio-pause-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6Zm8 0h4v14h-4Z"/></svg>
+      </button>
+      <div class="radio-position"><div class="radio-times"><span data-music-elapsed>00:00</span><span data-music-duration>--:--</span></div><input type="range" data-music-seek aria-label="播放进度" min="0" max="1000" step="1" value="0" disabled /></div>
+    </div>
+    <div class="radio-volume"><label for="stellar-radio-volume">音量</label><input type="range" id="stellar-radio-volume" data-music-volume aria-label="音乐音量" min="0" max="100" step="1" value="20" /><output for="stellar-radio-volume" data-music-volume-label>20%</output></div>
+    <p class="radio-status" data-music-status role="status">点击播放，让月光陪你阅读。</p>
+    <div class="radio-credit"><a href={music.source} target="_blank" rel="noreferrer">钢琴：{music.performer}</a><span>·</span><a href={music.license} target="_blank" rel="noreferrer">CC BY 3.0</a><a class="radio-source" href="/licenses/music-credits.md" target="_blank" rel="noreferrer">音源说明 ↗</a></div>
+  </section>
+  <button type="button" class="radio-toggle" data-music-toggle aria-label="打开星夜电台" aria-controls="stellar-radio-panel" aria-expanded="false" title="星夜电台 · 月光">
+    <svg class="radio-note-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13M9 9l12-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="18" cy="16" rx="3" ry="2.5"/></svg>
+    <span class="radio-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+</aside>
+<script>import '@/scripts/music-player';</script>

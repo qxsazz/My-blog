@@ -15,6 +15,15 @@ export const site = {
   email: '',
   github: '',
   since: '2026-10-24',
+  music: {
+    title: '月光',
+    originalTitle: 'Clair de lune',
+    composer: 'Claude Debussy',
+    performer: 'Laurens Goedhart',
+    src: '/audio/clair-de-lune.mp3',
+    source: 'https://commons.wikimedia.org/wiki/File:Clair_de_lune_(Claude_Debussy)_Suite_bergamasque.ogg',
+    license: 'https://creativecommons.org/licenses/by/3.0/',
+  },
   nav: [
     { label: '首页', href: '/' },
     { label: '文稿', href: '/posts/' },
