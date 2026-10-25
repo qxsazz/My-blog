@@ -2,14 +2,30 @@
 import { site } from '@/config';
 import Icon from './Icon.astro';
 import MegaMenu from './MegaMenu.astro';
+import NavContent from './NavContent.astro';
 const path = Astro.url.pathname;
 const active = (href: string) => href === '/' ? path === '/' : path.startsWith(href);
-const moreActive = [...site.more, ...site.pages].some(item => active(item.href)) && !site.nav.some(item => item.href !== '/' && active(item.href));
+const moreActive = site.more.some(item => active(item.href));
+const menus = [
+  { key: 'home', label: '首页', href: '/', width: 744 },
+  { key: 'posts', label: '文稿', href: '/posts/', width: 650 },
+  { key: 'notes', label: '手记', href: '/notes/', width: 650 },
+  { key: 'timeline', label: '时光', href: '/timeline/', width: 670 },
+] as const;
 ---
 <header class="site-header"><div class="header-inner">
   <a class="wordmark" href="/" aria-label={`${site.author}首页`}><img src={site.avatar} alt="" width="30" height="30" /><span>{site.author}</span></a>
-  <nav class="desktop-nav" aria-label="主导航">{site.nav.map(item => <a href={item.href} aria-current={active(item.href) ? 'page' : undefined} class:list={[{ active: active(item.href) }]}>{item.label}</a>)}
-    <details class="more-menu"><summary class:list={[{ active: moreActive }]} aria-controls="desktop-mega-menu">更多</summary><div class="more-menu-paper" id="desktop-mega-menu"><MegaMenu /></div></details>
+  <nav class="desktop-nav" aria-label="主导航">
+    {menus.map(menu=><div class="desktop-nav-item" data-nav-item={menu.key}>
+      <a class:list={['nav-link',{active:active(menu.href)}]} href={menu.href} aria-current={active(menu.href)?'page':undefined} data-nav-trigger aria-expanded="false" aria-controls={`nav-panel-${menu.key}`}>{menu.label}</a>
+      <button class="nav-panel-toggle" data-nav-toggle aria-label={`展开${menu.label}菜单`} aria-expanded="false" aria-controls={`nav-panel-${menu.key}`}><Icon name="chevron" size={10}/></button>
+      <div class:list={['nav-panel',`nav-panel-${menu.key}`]} id={`nav-panel-${menu.key}`} style={`--panel-width:${menu.width}px`} hidden>{menu.key==='home'?<MegaMenu />:<NavContent kind={menu.key}/>}</div>
+    </div>)}
+    <a class:list={['nav-link',{active:active('/thinking/')}]} href="/thinking/" aria-current={active('/thinking/')?'page':undefined} data-nav-plain>思考</a>
+    <div class="desktop-nav-item" data-nav-item="more"><button class:list={['nav-link',{active:moreActive}]} data-nav-trigger aria-expanded="false" aria-controls="nav-panel-more">更多</button><div class="nav-panel nav-panel-more" id="nav-panel-more" style="--panel-width:410px" hidden><NavContent kind="more"/></div></div>
   </nav>
   <div class="header-actions"><span class="action-divider"></span><a class="icon-button" href="/about/" aria-label="关于dominator"><Icon name="user" size={15}/></a><button class="icon-button mobile-menu-toggle" aria-label="展开导航" aria-expanded="false" aria-controls="mobile-nav"><Icon name="menu"/></button></div>
-</div><nav id="mobile-nav" class="mobile-nav" aria-label="移动导航" hidden><div class="mobile-primary-links">{site.nav.map(item => <a href={item.href} aria-current={active(item.href)?'page':undefined}>{item.label}</a>)}</div><MegaMenu mobile /></nav></header>
+</div><nav id="mobile-nav" class="mobile-nav" aria-label="移动导航" hidden>
+  <div class="mobile-primary-links">{site.nav.map(item=><a href={item.href} aria-current={active(item.href)?'page':undefined}>{item.label}</a>)}</div>
+  <div class="mobile-section-menus">{[...menus,{key:'more',label:'更多',href:'',width:410}].map(menu=><details class="mobile-section-menu" name="mobile-section" open={menu.key==='home'}><summary>{menu.label}<Icon name="chevron" size={12}/></summary><div class="mobile-section-content">{menu.key==='home'?<MegaMenu mobile />:<NavContent kind={menu.key as 'posts' | 'notes' | 'timeline' | 'more'}/>}</div></details>)}</div>
+</nav></header>

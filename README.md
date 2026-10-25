@@ -58,7 +58,10 @@ src/pages/                   # 各栏目与详情路由
 src/scripts/site.ts          # 主题、弹层、移动导航、复制链接
 src/scripts/posts-browser.ts # 标签筛选、排序与 URL 状态
 src/scripts/transitions.ts   # 站内跳转生命周期与加载过场
-src/components/MegaMenu.astro # 此间统计、页面目录与联系入口
+src/components/MegaMenu.astro # 首页菜单：此间统计、页面目录与联系入口
+src/components/NavContent.astro # 文稿、手记、时光、更多的差异化菜单
+src/scripts/navigation.ts    # 悬停、键盘、触屏与面板定位
+src/scripts/collection-filters.ts # 手记专栏与时光类型的 URL 筛选
 src/components/MenuPage.astro # 人设、灵魂、迭代等独立页面
 src/styles/mega-menu.css     # 桌面信纸菜单与移动端面板
 src/styles/global.css        # 尺寸、排版与响应式
@@ -91,7 +94,11 @@ public/licenses/             # 字体许可与来源记录
 
 手记详情采用中央叠层信纸、左侧近期手记和右侧目录；文稿详情采用宽版正文与内容提要。正文支持标题层级、引用、表格、代码高亮与复制、图片说明、嵌套目录、阅读进度和宋体/黑体切换。字体选择保存在本地；手机端使用可展开的目录与阅读设置。
 
-“更多”支持鼠标悬停、点击、键盘 Enter / Escape 与移出关闭。左侧文字数量与字数由已发布内容计算，建站天数从 `site.since` 起按 UTC 自然日包含首日计算，访问时更新；右侧十个页面入口在 `site.pages` 维护。手机端点击底部导航按钮展开同一目录。邮箱、GitHub 未配置时不显示相应图标；保留 RSS、留言与搜索入口。咨询与赞助页面明确说明尚未开放。
+导航按栏目提供不同菜单：首页为此间统计与十个独立页面；文稿为分类与最近五篇文章；手记为专栏与最近三封手记；时光为内容类型与近期动态；更多为友链、项目、一言、跃迁。思考保持直接跳转。统计由已发布内容计算，建站天数从 `site.since` 起按 UTC 自然日包含首日计算，并在访问时更新。邮箱与 GitHub 未配置时不显示对应图标。
+
+桌面端支持悬停、独立展开按钮、ArrowDown 进入菜单、Escape 关闭、Tab 移出关闭；直接点击导航文字仍进入栏目。每次只展开一个面板，定位自动限制在视口内。手机端用分栏目的原生折叠菜单承载相同内容。
+
+菜单筛选链接可分享：`/posts/?category=设计`、`/notes/?category=日常`、`/timeline/?type=notes`；手记全部专栏位于 `/notes/columns/`。文稿分类可与标签筛选组合。咨询与赞助页面说明目前尚未开放。
 
 未接入评论、点赞统计、登录或邮件后台。RSS 可以直接订阅。邮箱和 GitHub 未提供时不显示入口。
 

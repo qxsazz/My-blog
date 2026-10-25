@@ -30,6 +30,6 @@ const suffix = mobile ? 'mobile' : 'desktop';
   <section class="mega-directory" aria-labelledby={`mega-directory-${suffix}`}>
     <h2 id={`mega-directory-${suffix}`}>页面</h2>
     <div class="mega-page-links">{site.pages.map(item => <a href={item.href} aria-current={path === item.href ? 'page' : undefined}>{item.label}</a>)}</div>
-    <div class="mega-extra-links">{site.more.map(item => <a href={item.href}>{item.label}<Icon name="diagonal" size={11}/></a>)}</div>
+
   </section>
 </div>

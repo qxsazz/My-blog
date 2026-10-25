@@ -12,7 +12,7 @@ document.addEventListener('astro:before-preparation', event => {
   finish();
   destination = (event as Event & { to: URL }).to;
   document.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach(dialog => dialog.close());
-  document.querySelector<HTMLDetailsElement>('.more-menu')?.removeAttribute('open');
+  document.dispatchEvent(new Event('dominator:close-navigation'));
   document.documentElement.classList.add('route-pending');
   document.querySelector('#main')?.setAttribute('aria-busy', 'true');
   loaderTimer = setTimeout(() => {

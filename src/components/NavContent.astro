@@ -1,0 +1,26 @@
+---
+import { entries, entryUrl, shortDate, collectionLabel } from '@/lib';
+import { site } from '@/config';
+import Icon from './Icon.astro';
+interface Props { kind: 'posts' | 'notes' | 'timeline' | 'more' }
+const { kind } = Astro.props;
+const all = await entries();
+const posts = all.filter(item => item.collection === 'posts');
+const notes = all.filter(item => item.collection === 'notes');
+const categories = [...new Set(posts.map(item => item.data.category))];
+const columns = [...new Set(notes.map(item => item.data.category))];
+const recent = kind === 'posts' ? posts.slice(0,5) : kind === 'notes' ? notes.slice(0,3) : all.slice(0,5);
+---
+{kind === 'more' ? <div class="nav-more-links">{site.more.map(item => <a href={item.href}><span>{item.label}</span><i></i><small>{item.description}</small><Icon name="diagonal" size={13}/></a>)}</div> : <>
+<div class="nav-content-columns">
+  <section class="nav-category-list"><h2>{kind === 'notes' ? '专栏' : '分类'}</h2>
+    {kind === 'posts' && categories.map(category => <a href={`/posts/?category=${encodeURIComponent(category)}`}><span>{category}</span><small>{posts.filter(item=>item.data.category===category).length}</small></a>)}
+    {kind === 'notes' && columns.map(category => <a href={`/notes/?category=${encodeURIComponent(category)}`}><span>{category}</span><small>{notes.filter(item=>item.data.category===category).length}</small></a>)}
+    {kind === 'timeline' && Object.entries(collectionLabel).map(([type,label])=><a href={`/timeline/?type=${type}`}><span>{label}</span><small>{all.filter(item=>item.collection===type).length}</small></a>)}
+  </section>
+  <section class="nav-recent-list"><h2>{kind === 'notes' ? '近期手记' : kind === 'timeline' ? '近期动态' : '最近'}</h2>
+    {recent.map(item=><a href={entryUrl(item)}><time datetime={item.data.date.toISOString()}>{shortDate(item.data.date)}</time><span>{item.data.title}</span>{kind==='timeline'&&<small>{collectionLabel[item.collection]}</small>}</a>)}
+  </section>
+</div>
+<div class="nav-content-footer"><a href={kind==='posts'?'/posts/':kind==='notes'?'/notes/':'/timeline/'}>查看{kind==='posts'?'全部文稿':kind==='notes'?'全部手记':'时光'} <span>→</span></a>{kind==='notes'?<a href="/notes/columns/">全部专栏 →</a>:<span>{kind==='posts'?posts.length:all.length} 篇{kind==='posts'?'文稿':'文字'}</span>}</div>
+</>}
