@@ -1,9 +1,4 @@
 ---
-import { render } from 'astro:content';
 import Base from '@/layouts/Base.astro';
-import Icon from '@/components/Icon.astro';
-import { site } from '@/config';
-import { entries, entryUrl, dateLabel } from '@/lib';
-const thoughts=await Promise.all((await entries()).filter(p=>p.collection==='thinking').map(async entry=>({entry,...await render(entry)})));
 ---
-<Base title="思考"><section class="thinking-page"><div class="thinking-title"><h1>思考 <a href="/rss.xml" aria-label="订阅思考"><Icon name="rss" size={14}/></a></h1><p>一些还在生长的想法。</p></div><div class="thinking-feed">{thoughts.map(({entry,Content})=><article class="thinking-card paper-panel"><div class="thinking-author"><a href="/about/">{site.author}</a><time datetime={entry.data.date.toISOString()}>{dateLabel(entry.data.date)}</time></div><div class="thinking-prose prose"><Content/></div><div class="thinking-actions thinking-links"><span>{entry.data.category}</span><a href={entryUrl(entry)}>查看全文 <Icon name="diagonal" size={12}/></a></div></article>)}</div></section></Base>
+<Base title="思考已并入手记" redirectTo="/notes/?tag=思考"><section class="empty-page"><h1>思考已并入手记</h1><p>这些想法现在与日常记录放在一起。</p><a href="/notes/?tag=思考">前往手记 →</a></section></Base>

@@ -1,12 +1,12 @@
 ---
 import Icon from './Icon.astro';
 import { site } from '@/config';
-import { dateLabel, readingTime, type Entry } from '@/lib';
+import { noteColumn, dateLabel, readingTime, type Entry } from '@/lib';
 interface Props { entry: Entry }
 const { entry } = Astro.props;
 const weekday = new Intl.DateTimeFormat('zh-CN', { weekday: 'long', timeZone: 'UTC' }).format(entry.data.date);
 ---
-<a class="note-category-ribbon" href={`/notes/?category=${encodeURIComponent(entry.data.category)}`} aria-label={`查看${entry.data.category}手记`}>{entry.data.category}</a>
+<a class="note-category-ribbon" href={`/notes/?column=${encodeURIComponent(noteColumn(entry))}`} aria-label={`查看${noteColumn(entry)}手记`}>{noteColumn(entry)}</a>
 <header class="article-heading note-heading">
   <h1>{entry.data.title}</h1>
   <div class="note-dateline"><time datetime={entry.data.date.toISOString()}>{dateLabel(entry.data.date)}{weekday}</time><span>约 {readingTime(entry.body)} 分钟阅读</span></div>

@@ -2,6 +2,7 @@
 title: 允许一个问题暂时没有答案
 description: 记录不一定是为了给出结论，有时只是为了把问题看得更清楚。
 date: 2026-10-19
+column: 思考
 category: 日常
 tags: [生活, 思考]
 ---

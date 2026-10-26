@@ -29,7 +29,6 @@ export const site = {
     { label: '文稿', href: '/posts/' },
     { label: '手记', href: '/notes/' },
     { label: '时光', href: '/timeline/' },
-    { label: '思考', href: '/thinking/' },
   ],
   pages: [
     { label: '自述', href: '/about/' },

@@ -3,6 +3,7 @@ draft: false
 title: 风起时，刚好是秋天
 description: 把脚步放慢一点，让日常有迹可循。
 date: 2026-10-20
+column: 游记
 category: 日常
 tags: [秋天, 散步]
 ---

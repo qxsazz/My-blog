@@ -6,6 +6,7 @@ const schema = z.object({
   date: z.coerce.date(),
   updated: z.coerce.date().optional(),
   category: z.string(),
+  column: z.enum(['年终总结', '阶段总结', '游记', '思考', '游戏推荐']).optional(),
   tags: z.array(z.string()).default([]),
   draft: z.boolean().default(false),
   pinned: z.boolean().default(false),
@@ -14,5 +15,4 @@ const schema = z.object({
 export const collections = {
   posts: defineCollection({ loader: glob({ pattern: '**/*.md', base: './src/content/posts' }), schema }),
   notes: defineCollection({ loader: glob({ pattern: '**/*.md', base: './src/content/notes' }), schema }),
-  thinking: defineCollection({ loader: glob({ pattern: '**/*.md', base: './src/content/thinking' }), schema }),
 };

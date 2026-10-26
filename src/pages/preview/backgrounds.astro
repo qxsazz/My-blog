@@ -21,7 +21,7 @@ const all = await entries();
 const writings = all.filter(p=>p.collection==='posts').slice(0,4);
 const note = (await getEntry('notes','building-yobai'))!;
 const { Content } = await render(note);
-const thought = all.find(p=>p.collection==='thinking');
+const thought = all.find(p=>p.collection==='notes' && p.data.tags.includes('思考'));
 const random = (i: number, salt: number) => { const n = Math.sin(i*127.1+salt*311.7)*43758.5453;return n-Math.floor(n); };
 const schemes = [
  { id:'mist', no:'01', name:'月面薄雾', detail:'安静 · 推荐' },

@@ -2,6 +2,7 @@
 title: 先开始，再慢慢完善
 description: 一个能被使用的小作品，比脑海里反复修改的完美计划更接近答案。
 date: 2026-10-24
+column: 思考
 category: 创造
 tags: [创造, 思考]
 ---

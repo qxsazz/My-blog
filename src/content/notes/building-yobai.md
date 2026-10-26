@@ -2,6 +2,7 @@
 title: 把小站点亮的这一晚
 description: 从一张头像的颜色出发，给这个小小的空间添上一点自己的光。
 date: 2026-10-24
+column: 阶段总结
 category: 近况
 tags: [日常, 创造]
 mood: 期待

@@ -1,4 +1,4 @@
-/** One reading model drives the TOC, ring, rail and mobile meter. */
+/** One reading model drives the TOC, star orbit and mobile meter. */
 export function initEditorialReading(signal: AbortSignal) {
   const article = document.querySelector<HTMLElement>('.editorial-reading, .note-reading');
   const body = article?.querySelector<HTMLElement>('.article-prose');
@@ -10,14 +10,11 @@ export function initEditorialReading(signal: AbortSignal) {
   const ring = article.querySelector<SVGCircleElement>('[data-reading-ring]');
   const progressbar = article.querySelector<HTMLElement>('[data-reading-progressbar]');
   const topMeter = document.querySelector<HTMLElement>('[data-reading-top-meter]');
-  const path = rail?.querySelector<SVGPathElement>('[data-reading-rail-path]');
-  const curve = rail?.querySelector<SVGPathElement>('[data-reading-rail-curve]');
-  const point = rail?.querySelector<SVGCircleElement>('[data-reading-rail-point]');
-  const label = rail?.querySelector<HTMLElement>('[data-reading-rail-label]');
+  const orbit = rail?.querySelector<SVGCircleElement>('[data-reading-orbit]');
+  const orbitStatus = rail?.querySelector<HTMLElement>('[data-reading-orbit-status]');
   const currentTitle = rail?.querySelector<HTMLElement>('[data-reading-current-title]');
   const headings = Array.from(body.querySelectorAll<HTMLElement>('h2[id],h3[id]'));
   const toc = article.querySelectorAll<HTMLAnchorElement>('.reading-outline nav a[href^="#"], .mobile-reading-tools nav a[href^="#"]');
-  const stops = Array.from(rail?.querySelectorAll<HTMLAnchorElement>('[data-reading-rail-stop]') || []);
   const guide = article.querySelector<HTMLElement>('[data-reading-guide]');
   const expanded = guide?.querySelector<HTMLElement>('[data-reading-outline-expanded]');
   const toggle = guide?.querySelector<HTMLButtonElement>('[data-reading-guide-toggle]');
@@ -54,10 +51,6 @@ export function initEditorialReading(signal: AbortSignal) {
     distance = Math.max(1, end - start);
     sheetBottom = scrollY + sheet.getBoundingClientRect().bottom;
     positions = headings.length ? headings.map(h => ({ id: h.id, title: h.textContent?.trim() || '', top: scrollY + h.getBoundingClientRect().top })) : [{ id: body!.id, title: article!.querySelector('h1')?.textContent?.trim() || '正文', top: bodyTop }];
-    stops.forEach(stop => {
-      const heading = positions.find(h => h.id === stop.dataset.readingRailStop);
-      if (heading) stop.style.top = `${(36 + clamp((heading.top - readingLine - start) / distance) * 488) / 560 * 100}%`;
-    });
     needsMeasure = false;
   }
   function update() {
@@ -70,6 +63,7 @@ export function initEditorialReading(signal: AbortSignal) {
       percentages.forEach(el => { el.textContent = `${value}%`; });
       meter?.style.setProperty('--progress', `${value}%`);
       progressbar?.setAttribute('aria-valuenow', String(value));
+      orbitStatus?.setAttribute('aria-valuenow', String(value));
       lastValue = value;
     }
     article!.style.setProperty('--reading-fraction', String(fraction));
@@ -82,19 +76,13 @@ export function initEditorialReading(signal: AbortSignal) {
       if (active) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
     });
-    stops.forEach(stop => stop.classList.toggle('active', stop.dataset.readingRailStop === current?.id));
     if (currentTitle) currentTitle.textContent = value === 100 ? '已读完' : current?.title || '正文开篇';
     guideActive = scrollY > Math.max(24, start * .35);
     syncGuide();
     moveRail(fraction);
   }
   function drawRail(fraction: number) {
-    const y = 36 + fraction * 488;
-    const bend = `M12 ${y - 28} C12 ${y - 14} 22 ${y - 14} 22 ${y} C22 ${y + 14} 12 ${y + 14} 12 ${y + 28}`;
-    path?.setAttribute('d', `M12 8 V${y - 28} ${bend.slice(bend.indexOf('C'))} V552`);
-    curve?.setAttribute('d', bend);
-    point?.setAttribute('cy', String(y));
-    if (label) label.style.top = `${y / 560 * 100}%`;
+    orbit?.style.setProperty('stroke-dashoffset', String(100 - fraction * 100));
   }
   function settleRail() {
     cancelAnimationFrame(railFrame);

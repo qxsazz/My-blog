@@ -4,8 +4,8 @@ import Icon from '@/components/Icon.astro';
 import { site } from '@/config';
 import { entries, entryUrl, collectionLabel, shortDate } from '@/lib';
 const all = await entries();
-const writings = all.filter(p=>p.collection!=='thinking').slice(0,5);
-const thought = all.find(p=>p.collection==='thinking');
+const writings = all.slice(0,5);
+const thought = all.find(p=>p.collection==='notes' && p.data.tags.includes('思考'));
 const note = all.find(p=>p.collection==='notes');
 const words = all.reduce((sum,p)=>sum+(p.body?.replace(/\s/g,'').length||0),0);
 ---
@@ -16,7 +16,7 @@ const words = all.reduce((sum,p)=>sum+(p.body?.replace(/\s/g,'').length||0),0);
   </section>
   <section class="reference-home-columns">
     <div class="home-writing"><div class="reference-section-title"><span>RECENT WRITING</span><h2>近期笔墨</h2></div><div class="home-writing-track">{writings.map((entry,i)=><a class:list={['home-writing-placeholder',{'first':i===0}]} href={entryUrl(entry)}><span class="track-number">{String(i+1).padStart(2,'0')}</span><div class="home-entry-meta"><span>{collectionLabel[entry.collection]} · {entry.data.category}</span><time datetime={entry.data.date.toISOString()}>{shortDate(entry.data.date)}</time></div><h3>{entry.data.title}</h3>{i===0&&<p>{entry.data.description}</p>}</a>)}</div></div>
-    <aside class="home-marginalia"><div><div class="reference-section-title"><span>MUSINGS</span><h2>碎念</h2></div><div class="home-musing-placeholder"><div>{thought&&<><p>{thought.data.description}</p><span>{shortDate(thought.data.date)} · {thought.data.category}</span></>}</div><a href="/thinking/" aria-label="查看思考"><Icon name="arrow" size={16}/></a></div></div><div><div class="reference-section-title"><span>LETTERS</span><h2>来信</h2></div><div class="home-letter-placeholder"><div>{note&&<><h3>{note.data.title}</h3><p>{note.data.description}</p></>}</div><a href="/notes/" aria-label="查看手记"><Icon name="arrow" size={16}/></a></div></div></aside>
+    <aside class="home-marginalia"><div><div class="reference-section-title"><span>MUSINGS</span><h2>碎念</h2></div><div class="home-musing-placeholder"><div>{thought&&<><p>{thought.data.description}</p><span>{shortDate(thought.data.date)} · {thought.data.category}</span></>}</div><a href="/notes/?tag=思考" aria-label="查看手记中的思考"><Icon name="arrow" size={16}/></a></div></div><div><div class="reference-section-title"><span>LETTERS</span><h2>来信</h2></div><div class="home-letter-placeholder"><div>{note&&<><h3>{note.data.title}</h3><p>{note.data.description}</p></>}</div><a href="/notes/" aria-label="查看手记"><Icon name="arrow" size={16}/></a></div></div></aside>
   </section>
   <section class="home-mail-panel"><div class="mail-panel-paper paper-panel"><span class="season-caption-label">星河来信</span><div class="mail-panel-content"><span class="season-decoration" aria-hidden="true">✳</span><div><span class="eyebrow">于星海之间，见字如面</span><h2>欢迎来信</h2></div><div class="mail-panel-actions"><a href="/message/">留下印记 <span>♥</span></a><button data-subscribe-open>订阅通信 <Icon name="arrow" size={15}/></button><p>不错过每一纸书。</p></div></div><div class="mail-panel-links">{site.more.map((item,i)=><>{i>0&&<span>·</span>}<a href={item.href}>{item.label==='友链'?'朋友们':item.label}</a></>)}</div></div></section>
 </Base>

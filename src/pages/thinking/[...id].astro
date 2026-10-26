@@ -1,12 +1,9 @@
 ---
-import { render } from 'astro:content';
-import Article from '@/layouts/Article.astro';
-import { entries } from '@/lib';
-export async function getStaticPaths() {
-  const thoughts=(await entries()).filter(p=>p.collection==='thinking');
-  return thoughts.map((entry,index)=>({params:{id:entry.id},props:{entry,next:thoughts[index+1]}}));
+import Base from '@/layouts/Base.astro';
+import { legacyThoughtIds } from '@/lib';
+export function getStaticPaths() {
+  return legacyThoughtIds.map(id=>({params:{id},props:{destination:`/notes/${id}/`}}));
 }
-const {entry,next}=Astro.props;
-const {Content,headings}=await render(entry);
+const { destination } = Astro.props;
 ---
-<Article entry={entry} headings={headings} next={next}><Content/></Article>
+<Base title="这篇思考已收进手记" redirectTo={destination}><section class="empty-page"><h1>这篇思考已收进手记</h1><a href={destination}>继续阅读 →</a></section></Base>

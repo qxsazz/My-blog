@@ -1,7 +1,7 @@
 ---
 import Base from '@/layouts/Base.astro';
-import { entries } from '@/lib';
+import NoteSticker from '@/components/NoteSticker.astro';
+import { entries, noteColumns, noteColumn } from '@/lib';
 const notes = (await entries()).filter(item=>item.collection==='notes');
-const columns = [...new Set(notes.map(item=>item.data.category))];
 ---
-<Base title="手记专栏"><section class="secondary-page replica-container"><header><span class="eyebrow">LETTERS & COLUMNS</span><h1>手记专栏</h1><p>给日常分一页，让每种心情都有去处。</p></header><div class="secondary-content-grid">{columns.map(category=><a class="content-panel paper-panel" href={`/notes/?category=${encodeURIComponent(category)}`}><span class="eyebrow">{notes.filter(item=>item.data.category===category).length} 封手记</span><h2>{category}</h2><p>{notes.find(item=>item.data.category===category)?.data.description}</p><div class="panel-bottom"><span>翻开这个专栏</span><span>→</span></div></a>)}</div></section></Base>
+<Base title="手记专栏"><section class="secondary-page replica-container"><header><span class="eyebrow">LETTERS & COLUMNS</span><h1>手记专栏</h1><p>给日常分一页，让每种心情都有去处。</p></header><div class="secondary-content-grid">{noteColumns.map(column=>{const count=notes.filter(item=>noteColumn(item)===column.name).length;return <a class="content-panel paper-panel" href={`/notes/?column=${encodeURIComponent(column.name)}`}><span class="eyebrow">{count} 封手记</span><h2 class="note-column-label"><NoteSticker kind={column.icon}/><span>{column.name}</span></h2><p>{column.description}</p><div class="panel-bottom"><span>{count?'翻开这个专栏':'等待第一篇记录'}</span><span>→</span></div></a>})}</div></section></Base>

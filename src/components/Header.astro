@@ -7,10 +7,10 @@ const path = Astro.url.pathname;
 const active = (href: string) => href === '/' ? path === '/' : path.startsWith(href);
 const moreActive = site.more.some(item => active(item.href));
 const menus = [
-  { key: 'home', label: '首页', href: '/', width: 744 },
-  { key: 'posts', label: '文稿', href: '/posts/', width: 650 },
-  { key: 'notes', label: '手记', href: '/notes/', width: 650 },
-  { key: 'timeline', label: '时光', href: '/timeline/', width: 670 },
+  { key: 'home', label: '首页', href: '/', width: 600 },
+  { key: 'posts', label: '文稿', href: '/posts/', width: 600 },
+  { key: 'notes', label: '手记', href: '/notes/', width: 600 },
+  { key: 'timeline', label: '时光', href: '/timeline/', width: 600 },
 ] as const;
 ---
 <header class="site-header"><div class="header-inner">
@@ -19,10 +19,9 @@ const menus = [
     {menus.map(menu=><div class="desktop-nav-item" data-nav-item={menu.key}>
       <a class:list={['nav-link',{active:active(menu.href)}]} href={menu.href} aria-current={active(menu.href)?'page':undefined} data-nav-trigger aria-expanded="false" aria-controls={`nav-panel-${menu.key}`}>{menu.label}</a>
       <button class="nav-panel-toggle" data-nav-toggle aria-label={`展开${menu.label}菜单`} aria-expanded="false" aria-controls={`nav-panel-${menu.key}`}><Icon name="chevron" size={10}/></button>
-      <div class:list={['nav-panel',`nav-panel-${menu.key}`]} id={`nav-panel-${menu.key}`} style={`--panel-width:${menu.width}px`} hidden>{menu.key==='home'?<MegaMenu />:<NavContent kind={menu.key}/>}</div>
+      <div class:list={['nav-panel',`nav-panel-${menu.key}`]} id={`nav-panel-${menu.key}`} style={`--panel-width:${menu.width}px`} hidden>{menu.key==='home'?<><MegaMenu /><div class="nav-content-footer"><a href="/about/">认识 dominator <span>→</span></a><span>此间 · 星河档案</span></div></>:<NavContent kind={menu.key}/>}</div>
     </div>)}
-    <a class:list={['nav-link',{active:active('/thinking/')}]} href="/thinking/" aria-current={active('/thinking/')?'page':undefined} data-nav-plain>思考</a>
-    <div class="desktop-nav-item" data-nav-item="more"><button class:list={['nav-link',{active:moreActive}]} data-nav-trigger aria-expanded="false" aria-controls="nav-panel-more">更多</button><div class="nav-panel nav-panel-more" id="nav-panel-more" style="--panel-width:410px" hidden><NavContent kind="more"/></div></div>
+    <div class="desktop-nav-item" data-nav-item="more"><button class:list={['nav-link',{active:moreActive}]} data-nav-trigger aria-expanded="false" aria-controls="nav-panel-more">更多</button><div class="nav-panel nav-panel-more" id="nav-panel-more" style="--panel-width:600px" hidden><NavContent kind="more"/></div></div>
   </nav>
   <div class="header-actions"><span class="action-divider"></span><a class="icon-button" href="/about/" aria-label="关于dominator"><Icon name="user" size={15}/></a><button class="icon-button mobile-menu-toggle" aria-label="展开导航" aria-expanded="false" aria-controls="mobile-nav"><Icon name="menu"/></button></div>
 </div><nav id="mobile-nav" class="mobile-nav" aria-label="移动导航" hidden>

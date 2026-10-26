@@ -24,9 +24,9 @@ export function initNavigationMenus(signal: AbortSignal) {
   const position = () => {
     if (!current || !nav) return;
     const panel = current.querySelector<HTMLElement>('.nav-panel')!;
+    const width = panel.getBoundingClientRect().width;
     const trigger = current.querySelector<HTMLElement>('[data-nav-trigger]')!;
     const box = trigger.getBoundingClientRect();
-    const width = panel.getBoundingClientRect().width;
     const left = Math.min(Math.max(20,box.x+box.width/2-width/2),innerWidth-width-20);
     panel.style.left = `${left-nav.getBoundingClientRect().x}px`;
   };
