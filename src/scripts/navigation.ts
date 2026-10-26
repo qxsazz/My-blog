@@ -21,6 +21,34 @@ export function initNavigationMenus(signal: AbortSignal) {
     current = undefined;
     if (restoreFocus) old.querySelector<HTMLElement>('[data-nav-trigger]')?.focus();
   };
+  // Each desktop/mobile panel owns its preview state. Links keep native navigation.
+  document.querySelectorAll<HTMLElement>('[data-nav-post-preview]').forEach(group => {
+    const filters = Array.from(group.querySelectorAll<HTMLAnchorElement>('[data-nav-post-filter]'));
+    const rows = Array.from(group.querySelectorAll<HTMLAnchorElement>('[data-nav-post-item]'));
+    const heading = group.querySelector<HTMLElement>('[data-nav-post-heading]');
+    const empty = group.querySelector<HTMLElement>('[data-nav-post-empty]');
+    const footer = group.nextElementSibling;
+    const allLink = footer?.querySelector<HTMLAnchorElement>('[data-nav-post-all]');
+    const total = footer?.querySelector<HTMLElement>('[data-nav-post-total]');
+    function preview(category: string) {
+      const matches = rows.filter(row => !category || row.dataset.navPostItem === category);
+      const visible = new Set(matches.slice(0, 5));
+      rows.forEach(row => { row.hidden = !visible.has(row); });
+      filters.forEach(link => link.classList.toggle('is-previewing', link.dataset.navPostFilter === category));
+      if (heading) heading.textContent = category ? `${category} · 最近` : '最近';
+      if (empty) { empty.hidden = matches.length > 0; empty.textContent = `${category}分类暂时没有文稿。`; }
+      if (total) total.textContent = `${matches.length} 篇文稿`;
+      if (allLink) {
+        allLink.href = category ? `/posts/?category=${encodeURIComponent(category)}` : '/posts/';
+        allLink.textContent = category ? `查看${category}文稿 →` : '查看全部文稿 →';
+      }
+    }
+    filters.forEach(link => {
+      link.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') preview(link.dataset.navPostFilter || ''); }, { signal });
+      link.addEventListener('focus', () => preview(link.dataset.navPostFilter || ''), { signal });
+    });
+    preview('');
+  });
   const position = () => {
     if (!current || !nav) return;
     const panel = current.querySelector<HTMLElement>('.nav-panel')!;

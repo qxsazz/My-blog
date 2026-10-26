@@ -10,20 +10,21 @@ const all = await entries();
 const posts = all.filter(item => item.collection === 'posts');
 const notes = all.filter(item => item.collection === 'notes');
 const categories = postCategories;
-const recent = kind === 'posts' ? posts.slice(0,5) : kind === 'notes' ? notes.slice(0,3) : all.slice(0,5);
+const recent = kind === 'posts' ? posts : kind === 'notes' ? notes.slice(0,3) : all.slice(0,5);
 ---
 {kind === 'more' ? <>
 <div class="nav-content-columns nav-more-columns"><section class="nav-category-list nav-archive-intro"><h2>探索</h2><p>星河之外<br/>还有一些相遇</p><span>朋友、作品与文字的延伸。</span></section><section class="nav-more-links"><h2>更多入口</h2>{site.more.map(item => <a href={item.href}><span>{item.label}</span><i></i><small>{item.description}</small><Icon name="diagonal" size={13}/></a>)}</section></div><div class="nav-content-footer"><a href="/about-site/">关于此站 <span>→</span></a><span>{site.more.length} 个入口</span></div>
 </> : <>
-<div class="nav-content-columns">
+<div class="nav-content-columns" data-nav-post-preview={kind==='posts'?'':undefined}>
   <section class="nav-category-list"><h2>{kind === 'notes' ? '专栏' : '分类'}</h2>
-    {kind === 'posts' && categories.map(category => <a href={`/posts/?category=${encodeURIComponent(category)}`}><span>{category}</span><small>{posts.filter(item=>item.data.category===category).length}</small></a>)}
+    {kind === 'posts' && categories.map(category => <a href={`/posts/?category=${encodeURIComponent(category)}`} data-nav-post-filter={category}><span>{category}</span><small>{posts.filter(item=>item.data.category===category).length}</small></a>)}
     {kind === 'notes' && noteColumns.map(column => <a href={`/notes/?column=${encodeURIComponent(column.name)}`}><span class="note-column-label"><NoteSticker kind={column.icon}/><span>{column.name}</span></span><small>{notes.filter(item=>noteColumn(item)===column.name).length}</small></a>)}
     {kind === 'timeline' && Object.entries(collectionLabel).map(([type,label])=><a href={`/timeline/?type=${type}`}><span>{label}</span><small>{all.filter(item=>item.collection===type).length}</small></a>)}
   </section>
-  <section class="nav-recent-list"><h2>{kind === 'notes' ? '近期手记' : kind === 'timeline' ? '近期动态' : '最近'}</h2>
-    {recent.map(item=><a href={entryUrl(item)} title={item.data.title}><time datetime={item.data.date.toISOString()}>{shortDate(item.data.date)}</time><span>{item.data.title}</span>{kind==='timeline'&&<small>{collectionLabel[item.collection]}</small>}</a>)}
+  <section class="nav-recent-list"><h2 data-nav-post-heading={kind==='posts'?'':undefined} aria-live={kind==='posts'?'polite':undefined}>{kind === 'notes' ? '近期手记' : kind === 'timeline' ? '近期动态' : '最近'}</h2>
+    {recent.map((item,index)=><a href={entryUrl(item)} title={item.data.title} data-nav-post-item={kind==='posts'?item.data.category:undefined} hidden={kind==='posts'&&index>=5}><time datetime={item.data.date.toISOString()}>{shortDate(item.data.date)}</time><span>{item.data.title}</span>{kind==='timeline'&&<small>{collectionLabel[item.collection]}</small>}</a>)}
+    {kind==='posts'&&<p class="nav-post-preview-empty" data-nav-post-empty hidden>暂无该分类的文稿。</p>}
   </section>
 </div>
-<div class="nav-content-footer"><a href={kind==='posts'?'/posts/':kind==='notes'?'/notes/':'/timeline/'}>查看{kind==='posts'?'全部文稿':kind==='notes'?'全部手记':'时光'} <span>→</span></a>{kind==='notes'?<a href="/notes/columns/">全部专栏 →</a>:<span>{kind==='posts'?posts.length:all.length} 篇{kind==='posts'?'文稿':'文字'}</span>}</div>
+<div class="nav-content-footer"><a data-nav-post-all={kind==='posts'?'':undefined} href={kind==='posts'?'/posts/':kind==='notes'?'/notes/':'/timeline/'}>查看{kind==='posts'?'全部文稿':kind==='notes'?'全部手记':'时光'} <span>→</span></a>{kind==='notes'?<a href="/notes/columns/">全部专栏 →</a>:<span data-nav-post-total={kind==='posts'?'':undefined}>{kind==='posts'?posts.length:all.length} 篇{kind==='posts'?'文稿':'文字'}</span>}</div>
 </>}

@@ -175,3 +175,7 @@
 .nav-panel .mega-socials,.mega-panel-mobile .mega-socials { flex-wrap:nowrap; justify-content:space-between; gap:8px; }
 .mega-socials a,.mega-socials button { flex:0 0 24px; min-width:24px; min-height:28px; }
 .mega-socials :is(a,button):focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+
+[data-nav-post-preview] .nav-category-list a.is-previewing { color:var(--accent); background:var(--accent-soft); }
+.nav-post-preview-empty { margin:28px 0 0; color:var(--text-secondary); font:13px/1.8 var(--font-sans); }
+@media(max-width:1023px) { .nav-post-preview-empty { margin-top:14px; font-size:11px; } }
