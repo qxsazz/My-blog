@@ -12,7 +12,7 @@ export const site = {
     tagline: '记录思考，分享创造。于寂静处，探索更大的世界。',
     quote: '于无垠星海，留下自己的光。',
   },
-  email: '',
+  email: '1783613892@qq.com',
   github: '',
   since: '2026-10-24',
   music: {
