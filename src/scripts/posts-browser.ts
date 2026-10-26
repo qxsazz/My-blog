@@ -29,11 +29,6 @@ export function initPostsBrowser(signal: AbortSignal) {
         link.classList.toggle('active', active);
         if (active) link.setAttribute('aria-current', 'true'); else link.removeAttribute('aria-current');
       });
-      browser!.querySelectorAll<HTMLElement>('[data-post-category]').forEach(link => {
-        const active = link.dataset.postCategory === category;
-        link.classList.toggle('active', active);
-        if (active) link.setAttribute('aria-current', 'true'); else link.removeAttribute('aria-current');
-      });
       if (updateUrl) {
         const url = new URL(location.href);
         if (tag) url.searchParams.set('tag', tag); else url.searchParams.delete('tag');
@@ -43,11 +38,12 @@ export function initPostsBrowser(signal: AbortSignal) {
     }
 
     document.querySelectorAll<HTMLElement>('[data-post-tag]').forEach(link => link.addEventListener('click', event => {
-      event.preventDefault(); tag = link.dataset.postTag || ''; if (!tag) category = ''; apply(true);
+      event.preventDefault();
+      const chosen = link.dataset.postTag || '';
+      tag = chosen === tag ? '' : chosen;
+      if (!chosen) category = '';
+      apply(true);
       document.querySelector<HTMLDialogElement>('#tags-dialog')?.close();
-    }));
-    browser.querySelectorAll<HTMLElement>('[data-post-category]').forEach(link => link.addEventListener('click', event => {
-      event.preventDefault(); category = link.dataset.postCategory || ''; tag = ''; apply(true);
     }, { signal }));
     browser.querySelectorAll<HTMLButtonElement>('[data-post-sort]').forEach(button => button.addEventListener('click', () => {
       order = button.dataset.postSort || 'newest';
