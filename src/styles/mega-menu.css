@@ -170,3 +170,8 @@
 }
 
 @media(min-width:1024px) { .nav-panel-posts .nav-category-list a { padding-block:3px; } }
+
+/* Four distinct shortcuts fit the compact overview without wrapping. */
+.nav-panel .mega-socials,.mega-panel-mobile .mega-socials { flex-wrap:nowrap; justify-content:space-between; gap:8px; }
+.mega-socials a,.mega-socials button { flex:0 0 24px; min-width:24px; min-height:28px; }
+.mega-socials :is(a,button):focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }

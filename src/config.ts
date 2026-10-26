@@ -14,6 +14,7 @@ export const site = {
   },
   email: '1783613892@qq.com',
   github: '',
+  repository: 'https://github.com/qxsazz/My-blog',
   since: '2026-10-24',
   music: {
     title: '月光',

@@ -10,6 +10,7 @@ const characters = Array.from(all.map(item => (item.body || '').replace(/```[^\n
 const days = Math.max(1, Math.floor((Date.now() - Date.parse(`${site.since}T00:00:00Z`)) / 86400000) + 1);
 const path = Astro.url.pathname;
 const suffix = mobile ? 'mobile' : 'desktop';
+const repository = site.repository || site.github;
 ---
 <div class:list={['mega-panel', {'mega-panel-mobile':mobile}]}>
   <section class="mega-overview" aria-labelledby={`mega-overview-${suffix}`}>
@@ -21,9 +22,8 @@ const suffix = mobile ? 'mobile' : 'desktop';
     </dl>
     <div class="mega-socials" aria-label="订阅与联系">
       <a href="/rss.xml" data-astro-reload aria-label="RSS 订阅" title="RSS 订阅"><Icon name="rss" size={17}/></a>
-      {site.email && <a href={`mailto:${site.email}`} aria-label="电子邮件" title="电子邮件"><Icon name="mail" size={18}/></a>}
-      {site.github && <a href={site.github} target="_blank" rel="noreferrer" aria-label="GitHub" title="GitHub"><Icon name="github" size={18}/></a>}
-      <a href="/message/" aria-label="留言" title="留言"><Icon name="mail" size={18}/></a>
+      {site.email && <a href={`mailto:${site.email}`} aria-label="电子邮件" title={`发送邮件 · ${site.email}`}><Icon name="mail" size={18}/></a>}
+      {repository && <a href={repository} target="_blank" rel="noopener noreferrer" aria-label="GitHub 仓库：本站源码" title="GitHub · 本站源码"><Icon name="github" size={18}/></a>}
       <button data-search-open aria-label="搜索本站" title="搜索本站"><Icon name="search" size={17}/></button>
     </div>
   </section>
