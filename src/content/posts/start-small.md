@@ -3,7 +3,7 @@ title: 从想法到作品，先完成最小的一步
 description: 不是所有计划都要从宏大的蓝图开始。先完成一个可以使用的小版本，让想法与现实见面。
 date: 2026-10-24
 updated: 2026-10-24
-category: 创造
+category: 经验
 tags: [独立创作, 工作流, 思考]
 pinned: true
 ---

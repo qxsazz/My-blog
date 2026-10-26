@@ -168,3 +168,5 @@
 @media(min-width:1024px) {
  .nav-panel-notes .nav-category-list a { align-items:center; height:30px; padding-block:4px; }
 }
+
+@media(min-width:1024px) { .nav-panel-posts .nav-category-list a { padding-block:3px; } }

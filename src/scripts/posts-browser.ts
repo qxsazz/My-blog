@@ -1,3 +1,4 @@
+import { normalizePostCategory } from '@/taxonomy';
 export function initPostsBrowser(signal: AbortSignal) {
   const browser = document.querySelector<HTMLElement>('[data-post-browser]');
   if (browser) {
@@ -5,7 +6,7 @@ export function initPostsBrowser(signal: AbortSignal) {
     const rows = Array.from(list.querySelectorAll<HTMLElement>('[data-post-item]'));
     const items = Array.from(browser.querySelectorAll<HTMLElement>('[data-post-item]'));
     let tag = new URL(location.href).searchParams.get('tag') || '';
-    let category = new URL(location.href).searchParams.get('category') || '';
+    let category = normalizePostCategory(new URL(location.href).searchParams.get('category') || '');
     let order = 'newest';
 
     function apply(updateUrl = false) {
@@ -28,6 +29,11 @@ export function initPostsBrowser(signal: AbortSignal) {
         link.classList.toggle('active', active);
         if (active) link.setAttribute('aria-current', 'true'); else link.removeAttribute('aria-current');
       });
+      browser!.querySelectorAll<HTMLElement>('[data-post-category]').forEach(link => {
+        const active = link.dataset.postCategory === category;
+        link.classList.toggle('active', active);
+        if (active) link.setAttribute('aria-current', 'true'); else link.removeAttribute('aria-current');
+      });
       if (updateUrl) {
         const url = new URL(location.href);
         if (tag) url.searchParams.set('tag', tag); else url.searchParams.delete('tag');
@@ -40,6 +46,9 @@ export function initPostsBrowser(signal: AbortSignal) {
       event.preventDefault(); tag = link.dataset.postTag || ''; if (!tag) category = ''; apply(true);
       document.querySelector<HTMLDialogElement>('#tags-dialog')?.close();
     }));
+    browser.querySelectorAll<HTMLElement>('[data-post-category]').forEach(link => link.addEventListener('click', event => {
+      event.preventDefault(); category = link.dataset.postCategory || ''; tag = ''; apply(true);
+    }, { signal }));
     browser.querySelectorAll<HTMLButtonElement>('[data-post-sort]').forEach(button => button.addEventListener('click', () => {
       order = button.dataset.postSort || 'newest';
       browser.querySelectorAll<HTMLButtonElement>('[data-post-sort]').forEach(other => {
@@ -47,7 +56,7 @@ export function initPostsBrowser(signal: AbortSignal) {
       });
       apply();
     }));
-    window.addEventListener('popstate', () => { tag = new URL(location.href).searchParams.get('tag') || ''; category = new URL(location.href).searchParams.get('category') || ''; apply(); }, { signal });
+    window.addEventListener('popstate', () => { tag = new URL(location.href).searchParams.get('tag') || ''; category = normalizePostCategory(new URL(location.href).searchParams.get('category') || ''); apply(); }, { signal });
     apply();
   }
 }

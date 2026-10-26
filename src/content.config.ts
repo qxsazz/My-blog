@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { postCategories } from './taxonomy';
 const schema = z.object({
   title: z.string(),
   description: z.string(),
@@ -13,6 +14,6 @@ const schema = z.object({
   mood: z.string().optional(),
 });
 export const collections = {
-  posts: defineCollection({ loader: glob({ pattern: '**/*.md', base: './src/content/posts' }), schema }),
+  posts: defineCollection({ loader: glob({ pattern: '**/*.md', base: './src/content/posts' }), schema: schema.extend({ category: z.enum(postCategories) }) }),
   notes: defineCollection({ loader: glob({ pattern: '**/*.md', base: './src/content/notes' }), schema }),
 };

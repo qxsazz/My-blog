@@ -1,5 +1,6 @@
 ---
 import { entries, entryUrl, shortDate, collectionLabel, noteColumns, noteColumn } from '@/lib';
+import { postCategories } from '@/taxonomy';
 import { site } from '@/config';
 import Icon from './Icon.astro';
 import NoteSticker from './NoteSticker.astro';
@@ -8,7 +9,7 @@ const { kind } = Astro.props;
 const all = await entries();
 const posts = all.filter(item => item.collection === 'posts');
 const notes = all.filter(item => item.collection === 'notes');
-const categories = [...new Set(posts.map(item => item.data.category))];
+const categories = postCategories;
 const recent = kind === 'posts' ? posts.slice(0,5) : kind === 'notes' ? notes.slice(0,3) : all.slice(0,5);
 ---
 {kind === 'more' ? <>
