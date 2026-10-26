@@ -2,8 +2,19 @@
 import Base from '@/layouts/Base.astro';
 import { site } from '@/config';
 ---
-<Base title="关于我"><section class="about-replica replica-container">
+<Base title="关于我" description="你好，我是 dominator，计科出身的自由职业者。目前备战考研、学习 AI 底层知识，想往模型开发方向走，也在这里记录学习、游戏与生活。"><section class="about-replica replica-container">
   <header><span class="eyebrow">ABOUT</span><h1>关于我</h1></header>
-  <div class="about-identity"><img src={site.avatar} width="84" height="84" alt={`${site.author}的头像`}/><div><h2>{site.author}</h2><span>保持好奇，奔赴热爱。</span></div></div>
-  <div class="prose about-copy"><p>你好，我是 dominator。欢迎走进这个小小的空间。</p><p>这里用来记录技术探索、设计练习，以及生活中值得停留的片刻。比起给出一个漂亮的答案，我更愿意把尝试的过程写下来，留下那些走过弯路之后才看清的细节。</p><h2>把想法变成作品</h2><p>一个问题、一段代码、一处界面，都可以成为新的开始。先做出一点东西，再在使用中慢慢完善，是这里想要坚持的节奏。</p><h2>把日常写成故事</h2><p>长一点的想法写进<a href="/posts/">文稿</a>，轻一点的记录放进<a href="/notes/">手记</a>。如果只是一句还没想完整的话，就收进<a href="/notes/?tag=思考">手记里的思考</a>中，等以后再回来看。</p><blockquote><p>{site.hero.quote}</p></blockquote><p>很高兴在这里遇见你。希望这些文字，能带给你一点灵感，或者一个愿意继续探索的问题。</p></div>
+  <div class="about-identity"><img src={site.avatar} width="84" height="84" alt={`${site.author}的头像`}/><div><h2>{site.author}</h2><span>保持好奇，把不懂的慢慢弄懂。</span></div></div>
+  <div class="prose about-copy">
+    <p>你好，我是 dominator，计科出身，目前是一名自由职业者。很高兴你点进来，就当在这里认识一下。</p>
+    <h2>最近在忙什么</h2>
+    <p>最近的生活主线是备战考研，同时学习 AI 的底层知识，准备往模型开发方向冲刺。这条路还在起步，我想把学习过程记下来：今天弄懂了什么，哪里还卡着，以及一路积累的经验。</p>
+    <h2>学习之外，也好好玩</h2>
+    <p>我喜欢游戏，独立游戏和 3A 大作都会玩，也玩《英雄联盟》（LOL）。离开屏幕的时候，喜欢出去旅行、打打球。以后也会在这里聊聊玩过的游戏、走过的地方，记录一些值得留下的片刻。</p>
+    <h2>为什么有了这个博客</h2>
+    <p>想有一块自己的地方，分享一些看法和想法，也记录学习过程、人生经历，以及从中积累的经验。写下来的东西，以后回头看，应该会很有意思。</p>
+    <p>关于设计、技术、研究、游戏和经验的分享，会放在<a href="/posts/">文稿</a>里；日常的思考、阶段总结、游记和游戏推荐，就收进<a href="/notes/">手记</a>。慢慢写，也慢慢认识自己。</p>
+    <blockquote><p>保持好奇，把不懂的慢慢弄懂。</p></blockquote>
+    <p>如果你也在备考、学习 AI，或者刚好喜欢游戏和旅行，欢迎来<a href="/message/">留个言</a>。有想法就聊聊，很高兴在这里遇见你。</p>
+  </div>
 </section></Base>
