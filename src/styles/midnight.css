@@ -137,7 +137,7 @@ button:not(:disabled), a, summary { transition: color var(--duration) ease, back
 .footer-shell { width: calc(100% - 64px); max-width: var(--content-max); }
 .footer-paper { border-radius: 4px; background: var(--panel); box-shadow: none; padding: 28px 32px; }
 .footer-paper::before { opacity: .5; }
-.footer-brand { font-size: 24px; }
+.footer-brand { font-family: Georgia, 'Times New Roman', serif; font-size: 24px; font-weight: 400; letter-spacing: 0; }
 .footer-brand > span { color: var(--n6); font-size: 12px; }
 .footer-heading { padding-bottom: 22px; }
 .footer-columns { gap: 26px; padding-top: 24px; }
