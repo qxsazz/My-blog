@@ -1,3 +1,5 @@
+import { initPresence } from './presence';
+import { initSiteUptime } from './site-uptime';
 import { initPostsBrowser } from './posts-browser';
 import { initNavigationMenus } from './navigation';
 import { initCollectionFilters } from './collection-filters';
@@ -11,6 +13,8 @@ function initPage() {
   const observers: IntersectionObserver[] = [];
   cleanupPage = () => { controller.abort(); observers.forEach(observer => observer.disconnect()); };
   initPostsBrowser(signal);
+  initSiteUptime(signal);
+  initPresence();
   initNavigationMenus(signal);
   initCollectionFilters();
   initPointerTrail(signal);

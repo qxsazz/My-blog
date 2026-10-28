@@ -1,4 +1,5 @@
 ---
+import { homeMenuGroups } from '@/data/navigation';
 import { site } from '@/config';
 import { entries } from '@/lib';
 import Icon from './Icon.astro';
@@ -27,9 +28,5 @@ const repository = site.repository || site.github;
       <button data-search-open aria-label="搜索本站" title="搜索本站"><Icon name="search" size={17}/></button>
     </div>
   </section>
-  <section class="mega-directory" aria-labelledby={`mega-directory-${suffix}`}>
-    <h2 id={`mega-directory-${suffix}`}>页面</h2>
-    <div class="mega-page-links">{site.pages.map(item => <a href={item.href} aria-current={path === item.href ? 'page' : undefined}>{item.label}</a>)}</div>
-
-  </section>
+  <section class="mega-directory" aria-labelledby={`mega-home-${suffix}`}><h2 id={`mega-home-${suffix}`}>首页</h2><div class="mega-directory-groups">{homeMenuGroups.map(group=><section class="mega-directory-group" aria-label={group.title}><div class="mega-page-links">{group.links.map(item=><a href={item.href} aria-current={path===item.href?'page':undefined}>{item.label}</a>)}</div></section>)}</div></section>
 </div>

@@ -1,0 +1,20 @@
+/* Plain chronological prose, following the supplied history reference. */
+.site-history-page { --history-heading:#17191d; --history-ink:#343d47; width:calc(100% - 64px); max-width:1112px; margin:auto; padding:80px 0 32px; color:var(--history-ink); font:400 18px/1.85 var(--font-sans); }
+:root[data-theme='dark'] .site-history-page { --history-heading:#f1f4f8; --history-ink:#d0d5de; }
+.site-history-heading h1 { margin:0; color:var(--history-heading); font:700 42px/1.3 var(--font-sans); }
+.site-history-heading > p { margin-top:22px; font-size:18px; }
+.site-history-records { list-style:none; margin:96px 0 0; padding:0; }
+.site-history-records li { margin:0 0 26px; }
+.site-history-records time { font-variant-numeric:tabular-nums; }
+.site-uptime { margin-top:30px; }
+.site-uptime h2 { margin:0 0 22px; color:var(--history-heading); font:700 18px/1.85 var(--font-sans); }
+.site-uptime p { margin:0; }
+.site-uptime output { font:inherit; font-variant-numeric:tabular-nums; }
+@media(max-width:600px) {
+ .site-history-page { width:calc(100% - 40px); padding-top:40px; font-size:16px; }
+ .site-history-heading h1 { font-size:34px; }
+ .site-history-heading > p { margin-top:16px; font-size:16px; }
+ .site-history-records { margin-top:64px; }
+ .site-uptime h2 { font-size:16px; margin-bottom:18px; }
+ .site-uptime output { display:block; }
+}

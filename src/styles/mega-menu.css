@@ -179,3 +179,17 @@
 [data-nav-post-preview] .nav-category-list a.is-previewing { color:var(--accent); background:var(--accent-soft); }
 .nav-post-preview-empty { margin:28px 0 0; color:var(--text-secondary); font:13px/1.8 var(--font-sans); }
 @media(max-width:1023px) { .nav-post-preview-empty { margin-top:14px; font-size:11px; } }
+
+/* Preview: a restrained 9% reduction preserves all internal proportions. */
+@media(min-width:1024px) {
+ .desktop-nav .nav-panel { scale:.91; transform-origin:top left; }
+}
+
+/* Local menu type pairing; the rest of the blog keeps its existing fonts. */
+.desktop-nav .nav-panel,.mobile-nav,.tech-footer {
+ --font-sans:'DM Sans Variable','MiSans',system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
+ --font-mono:'DM Sans Variable','MiSans',sans-serif;
+ font-family:var(--font-sans);
+}
+.nav-panel .mega-statistics dd,.mega-panel-mobile .mega-statistics dd { font-family:var(--font-sans); font-weight:500; font-variant-numeric:tabular-nums; letter-spacing:-.025em; }
+.nav-panel .nav-category-list small,.nav-panel .nav-recent-list time { font-weight:450; font-variant-numeric:tabular-nums; letter-spacing:.01em; }

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev --host 0.0.0.0",
-    "build": "astro check && astro build",
+    "build": "astro check && astro build && node scripts/build-presence.mjs",
     "preview": "astro preview --host 0.0.0.0",
     "check": "astro check"
   },

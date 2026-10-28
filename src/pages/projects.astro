@@ -1,0 +1,7 @@
+---
+import Base from '@/layouts/Base.astro';
+import { site } from '@/config';
+import Icon from '@/components/Icon.astro';
+import '@/styles/tech-navigation.css';
+---
+<Base title="项目作品"><section class="technical-index"><header><span class="eyebrow">PROJECTS</span><h1>项目作品</h1><p>把想法变成可以使用的东西。</p></header><div class="technical-link-list"><a href={site.repository} target="_blank" rel="noopener noreferrer"><span class="technical-link-number">01</span><div><span class="eyebrow">开源 · 个人博客</span><h2>dominator · 星夜</h2><p>你正在浏览的博客。基于 Astro、TypeScript 与 Markdown，包含深浅主题、文稿与手记、搜索和阅读进度。</p><span class="technical-repo-label">qxsazz / My-blog</span></div><Icon name="diagonal" size={16}/></a></div><div class="technical-page-end"><a href="/now/">查看正在做的事 →</a><a href="/posts/">阅读实践记录 →</a></div></section></Base>

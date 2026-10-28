@@ -1,0 +1,13 @@
+---
+import Base from '@/layouts/Base.astro';
+import { siteHistory, siteStartedAt } from '@/data/site-history';
+import { formatSiteUptime } from '@/scripts/site-uptime';
+import '@/styles/site-history.css';
+---
+<Base title="历史" description="dominator 博客诞生于2026年10月24日。这里记录小站的历史与实时运行时间。">
+  <section class="site-history-page">
+    <header class="site-history-heading"><h1>历史</h1><p>历史的长河</p></header>
+    <ol class="site-history-records">{siteHistory.map(item=><li><time datetime={item.date}>{item.date}</time>: {item.title}</li>)}</ol>
+    <section class="site-uptime" aria-labelledby="site-uptime-title"><h2 id="site-uptime-title">一路走来，感谢有你。</h2><p title="按创建日期2026-10-24零点（纽约时间）起计">本站已运行：<output data-site-uptime={siteStartedAt} role="timer" aria-label="建站运行时间" aria-description="按2026年10月24日零点，纽约时间起计" aria-live="off">{formatSiteUptime(Date.now() - Date.parse(siteStartedAt))}</output></p></section>
+  </section>
+</Base>

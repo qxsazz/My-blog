@@ -1,0 +1,7 @@
+---
+import Base from '@/layouts/Base.astro';
+import Icon from '@/components/Icon.astro';
+import { technicalBookmarks } from '@/data/navigation';
+import '@/styles/tech-navigation.css';
+---
+<Base title="技术书签"><section class="technical-index"><header><span class="eyebrow">BOOKMARKS</span><h1>技术书签</h1><p>语言与模型开发的参考资料。</p></header><div class="technical-link-list">{technicalBookmarks.map((item,index)=><a href={item.href} target="_blank" rel="noopener noreferrer"><span class="technical-link-number">{String(index+1).padStart(2,'0')}</span><div><span class="eyebrow">{item.category}</span><h2>{item.title}</h2><p>{item.description}</p></div><Icon name="diagonal" size={16}/></a>)}</div><div class="technical-page-end"><a href="/posts/">浏览技术文稿 →</a><a href="/now/">最近在学什么 →</a></div></section></Base>

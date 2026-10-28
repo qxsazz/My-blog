@@ -1,14 +1,13 @@
 ---
+import { footerGroups } from '@/data/navigation';
 import { site } from '@/config';
 import Icon from './Icon.astro';
 ---
-<footer class="site-footer"><div class="footer-shell"><div class="footer-paper paper-panel">
-  <div class="footer-heading"><a href="/" class="footer-brand">{site.author}<span>{site.motto}</span></a></div>
+<footer class="site-footer tech-footer"><div class="footer-shell"><div class="footer-paper paper-panel">
+  <div class="footer-heading"><a href="/" class="footer-brand">{site.author}<span>{site.motto}</span></a><div class="footer-presence" data-presence data-state="loading" role="status" aria-live="off"><span class="presence-dot" aria-hidden="true"></span><span data-presence-label>正在连接…</span><noscript>启用 JavaScript 后可查看在线人数</noscript></div></div>
   <div class="footer-columns">
-    <div><h3>01 <span>关于</span></h3><a href="/about-site/">关于本站</a><a href="/about/">关于我</a><a href="/about-site/#project">关于此项目 <Icon name="diagonal" size={12}/></a></div>
-    <div><h3>02 <span>更多</span></h3><a href="/gallery/">照片廊 <Icon name="diagonal" size={12}/></a></div>
-    <div><h3>03 <span>联系</span></h3><a href="/message/">写留言</a>{site.email && <a href={`mailto:${site.email}`}>发邮件 <Icon name="diagonal" size={12}/></a>}{site.github && <a href={site.github} target="_blank" rel="noreferrer">GitHub <Icon name="diagonal" size={12}/></a>}<a href="/about/">{site.author} <Icon name="diagonal" size={12}/></a></div>
-    <div><h3>04 <span>关注</span></h3><a href="/rss.xml">RSS 订阅</a><a href="/sitemap-index.xml">站点地图</a><button data-subscribe-open>订阅</button></div>
-    <div class="footer-settings"><h3>05 <span>版式</span></h3><div class="theme-options"><span>主题</span><button data-set-theme="light">浅色</button><em>·</em><button data-set-theme="system">随系统</button><em>·</em><button data-set-theme="dark">深色</button></div><div><span>背景音乐</span><button class="active" data-music-set="off" aria-pressed="true">关</button><em>·</em><button data-music-set="on" aria-pressed="false" title="播放《月光》">开</button></div><div><span>语言</span><span>简体中文</span></div><div><span>背景效果</span><button data-effects-toggle aria-pressed="true">开</button></div></div>
+    {footerGroups.map((group,index)=><div><h3>{String(index+1).padStart(2,'0')} <span>{group.title}</span></h3>{group.links.map(link=><a href={link.href} target={link.external?'_blank':undefined} rel={link.external?'noopener noreferrer':undefined}>{link.label}{link.external&&<Icon name="diagonal" size={12}/>}</a>)}</div>)}
+    <div><h3>04 <span>交流与订阅</span></h3><a href={`mailto:${site.email}`}>发邮件 <Icon name="diagonal" size={12}/></a><a href="/rss.xml" data-astro-reload>RSS 订阅 <Icon name="rss" size={12}/></a><button data-subscribe-open>订阅更新</button><a href="/friends/">朋友们</a></div>
+    <div class="footer-settings"><h3>05 <span>阅读设置</span></h3><div class="theme-options"><span>主题</span><button data-set-theme="light">浅色</button><em>·</em><button data-set-theme="system">随系统</button><em>·</em><button data-set-theme="dark">深色</button></div><div><span>背景音乐</span><button class="active" data-music-set="off" aria-pressed="true">关</button><em>·</em><button data-music-set="on" aria-pressed="false" title="播放《月光》">开</button></div><div><span>语言</span><span>简体中文</span></div><div><span>背景效果</span><button data-effects-toggle aria-pressed="true">开</button></div></div>
   </div>
-</div><div class="footer-bottom"><span>© {new Date().getFullYear()} {site.author} <b>—</b> 保持好奇，奔赴热爱。</span></div></div></footer>
+</div><div class="footer-bottom"><span>© {new Date().getFullYear()} {site.author} <b>—</b> 保持好奇，奔赴热爱。</span><a href="/sitemap-index.xml">站点地图</a></div></div></footer>

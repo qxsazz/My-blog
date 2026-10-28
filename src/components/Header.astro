@@ -19,7 +19,7 @@ const menus = [
     {menus.map(menu=><div class="desktop-nav-item" data-nav-item={menu.key}>
       <a class:list={['nav-link',{active:active(menu.href)}]} href={menu.href} aria-current={active(menu.href)?'page':undefined} data-nav-trigger aria-expanded="false" aria-controls={`nav-panel-${menu.key}`}>{menu.label}</a>
       <button class="nav-panel-toggle" data-nav-toggle aria-label={`展开${menu.label}菜单`} aria-expanded="false" aria-controls={`nav-panel-${menu.key}`}><Icon name="chevron" size={10}/></button>
-      <div class:list={['nav-panel',`nav-panel-${menu.key}`]} id={`nav-panel-${menu.key}`} style={`--panel-width:${menu.width}px`} hidden>{menu.key==='home'?<><MegaMenu /><div class="nav-content-footer"><a href="/about/">认识 dominator <span>→</span></a><span>此间 · 星河档案</span></div></>:<NavContent kind={menu.key}/>}</div>
+      <div class:list={['nav-panel',`nav-panel-${menu.key}`]} id={`nav-panel-${menu.key}`} style={`--panel-width:${menu.width}px`} hidden>{menu.key==='home'?<><MegaMenu /><div class="nav-content-footer"><a href="/about/">从这里认识我 <span>→</span></a><span>保持好奇，分享实践</span></div></>:<NavContent kind={menu.key}/>}</div>
     </div>)}
     <div class="desktop-nav-item" data-nav-item="more"><button class:list={['nav-link',{active:moreActive}]} data-nav-trigger aria-expanded="false" aria-controls="nav-panel-more">更多</button><div class="nav-panel nav-panel-more" id="nav-panel-more" style="--panel-width:600px" hidden><NavContent kind="more"/></div></div>
   </nav>
