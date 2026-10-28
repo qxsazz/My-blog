@@ -2,27 +2,33 @@
 
 正式地址：**https://blog.model-gate.fun/**。
 
-静态个人博客，采用 Astro、TypeScript 和 Markdown。冰蓝星夜主题与个人头像保持一致，支持浅色冰霜模式。首页、文稿、手记、思考、时间线及关于页由统一内容源生成。
+个人博客，采用 Astro、TypeScript 和 Markdown 生成静态内容，同域 Worker 提供在线人数统计。冰蓝星夜主题与个人头像保持一致，支持浅色冰霜模式。首页、文稿、手记、时间线及关于页由统一内容源生成。
 
 ## 开发
 
+需要 Node.js 22.13 或更新版本。首次克隆后：
+
 ```bash
 npm ci
-npm run dev
-npm run build
 npm run preview
 ```
 
-`npm run build` 先运行 Astro / TypeScript 检查，再生成 `dist/`。
+完整预览默认运行于 `http://127.0.0.1:4321/`。该命令先检查并构建页面，再自动应用**本地** D1 迁移，最后启动带在线人数接口的 Worker。可用 `npm run preview -- --port 4328` 更换端口，用 `--host 0.0.0.0` 在需要时监听其他地址。
+
+本地数据库保存在忽略提交的 `.wrangler/preview-state/`，重启预览会保留数据并跳过已应用的迁移，不会连接或修改正式站数据库。Wrangler 版本已固定在开发依赖中，无需全局安装或 Cloudflare 登录。
+
+- `npm run dev`：仅前端的 Astro 热更新开发。此模式不启动统计后端；联调在线人数时使用完整预览。
+- `npm run build`：Astro / TypeScript 检查，生成静态页面并打包 Worker 至 `dist/`。
+- `npm run db:migrate:local`：构建后单独应用尚未执行的本地 D1 迁移。
+- `npm test`：执行已有在线统计测试，包括去重、过期、输入校验及错误状态。
 
 ## 写作
 
-当前预填 **6 篇文稿、4 篇手记、3 则思考**，用于展示完整阅读效果；可直接替换 Markdown 内容。
+当前预填 **6 篇文稿、7 篇手记**，用于展示完整阅读效果；思考已并入手记，可直接替换 Markdown 内容。
 
 ```text
 src/content/posts/          # 文稿
 src/content/notes/          # 手记
-src/content/thinking/       # 思考
 ```
 
 ```markdown
@@ -62,6 +68,9 @@ src/components/MegaMenu.astro # 首页菜单：此间统计、页面目录与联
 src/components/NavContent.astro # 文稿、手记、时光、更多的差异化菜单
 src/scripts/navigation.ts    # 悬停、键盘、触屏与面板定位
 src/scripts/collection-filters.ts # 手记专栏与时光类型的 URL 筛选
+worker/index.js              # 同域在线人数接口与静态资源分发
+scripts/preview.mjs          # 构建、迁移与完整本地预览
+scripts/migrate-local.mjs    # 仅操作本地数据库的迁移命令
 src/components/MenuPage.astro # 人设、灵魂、迭代等独立页面
 src/styles/mega-menu.css     # 桌面信纸菜单与移动端面板
 src/styles/tokens.css        # 深浅主题语义变量与旧组件兼容别名
@@ -82,8 +91,8 @@ public/licenses/             # 字体许可与来源记录
 
 ## 路由
 
-- `/` 首页；`/posts/` 文稿；`/notes/` 手记；`/thinking/` 思考；`/timeline/` 时间线。
-- `/posts/<文件名>/`、`/notes/<文件名>/`、`/thinking/<文件名>/` 是内容详情。
+- `/` 首页；`/posts/` 文稿；`/notes/` 手记；`/timeline/` 时间线；`/history/` 建站历史。
+- `/posts/<文件名>/`、`/notes/<文件名>/` 是内容详情；原 `/thinking/` 及详情地址保留为兼容跳转。
 - `/about/`、`/about-site/` 为个人与站点介绍。
 - `/friends/`、`/projects/`、`/says/`、`/travelling/` 为更多栏目。
 - `/gallery/` 与 `/message/` 目前显示诚实的空状态，不伪造照片、访客或留言。

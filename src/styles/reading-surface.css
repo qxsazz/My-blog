@@ -17,6 +17,14 @@
   .editorial-reading .reading-outline .reading-rail:not([hidden]) { animation: reading-rail-appear 280ms ease both; }
 }
 @keyframes reading-rail-appear { from { opacity: 0; } to { opacity: 1; } }
+/* Make the whole existing directory row clickable, including its vertical space. */
+@media(max-width:800px) {
+  .reading-layout .mobile-reading-tools { padding-block:0; }
+  .reading-layout .mobile-reading-tools > summary { min-height:44px; align-items:center; padding-block:13px; }
+  .reading-layout .mobile-reading-tools[open] { padding-bottom:13px; }
+  .reading-layout.editorial-reading .mobile-reading-tools > summary { padding-block:15px; }
+  .reading-layout.editorial-reading .mobile-reading-tools[open] { padding-bottom:15px; }
+}
 @media(prefers-reduced-motion:reduce) {
   .reading-progress-meter > span, .reading-progress-ring [data-reading-ring], .reading-top-progress > span, .reading-outline-expanded { transition: none !important; }
   .editorial-reading .reading-outline .reading-rail:not([hidden]) { animation: none; }

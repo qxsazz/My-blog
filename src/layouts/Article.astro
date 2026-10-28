@@ -36,7 +36,7 @@ const outline = headings.filter(h => h.depth === 2 || h.depth === 3);
       <details class="mobile-reading-tools"><summary>文章目录与阅读设置 {(editorial || note) && <span class="reading-mobile-percent" data-reading-progress>0%</span>}<span>⌄</span></summary><nav aria-label="移动端文章目录">{outline.length ? outline.map(h => <a href={`#${h.slug}`} class:list={{'toc-nested':h.depth===3}}>{h.text}</a>) : <a href="#article-body">正文</a>}</nav><div class="reading-font-controls"><span>正文字体</span><button data-reading-font="serif" aria-pressed={note}>宋体</button><button data-reading-font="sans" aria-pressed={!note}>黑体</button></div></details>
       {!editorial && !note && <section class="reading-synopsis" aria-label="内容提要"><span>内容提要</span><p>{entry.data.description}</p></section>}
       <div class:list={['prose', 'article-prose', {'letter-prose':note}]} id="article-body"><slot /></div>
-      <div class="article-tags">{entry.data.tags.map(tag => <a href={`/posts/?tag=${encodeURIComponent(tag)}`}>#{tag}</a>)}</div>
+      <div class="article-tags">{entry.data.tags.map(tag => <a href={`/${entry.collection}/?tag=${encodeURIComponent(tag)}`}>#{tag}</a>)}</div>
       <div class="article-signature"><span>✦</span><p>{site.author} <span class="signature-separator">/</span> 谢谢你读到这里。<br /><small>愿这些文字，带给你一点灵感或共鸣。</small></p><a href="/rss.xml" class="text-link" data-astro-reload>订阅 RSS <Icon name="rss" size={15} /></a></div>
       {next && <a class="next-article" href={entryUrl(next)}><div><span class="eyebrow">继续阅读 · {collectionLabel[next.collection]}</span><h2>{next.data.title}</h2></div><Icon name="arrow" /></a>}
     </article>

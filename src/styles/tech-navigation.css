@@ -45,3 +45,14 @@
 .footer-presence [data-presence-label] { min-width:7.5em; }
 .footer-presence noscript { white-space:normal; }
 @media(max-width:600px) { .footer-presence { font-size:12px; gap:7px; } }
+
+/* Keep the dock and its 16px icon in place; expand only the button's hit area. */
+@media(max-width:1023px) {
+ .site-header .header-actions > .mobile-menu-toggle {
+  width:44px;
+  height:44px;
+  flex:0 0 44px;
+  margin:-9px -12px;
+  padding:0;
+ }
+}

@@ -15,7 +15,9 @@ The browser identifier stays in localStorage until cleared. Live rows and minute
 ## Verification
 
 - `npm run build`: Astro diagnostics/build and Worker/asset packaging.
-- `node --test tests/presence.test.mjs`: origin, size, input, unavailable state, rate limit, actual SQLite deduplication, leave and lease expiry.
-- Full Worker preview: serve `dist/server/wrangler.json` using local Wrangler, apply the SQL to local DB, then exercise separate browser contexts and same-context tabs.
+- `npm test`: origin, size, input, unavailable state, rate limit, actual SQLite deduplication, leave and lease expiry.
+- `npm run preview`: builds the current source, applies pending local migrations and serves the full Worker at `http://127.0.0.1:4321`. Pass `-- --port 4328` to select a different port. Wrangler is a pinned local development dependency; no global install or cloud credentials are required.
+- `npm run db:migrate:local`: applies pending migrations after a build without starting the server. Both commands always pass `--local` and use `.wrangler/preview-state`; they never touch the hosted database. Applied local migrations are tracked by Wrangler, so restarting does not replay schema DDL.
+- `npm run dev` remains the faster frontend-only Astro HMR server. Use the full preview for API and database verification, including separate browser contexts and same-context tabs.
 
 UI starts with `正在连接…`, shows `N 人此刻在读` only after a valid response, and shows unavailable/offline states instead of a false zero. No synthetic visitors are seeded.
