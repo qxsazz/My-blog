@@ -1,0 +1,50 @@
+/* A full illustrated cover; page backgrounds and existing type remain unchanged. */
+.letter-cover.note-cover-illustrated { overflow:hidden; isolation:isolate; pointer-events:none; }
+.letter-cover.note-cover-illustrated > .note-cover-image {
+  position:absolute; inset:0; display:block; width:100%; height:100%; max-width:none;
+  margin:0; border:0; border-radius:0; object-fit:cover; object-position:65% 51%;
+}
+.letter-cover.note-cover-illustrated::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(90deg,#030a154a,transparent 64%),linear-gradient(0deg,#0208138c,transparent 44%);
+}
+.featured-letter-top:has(.note-cover-illustrated) .letter-cover-heading {
+  z-index:1; text-shadow:0 2px 14px #02081475;
+}
+.letter-cover.note-cover-illustrated.small::after {
+  background:linear-gradient(90deg,#04102024,transparent 70%),linear-gradient(0deg,#04102035,transparent 52%);
+}
+.letter-cover.note-cover-illustrated.small > .note-cover-image { object-position:78% 88%; }
+.letter-cover.note-cover-illustrated > .note-cover-day { display:none; }
+:root:not([data-theme='dark']) .letter-cover.note-cover-illustrated > .note-cover-night { display:none; }
+:root:not([data-theme='dark']) .letter-cover.note-cover-illustrated > .note-cover-day { display:block; }
+:root:not([data-theme='dark']) .letter-cover.note-cover-illustrated:not(.small)::after {
+  background:linear-gradient(90deg,#f2f7fdcc 0%,#f2f7fd8c 35%,transparent 72%),linear-gradient(0deg,#f2f7fd55,transparent 55%);
+}
+:root:not([data-theme='dark']) .featured-letter-top:has(.note-cover-illustrated) .letter-cover-heading { text-shadow:0 1px 10px #ffffff55; }
+:root:not([data-theme='dark']) .featured-letter-top:has(.note-cover-illustrated) .letter-cover-heading h1 { color:#182d48; }
+:root:not([data-theme='dark']) .featured-letter-top:has(.note-cover-illustrated) .letter-cover-meta { color:#445d7a; }
+:root:not([data-theme='dark']) .letter-cover.note-cover-illustrated.small::after { background:linear-gradient(0deg,#17304b10,transparent 55%); }
+@media(min-width:801px) {
+  .featured-letter-top:has(.note-cover-illustrated) .letter-cover-heading { max-width:55%; }
+}
+@media(max-width:800px) {
+  .letter-cover.note-cover-illustrated > .note-cover-image { object-position:73% 49%; }
+  .letter-cover.note-cover-illustrated:not(.small)::after {
+    background:linear-gradient(90deg,#030a1526,transparent 80%),linear-gradient(0deg,#030a15eb 0%,#030a15bf 24%,#030a1538 64%,transparent 88%);
+  }
+}
+@media(max-width:640px) {
+  .letter-cover.note-cover-illustrated > .note-cover-image { object-position:78% 48%; }
+  .letter-cover.note-cover-illustrated:not(.small)::after {
+    background:linear-gradient(0deg,#030a15f2 0%,#030a15d6 23%,#030a157d 48%,#030a150c 80%);
+  }
+}
+@media(max-width:380px) {
+  .letter-cover.note-cover-illustrated > .note-cover-image { object-position:80% 48%; }
+}
+@media print { .letter-cover.note-cover-illustrated { display:none; } }
+
+@media(max-width:640px) {
+  :root:not([data-theme='dark']) .letter-cover.note-cover-illustrated:not(.small)::after { background:linear-gradient(0deg,#f2f7fdf7 0%,#f2f7fde8 23%,#f2f7fd9c 48%,transparent 83%); }
+}
