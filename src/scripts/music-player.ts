@@ -18,6 +18,10 @@ function createRadio(host: HTMLElement) {
   const elapsed = host.querySelector<HTMLElement>('[data-music-elapsed]')!;
   const duration = host.querySelector<HTMLElement>('[data-music-duration]')!;
   const status = host.querySelector<HTMLElement>('[data-music-status]')!;
+  const compactStatus = host.querySelector<HTMLElement>('[data-music-status-compact]');
+  const detailsButton = host.querySelector<HTMLButtonElement>('[data-music-details]');
+  const details = host.querySelector<HTMLElement>('.radio-details');
+  const desktop = matchMedia('(min-width:1024px)');
   const controller = new AbortController();
   const { signal } = controller;
   const saved = readMusic();
@@ -30,6 +34,13 @@ function createRadio(host: HTMLElement) {
   let blobUrl: string | undefined;
   let assetLoad: AbortController | undefined;
   let assetPromise: Promise<string> | undefined;
+  let detailsOpen = false;
+  function setDetails(open: boolean) {
+    detailsOpen = open;
+    host.dataset.detailsOpen = String(open);
+    detailsButton?.setAttribute('aria-expanded', String(open));
+  }
+  setDetails(false);
   // The static host does not serve byte ranges. A user-initiated, cached Blob
   // gives the native audio element a seekable source on every supported host.
   function prepareAudio(): Promise<string> {
@@ -59,6 +70,7 @@ function createRadio(host: HTMLElement) {
     lastSaved = Date.now();
   }
   function setOpen(open: boolean, restoreFocus = false) {
+    if (open && panel.hidden && desktop.matches) setDetails(false);
     panel.hidden = !open;
     toggle.setAttribute('aria-expanded',String(open));
     toggle.setAttribute('aria-label',open ? '收起星夜电台' : '打开星夜电台');
@@ -81,6 +93,10 @@ function createRadio(host: HTMLElement) {
     writeText(volumeLabel,`${volume.value}%`);
     const messages = { idle: '点击播放，让月光陪你阅读。', loading: '正在准备月光…', playing: '月光正在陪你阅读。', paused: '已暂停，随时继续。', error: failureText };
     writeText(status,messages[state]);
+    if (compactStatus) {
+      writeText(compactStatus, { idle:'未播放', loading:'正在加载…', playing:'播放中', paused:'已暂停', error:'播放失败，请重试' }[state]);
+      compactStatus.title = messages[state];
+    }
     document.querySelectorAll<HTMLButtonElement>('[data-music-set]').forEach(button => {
       const active = (button.dataset.musicSet === 'on') === wantsPlay;
       button.classList.toggle('active',active);
@@ -120,6 +136,10 @@ function createRadio(host: HTMLElement) {
   }
   toggle.addEventListener('click',() => { const open = panel.hidden; setOpen(open); if (open) playButton.focus({ preventScroll: true }); },{ signal });
   host.querySelector('[data-music-close]')?.addEventListener('click',() => setOpen(false,true),{ signal });
+  detailsButton?.addEventListener('click', () => { if (desktop.matches) setDetails(!detailsOpen); }, { signal });
+  desktop.addEventListener('change', () => {
+    if (desktop.matches && details?.contains(document.activeElement)) setDetails(true);
+  }, { signal });
   playButton.addEventListener('click',() => { if (wantsPlay) pause(); else void play(); },{ signal });
   seek.addEventListener('input',() => {
     if (Number.isFinite(audio.duration)) audio.currentTime = Math.min(audio.duration,Math.max(0,Number(seek.value) / 1000 * audio.duration));
@@ -159,6 +179,9 @@ document.addEventListener('click',event => {
 });
 document.addEventListener('pointerdown',event => { if (radio?.isOpen() && event.target instanceof Node && !radio.host.contains(event.target)) radio.setOpen(false); });
 document.addEventListener('keydown',event => { if (event.key === 'Escape' && radio?.isOpen()) { event.preventDefault(); radio.setOpen(false,true); } });
+document.addEventListener('dominator:search-open', () => {
+  if (matchMedia('(min-width:1024px)').matches) radio?.setOpen(false);
+});
 document.addEventListener('astro:before-preparation',() => { radio?.persist(); radio?.setOpen(false); });
 document.addEventListener('astro:page-load',initRadio);
 window.addEventListener('pagehide',() => radio?.persist());

@@ -19,6 +19,14 @@ export function initEditorialReading(signal: AbortSignal) {
   const expanded = guide?.querySelector<HTMLElement>('[data-reading-outline-expanded]');
   const toggle = guide?.querySelector<HTMLButtonElement>('[data-reading-guide-toggle]');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const desktop = matchMedia('(min-width:1024px)');
+  const pinButtons = article.querySelectorAll<HTMLButtonElement>('[data-reader-pin]');
+  let pinned = false;
+  try { pinned = localStorage.getItem('dominator-reader-toc-pinned') === 'true'; } catch { /* The control still works for this page. */ }
+  function renderPin() {
+    pinButtons.forEach(button => { button.setAttribute('aria-pressed', String(pinned)); button.textContent = pinned ? '取消固定' : '固定展开'; });
+    if (guide) guide.dataset.guidePinned = String(desktop.matches && pinned);
+  }
   let visualFraction = 0;
   let targetFraction = 0;
   let railFrame = 0;
@@ -50,7 +58,7 @@ export function initEditorialReading(signal: AbortSignal) {
     const end = Math.min(bodyTop + box.height - readingLine, maxScroll);
     distance = Math.max(1, end - start);
     sheetBottom = scrollY + sheet.getBoundingClientRect().bottom;
-    positions = headings.length ? headings.map(h => ({ id: h.id, title: h.textContent?.trim() || '', top: scrollY + h.getBoundingClientRect().top })) : [{ id: body!.id, title: article!.querySelector('h1')?.textContent?.trim() || '正文', top: bodyTop }];
+    positions = headings.length ? headings.map(h => ({ id: h.id, title: h.dataset.readerTitle || h.textContent?.trim() || '', top: scrollY + h.getBoundingClientRect().top })) : [{ id: body!.id, title: article!.querySelector('h1')?.textContent?.trim() || '正文', top: bodyTop }];
     needsMeasure = false;
   }
   function update() {
@@ -116,7 +124,7 @@ export function initEditorialReading(signal: AbortSignal) {
   function syncGuide() {
     if (!guide || !expanded || !rail) return;
     const keyboardFocus = keyboardMode && expanded.contains(document.activeElement);
-    const compact = innerWidth > 800 && guideActive && !pointerInside && !manualOpen && !keyboardFocus;
+    const compact = innerWidth > 800 && guideActive && !pointerInside && !manualOpen && !keyboardFocus && !(desktop.matches && pinned);
     guide.dataset.guideCompact = String(compact);
     expanded.inert = compact;
     expanded.setAttribute('aria-hidden', String(compact));
@@ -149,6 +157,13 @@ export function initEditorialReading(signal: AbortSignal) {
     openGuide(target.dataset.readingRailStop);
   }, { signal });
   toggle?.addEventListener('click', () => openGuide(), { signal });
+  pinButtons.forEach(button => button.addEventListener('click', () => {
+    if (!desktop.matches) return;
+    pinned = !pinned;
+    try { localStorage.setItem('dominator-reader-toc-pinned', String(pinned)); } catch { /* Storage may be unavailable. */ }
+    renderPin(); syncGuide();
+  }, { signal }));
+  desktop.addEventListener('change', () => { renderPin(); syncGuide(); }, { signal });
   guide?.addEventListener('keydown', event => {
     if (event.key !== 'Escape') return;
     event.preventDefault();
@@ -176,5 +191,5 @@ export function initEditorialReading(signal: AbortSignal) {
   main?.addEventListener('animationend', event => { if (event.target === main) schedule(true); }, { signal });
   document.fonts.ready.then(() => { if (!signal.aborted) schedule(true); });
   signal.addEventListener('abort', () => { observer?.disconnect(); cancelAnimationFrame(frame); cancelAnimationFrame(railFrame); clearTimeout(hoverTimer); }, { once: true });
-  update();
+  renderPin(); update();
 }

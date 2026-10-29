@@ -1,3 +1,6 @@
+import { initReaderExperience } from './reader-experience';
+import { createDesktopCopy } from './desktop-copy';
+import { initSearch } from './search';
 import { initPresence } from './presence';
 import { initSiteUptime } from './site-uptime';
 import { initPostsBrowser } from './posts-browser';
@@ -18,6 +21,8 @@ function initPage() {
   initNavigationMenus(signal);
   initCollectionFilters();
   initPointerTrail(signal);
+  const desktopCopy = createDesktopCopy(signal);
+  const desktopInteractions = matchMedia('(min-width:1024px)');
   // 小型交互独立于页面和内容；页面本身始终由 Astro 静态生成。
   const root = document.documentElement;
   const readPreference = (key: string, fallback: string) => { try { return localStorage.getItem(key) || fallback; } catch { return fallback; } };
@@ -64,37 +69,14 @@ function initPage() {
     else document.querySelector<HTMLElement>('#main')?.focus({ preventScroll: true });
   }
 
-  // 原生 dialog 提供焦点约束与 Esc 关闭；所有搜索在本地完成。
-  interface SearchEntry { title: string; description: string; category: string; tags: string[]; body: string; url: string; type: string }
-  const searchIndex: SearchEntry[] = JSON.parse(document.querySelector('#search-index')?.textContent || '[]');
-  const dialog = document.querySelector<HTMLDialogElement>('#search-dialog');
-  const input = document.querySelector<HTMLInputElement>('#search-input');
-  const results = document.querySelector<HTMLElement>('#search-results');
-  function renderSearch() {
-    if (!input || !results) return;
-    const query = input.value.trim().toLocaleLowerCase();
-    const matches = query ? searchIndex.filter(item => `${item.title} ${item.description} ${item.category} ${item.tags.join(' ')} ${item.body}`.toLocaleLowerCase().includes(query)) : searchIndex;
-    results.replaceChildren();
-    if (!matches.length) { const empty = document.createElement('p'); empty.className = 'search-empty'; empty.textContent = searchIndex.length ? '暂时没有找到相关内容。' : '暂无内容，文稿与手记将在这里被找到。'; results.append(empty); return; }
-    matches.forEach(item => {
-      const link = document.createElement('a'); link.className = 'search-result'; link.href = item.url;
-      const meta = document.createElement('small'); meta.textContent = `${item.type} · ${item.category}`;
-      const title = document.createElement('h3'); title.textContent = item.title;
-      const description = document.createElement('p'); description.textContent = item.description;
-      link.append(meta, title, description); results.append(link);
-    });
-  }
-  function openSearch() { if (!dialog || !input) return; document.dispatchEvent(new Event('dominator:close-navigation')); if (mobileNav) mobileNav.hidden = true; menuToggle?.setAttribute('aria-expanded', 'false'); openModal(dialog); renderSearch(); input.focus(); }
-  document.querySelectorAll('[data-search-open]').forEach(button => button.addEventListener('click', openSearch));
-  document.querySelector('[data-search-close]')?.addEventListener('click', () => dialog?.close());
-  dialog?.addEventListener('close', () => closeModal(dialog));
-  dialog?.addEventListener('click', event => { if (event.target === dialog) { const r = dialog.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close(); } });
-  input?.addEventListener('input', renderSearch);
-  input?.addEventListener('keydown', event => { if (event.key === 'ArrowDown') { event.preventDefault(); results?.querySelector<HTMLAnchorElement>('a')?.focus(); } if (event.key === 'Enter') results?.querySelector<HTMLAnchorElement>('a')?.click(); });
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && dialog?.open) { event.preventDefault(); dialog.close(); }
-    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); if (dialog?.open) dialog.close(); else openSearch(); }
-  }, { signal });
+  initSearch({
+    signal, openModal, closeModal,
+    closeNavigation: () => {
+      document.dispatchEvent(new Event('dominator:close-navigation'));
+      if (mobileNav) mobileNav.hidden = true;
+      menuToggle?.setAttribute('aria-expanded', 'false');
+    },
+  });
 
   document.querySelectorAll<HTMLButtonElement>('[data-category]').forEach(button => button.addEventListener('click', () => {
     const category = button.dataset.category;
@@ -107,6 +89,9 @@ function initPage() {
   const copyButton = document.querySelector<HTMLButtonElement>('[data-copy-link]');
   copyButton?.addEventListener('click', async () => {
     const label = copyButton.querySelector('span');
+    if (desktopInteractions.matches && label) {
+      await desktopCopy(copyButton, label, location.href, '请复制地址栏链接'); return;
+    }
     try { await navigator.clipboard.writeText(location.href); if (label) label.textContent = '已复制'; } catch { if (label) label.textContent = '请复制地址栏链接'; }
     setTimeout(() => { if (label) label.textContent = '复制链接'; }, 2200);
   });
@@ -144,6 +129,9 @@ function initPage() {
   }
   document.querySelector<HTMLButtonElement>('[data-copy-rss]')?.addEventListener('click', async event => {
     const button = event.currentTarget as HTMLButtonElement;
+    if (desktopInteractions.matches) {
+      await desktopCopy(button, button, new URL('/rss.xml', location.origin).href, '请打开订阅地址并复制链接'); return;
+    }
     try { await navigator.clipboard.writeText(new URL('/rss.xml', location.origin).href); button.textContent = '已复制'; } catch { button.textContent = '请打开上方链接，复制订阅地址'; }
   });
   document.querySelectorAll<HTMLButtonElement>('[data-timeline-density]').forEach(button => button.addEventListener('click', () => {
@@ -189,11 +177,14 @@ function initPage() {
   });
   document.querySelectorAll<HTMLButtonElement>('[data-copy-code]').forEach(button => button.addEventListener('click', async () => {
     const code = button.closest('.code-block')?.querySelector('code')?.textContent || '';
+    if (desktopInteractions.matches) {
+      await desktopCopy(button, button, code, '请选中代码手动复制'); return;
+    }
     try { await navigator.clipboard.writeText(code); button.textContent = '已复制'; } catch { button.textContent = '请选中代码复制'; }
     setTimeout(() => { button.textContent = '复制代码'; }, 2000);
   }));
   document.querySelectorAll<HTMLImageElement>('.article-prose img').forEach(img => {
-    if (img.closest('figure')) return;
+    if (img.closest('figure, a, button')) return;
     const figure = document.createElement('figure');
     const paragraph = img.parentElement;
     if (paragraph?.tagName === 'P' && paragraph.childNodes.length === 1) paragraph.replaceWith(figure);
@@ -201,6 +192,7 @@ function initPage() {
     figure.append(img);
     if (img.alt) { const caption = document.createElement('figcaption'); caption.textContent = img.alt; figure.append(caption); }
   });
+  initReaderExperience({ signal, openModal, closeModal });
   initEditorialReading(signal);
 }
 document.addEventListener('astro:page-load', initPage);

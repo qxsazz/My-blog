@@ -10,11 +10,15 @@ interface Props { entry: Entry; headings: { depth: number; slug: string; text: s
 const { entry, headings, next, editorial = false } = Astro.props;
 const note = entry.collection === 'notes';
 const label = collectionLabel[entry.collection];
-const recent = (await entries()).filter(item => item.collection === entry.collection).slice(0, 5);
+const all = await entries();
+const recent = all.filter(item => item.collection === entry.collection).slice(0, 5);
+const related = all.filter(item => item.collection === entry.collection && item.id !== entry.id)
+  .map(item => ({ item, score:item.data.tags.filter(tag=>entry.data.tags.includes(tag)).length * 10 + Number(item.data.category === entry.data.category) }))
+  .filter(result=>result.score > 0).sort((a,b)=>b.score-a.score || +b.item.data.date-+a.item.data.date).slice(0,2).map(result=>result.item);
 const outline = headings.filter(h => h.depth === 2 || h.depth === 3);
 ---
 <Base title={entry.data.title} description={entry.data.description}>
-  <div class:list={['article-layout', 'reading-layout', { 'note-reading': note, 'post-reading': !note, 'editorial-reading': editorial }]}>
+  <div class:list={['article-layout', 'reading-layout', { 'note-reading': note, 'post-reading': !note, 'editorial-reading': editorial }]} data-reader-id={`${entry.collection}/${entry.id}`} data-reader-version={`${+(entry.data.updated || entry.data.date)}:${entry.body?.length || 0}`} data-reader-minutes={readingTime(entry.body)}>
     {note && <aside class="reading-recent" aria-label="近期手记"><p>最近的来信</p>{recent.map(item => <a href={entryUrl(item)} aria-current={item.id === entry.id ? 'page' : undefined}>{item.data.title}</a>)}<a class="recent-all" href="/notes/">所有手记 ↗</a></aside>}
     <article class="article-main reading-sheet" data-default-font={note ? 'serif' : 'sans'}>
       {note ? <NoteHeading entry={entry} /> : <>
@@ -35,10 +39,12 @@ const outline = headings.filter(h => h.depth === 2 || h.depth === 3);
       </>}
       <details class="mobile-reading-tools"><summary>文章目录与阅读设置 {(editorial || note) && <span class="reading-mobile-percent" data-reading-progress>0%</span>}<span>⌄</span></summary><nav aria-label="移动端文章目录">{outline.length ? outline.map(h => <a href={`#${h.slug}`} class:list={{'toc-nested':h.depth===3}}>{h.text}</a>) : <a href="#article-body">正文</a>}</nav><div class="reading-font-controls"><span>正文字体</span><button data-reading-font="serif" aria-pressed={note}>宋体</button><button data-reading-font="sans" aria-pressed={!note}>黑体</button></div></details>
       {!editorial && !note && <section class="reading-synopsis" aria-label="内容提要"><span>内容提要</span><p>{entry.data.description}</p></section>}
+      <div class="reader-resume reader-desktop-only" data-reader-resume hidden><span data-reader-resume-label></span><button type="button" data-reader-resume-go>继续阅读 <Icon name="arrow" size={13}/></button><button type="button" data-reader-resume-dismiss aria-label="清除这篇文章的阅读记录"><Icon name="close" size={13}/></button></div>
       <div class:list={['prose', 'article-prose', {'letter-prose':note}]} id="article-body"><slot /></div>
       <div class="article-tags">{entry.data.tags.map(tag => <a href={`/${entry.collection}/?tag=${encodeURIComponent(tag)}`}>#{tag}</a>)}</div>
       <div class="article-signature"><span>✦</span><p>{site.author} <span class="signature-separator">/</span> 谢谢你读到这里。<br /><small>愿这些文字，带给你一点灵感或共鸣。</small></p><a href="/rss.xml" class="text-link" data-astro-reload>订阅 RSS <Icon name="rss" size={15} /></a></div>
-      {next && <a class="next-article" href={entryUrl(next)}><div><span class="eyebrow">继续阅读 · {collectionLabel[next.collection]}</span><h2>{next.data.title}</h2></div><Icon name="arrow" /></a>}
+      {related.length > 0 && <section class="reader-related reader-desktop-only" aria-labelledby="reader-related-heading"><h2 id="reader-related-heading">相关阅读</h2>{related.map(item=><a href={entryUrl(item)}><div><span class="reader-related-meta">{item.data.category} · 约 {readingTime(item.body)} 分钟阅读</span><h3>{item.data.title}</h3><p>{item.data.description}</p></div><Icon name="arrow" size={16}/></a>)}</section>}
+      {next && <a class:list={['next-article',{'reader-has-related':related.length > 0}]} href={entryUrl(next)}><div><span class="eyebrow">继续阅读 · {collectionLabel[next.collection]}</span><h2>{next.data.title}</h2></div><Icon name="arrow" /></a>}
     </article>
     <aside class="article-toc reading-outline" aria-label="文章目录" data-reading-guide={editorial || undefined}>
       {editorial ? <>

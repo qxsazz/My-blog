@@ -122,6 +122,8 @@ public/licenses/             # 字体许可与来源记录
 
 弹窗保持单一打开状态，锁定根元素与 body 的滚动，关闭后恢复焦点。背景继续由同一组 SVG/CSS 节点呈现，减少粒子与中央装饰；主题、背景效果与阅读字体仍保存在 localStorage。
 
+PC 阅读支持固定展开目录、复制章节链接、标准/稍大字号、超过 20 行代码的折叠、图片放大与方向键切换，以及按标签和分类推荐相关阅读。阅读时长至少 5 分钟的文章会在本机记住位置，再次打开时可主动继续；带章节锚点的链接优先定位章节。阅读位置与偏好只保存在读者浏览器中。
+
 ## 发布
 
 部署包包含 `.openai/hosting.json`、`dist/` 和根目录 `drizzle/`：`dist/client/` 是 Astro 静态页面，`dist/server/` 是同域在线统计 Worker。D1 绑定为 `DB`，部署时应用根目录迁移；默认域名 `https://blog.model-gate.fun`，可由环境变量 `SITE_URL` 覆盖。复用 `.openai/hosting.json` 中的项目身份，不另建站点。正式发布源码在 `/workspace/sites/blog-model-gate`；`/workspace/My-blog` 同步保留可二开的项目文件。
